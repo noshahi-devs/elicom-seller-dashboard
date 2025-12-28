@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Colorful Dashboard</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        :root {
+            --primary-bg: #f0f4f8;
+            --accent-blue: #4361ee;
+            --accent-orange: #ff9f43;
+            --accent-green: #28c76f;
+            --accent-red: #ea5455;
+            --accent-indigo: #6610f2;
+            --accent-pink: #d63384;
+            --accent-teal: #20c997;
+            --accent-cyan: #0dcaf0;
+            --card-shadow: 0 8px 24px rgba(149, 157, 165, 0.12);
+        }
+
+        body { 
+            background-color: var(--primary-bg); 
+            font-family: 'Inter', 'Segoe UI', Roboto, sans-serif;
+            color: #2d3436;
+        }
+
+        .top-bar {
+            background: linear-gradient(90deg, #4361ee, #6610f2);
+            padding: 10px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            color: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .card {
+            border: none;
+            border-radius: 16px;
+            box-shadow: var(--card-shadow);
+            margin-bottom: 1.5rem;
+            overflow: hidden;
+            background: #fff;
+        }
+
+        /* Top KPI Styling */
+        .kpi-card {
+            transition: all 0.3s ease;
+            position: relative;
+            padding: 1.25rem !important;
+        }
+        .kpi-card:hover { transform: translateY(-4px); }
+        
+        .kpi-indigo { background: linear-gradient(135deg, #6610f2 0%, #8033ff 100%); color: white; }
+        .kpi-blue { background: linear-gradient(135deg, #4361ee 0%, #4cc9f0 100%); color: white; }
+        .kpi-green { background: linear-gradient(135deg, #28c76f 0%, #48da89 100%); color: white; }
+        .kpi-orange { background: linear-gradient(135deg, #ff9f43 0%, #ffc107 100%); color: white; }
+
+        .kpi-card .card-title { color: rgba(255,255,255,0.85); font-weight: 500; font-size: 0.8rem; margin-bottom: 0.25rem; }
+        .kpi-card .card-value { font-size: 1.5rem; font-weight: 800; }
+        .kpi-card .icon-box { background: rgba(255,255,255,0.2); color: white; width: 36px; height: 36px; border-radius: 10px; }
+
+        /* Statistics Grid Styling */
+        .stat-sub-card {
+            border: none;
+            border-radius: 15px;
+            padding: 20px 16px;
+            height: 100%;
+            transition: all 0.2s;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+        }
+        .stat-sub-card:hover { transform: scale(1.02); }
+        
+        .bg-c-1 { background: #eef2ff; border-left: 5px solid var(--accent-blue); }
+        .bg-c-2 { background: #fff7ed; border-left: 5px solid var(--accent-orange); }
+        .bg-c-3 { background: #f0fdf4; border-left: 5px solid var(--accent-green); }
+        .bg-c-4 { background: #fdf2f8; border-left: 5px solid var(--accent-pink); }
+        .bg-c-5 { background: #f5f3ff; border-left: 5px solid var(--accent-indigo); }
+        .bg-c-6 { background: #ecfeff; border-left: 5px solid var(--accent-cyan); }
+        .bg-c-7 { background: #f0fdfa; border-left: 5px solid var(--accent-teal); }
+        .bg-c-8 { background: #fff1f2; border-left: 5px solid var(--accent-red); }
+
+        .stat-label { font-size: 0.75rem; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 8px; }
+        .stat-val { font-size: 1.4rem; font-weight: 800; color: #0f172a; }
+
+        /* Action Buttons */
+        .action-btn {
+            background: #fff;
+            border-radius: 12px;
+            padding: 12px 6px;
+            text-align: center;
+            transition: all 0.2s;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            border: 1px solid #edf2f7;
+        }
+        .action-btn:hover {
+            transform: translateY(-3px);
+            border-color: var(--accent-blue);
+        }
+        .action-btn .icon-mini {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 6px;
+        }
+
+        /* Notifications & Alerts Styling */
+        .alert-item {
+            padding: 14px;
+            border-radius: 12px;
+            background: #fff;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            border: 1px solid #edf2f7;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.02);
+            transition: transform 0.2s;
+        }
+        .alert-item:hover { transform: translateX(5px); }
+        .alert-new { border-left: 4px solid var(--accent-blue); }
+        .alert-warn { border-left: 4px solid var(--accent-orange); }
+        .alert-danger { border-left: 4px solid var(--accent-red); }
+
+        .section-header {
+            font-weight: 800;
+            font-size: 1.1rem;
+            margin-bottom: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #1e293b;
+        }
+
+        .chart-container { height: 300px; position: relative; }
+
+        /* Custom Badge Styles for Table */
+        .bg-light-orange { background-color: #fff7ed; color: #f59e0b; }
+        .bg-light-green { background-color: #f0fdf4; color: #10b981; }
+        .bg-light-blue { background-color: #eff6ff; color: #3b82f6; }
+        .table thead th { border-top: none; }
+
+        .report-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 12px;
+            border-radius: 10px;
+            background: #f8f9fa;
+            margin-bottom: 10px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .report-item:last-child {
+            margin-bottom: 0;
+        }
+
+    </style>
+</head>
+<body>
+
+<div class="top-bar">
+    <div class="d-flex align-items-center">
+        <button class="btn btn-link text-white p-0 me-3">
+            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+        </button>
+        <span class="fw-bold fs-5">Noshahi Store</span>
+    </div>
+    <div class="d-flex align-items-center gap-4">
+        <div class="d-flex align-items-center gap-2 border-start border-white-50 ps-4">
+            <img src="https://ui-avatars.com/api/?name=Admin&background=fff&color=4361ee" class="rounded-circle" width="32" alt="avatar">
+            <span class="fw-bold d-none d-md-block small">Admin Panel</span>
+        </div>
+    </div>
+</div>
+
+<div class="container py-4">
+    
+    <!-- Top KPI Row -->
+    <div class="row g-3 mb-4">
+        <div class="col-6 col-md-3">
+            <div class="card kpi-card kpi-indigo">
+                <div class="d-flex align-items-center gap-3">
+                    <div class="icon-box d-flex align-items-center justify-content-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path></svg>
+                    </div>
+                    <div>
+                        <div class="card-title">Store Items</div>
+                        <div class="card-value">1,240</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div class="card kpi-card kpi-blue">
+                <div class="d-flex align-items-center gap-3">
+                    <div class="icon-box d-flex align-items-center justify-content-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"></path></svg>
+                    </div>
+                    <div>
+                        <div class="card-title">New Orders</div>
+                        <div class="card-value">48</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div class="card kpi-card kpi-green">
+                <div class="d-flex align-items-center gap-3">
+                    <div class="icon-box d-flex align-items-center justify-content-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+                    </div>
+                    <div>
+                        <div class="card-title">Sales Revenue</div>
+                        <div class="card-value">$12.4k</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div class="card kpi-card kpi-orange">
+                <div class="d-flex align-items-center gap-3">
+                    <div class="icon-box d-flex align-items-center justify-content-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"></path><path d="M3 5v14a2 2 0 0 0 2 2h16v-5"></path></svg>
+                    </div>
+                    <div>
+                        <div class="card-title">Total Profit</div>
+                        <div class="card-value">$3,820</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Statistics Grid -->
+    <div class="card p-4 mb-4">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h5 class="fw-bold m-0">Detailed Statistics</h5>
+            <span class="badge bg-light text-dark px-3 py-2">Last 30 Days</span>
+        </div>
+        <div class="row g-4">
+            <div class="col-md-3 col-6"><div class="stat-sub-card bg-c-1"><div class="stat-label">Current Balance</div><div class="stat-val">$5,240.50</div></div></div>
+            <div class="col-md-3 col-6"><div class="stat-sub-card bg-c-2"><div class="stat-label">Payout till now</div><div class="stat-val">$28,150</div></div></div>
+            <div class="col-md-3 col-6"><div class="stat-sub-card bg-c-3"><div class="stat-label">Recent payout</div><div class="stat-val">$1,840</div></div></div>
+            <div class="col-md-3 col-6"><div class="stat-sub-card bg-c-4"><div class="stat-label">A/C Reserve</div><div class="stat-val">$450.00</div></div></div>
+            <div class="col-md-3 col-6"><div class="stat-sub-card bg-c-5"><div class="stat-label">Shipped Orders</div><div class="stat-val">342</div></div></div>
+            <div class="col-md-3 col-6"><div class="stat-sub-card bg-c-6"><div class="stat-label">Units Ordered</div><div class="stat-val">1,105</div></div></div>
+            <div class="col-md-3 col-6"><div class="stat-sub-card bg-c-7"><div class="stat-label">Avg units/order</div><div class="stat-val">3.2</div></div></div>
+            <div class="col-md-3 col-6"><div class="stat-sub-card bg-c-8"><div class="stat-label">Orders > 5 Units</div><div class="stat-val">24</div></div></div>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-lg-8">
+            <div class="section-header">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
+                Growth Analysis
+            </div>
+
+            <div class="row g-4">
+                <div class="col-md-6">
+                    <div class="card p-4">
+                        <h6 class="fw-bold mb-4 small text-uppercase text-muted">Revenue Growth ($)</h6>
+                        <div class="chart-container">
+                            <canvas id="salesChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card p-4">
+                        <h6 class="fw-bold mb-4 small text-uppercase text-muted">Daily Volume (Orders)</h6>
+                        <div class="chart-container">
+                            <canvas id="orderChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Table Section -->
+            <div class="card mt-4 overflow-hidden">
+                <div class="card-header bg-white py-3 border-bottom-0 d-flex justify-content-between align-items-center">
+                    <h6 class="m-0 fw-bold">Recent Bulk Orders</h6>
+                    <button class="btn btn-sm btn-outline-primary rounded-pill px-3">View All</button>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="table-light text-muted small text-uppercase">
+                            <tr>
+                                <th class="ps-4">Order ID</th>
+                                <th>Customer</th>
+                                <th>Qty</th>
+                                <th>Total</th>
+                                <th>Status</th>
+                                <th class="text-end pe-4">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="ps-4"><strong>#ORD-10021</strong></td>
+                                <td>Ali Traders</td>
+                                <td>28 Units</td>
+                                <td class="fw-bold">$1,120</td>
+                                <td><span class="badge rounded-pill bg-light-orange text-warning">Pending</span></td>
+                                <td class="text-end pe-4"><button class="btn btn-sm btn-light border">Review</button></td>
+                            </tr>
+                            <tr>
+                                <td class="ps-4"><strong>#ORD-10018</strong></td>
+                                <td>Usman Store</td>
+                                <td>15 Units</td>
+                                <td class="fw-bold">$640</td>
+                                <td><span class="badge rounded-pill bg-light-green text-success">Shipped</span></td>
+                                <td class="text-end pe-4"><button class="btn btn-sm btn-light border">Track</button></td>
+                            </tr>
+                            <tr>
+                                <td class="ps-4"><strong>#ORD-10011</strong></td>
+                                <td>Khan Mart</td>
+                                <td>19 Units</td>
+                                <td class="fw-bold">$780</td>
+                                <td><span class="badge rounded-pill bg-light-blue text-primary">Processing</span></td>
+                                <td class="text-end pe-4"><button class="btn btn-sm btn-light border">Manage</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="section-header">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+                Action Center
+            </div>
+            
+            <div class="row g-2 mb-4">
+                <div class="col-3">
+                    <div class="action-btn">
+                        <div class="icon-mini bg-light text-primary"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg></div>
+                        <div style="font-size: 0.65rem; font-weight: 700;">ADD</div>
+                    </div>
+                </div>
+                <div class="col-3">
+                    <div class="action-btn">
+                        <div class="icon-mini bg-light text-success"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg></div>
+                        <div style="font-size: 0.65rem; font-weight: 700;">CSV</div>
+                    </div>
+                </div>
+                <div class="col-3">
+                    <div class="action-btn">
+                        <div class="icon-mini bg-light text-warning"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg></div>
+                        <div style="font-size: 0.65rem; font-weight: 700;">LOGS</div>
+                    </div>
+                </div>
+                <div class="col-3">
+                    <div class="action-btn">
+                        <div class="icon-mini bg-light text-danger"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18.36 6.64a9 9 0 1 1-12.73 0"></path><line x1="12" y1="2" x2="12" y2="12"></line></svg></div>
+                        <div style="font-size: 0.65rem; font-weight: 700;">OFF</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- New Notifications & Alerts Section -->
+            <div class="section-header text-danger">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+                Alerts & Notifications
+            </div>
+
+
+
+            <div class="alert-item alert-new">
+                <div class="text-primary mt-1">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg>
+                </div>
+                <div>
+                    <strong>New order received</strong><br>
+                    <span class="text-muted small">#ORD-10025 from Sarah</span>
+                </div>
+            </div>
+
+            <div class="alert-item alert-warn">
+                <div class="text-warning mt-1">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+                </div>
+                <div>
+                    <strong>Stock Level Warning</strong><br>
+                    <span class="text-muted small">iPhone Case is below 5 units</span>
+                </div>
+            </div>
+
+            <div class="alert-item alert-danger">
+                <div class="text-danger mt-1">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                </div>
+                <div>
+                    <strong>Payout Delayed</strong><br>
+                    <span class="text-muted small">Verification required for $2k</span>
+                </div>
+            </div>
+            <!-- Download Reports Section -->
+            <div class="section-header mt-4">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18"
+                    viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                    <polyline points="7 10 12 15 17 10"></polyline>
+                    <line x1="12" y1="15" x2="12" y2="3"></line>
+                </svg>
+                Download Reports
+            </div>
+
+<div class="card p-3">
+    <div class="report-item">
+        <span>Sales Report</span>
+        <button class="btn btn-sm btn-outline-primary">Download</button>
+    </div>
+
+    <div class="report-item">
+        <span>Order Summary</span>
+        <button class="btn btn-sm btn-outline-success">Download</button>
+    </div>
+
+    <div class="report-item">
+        <span>Revenue Analytics</span>
+        <button class="btn btn-sm btn-outline-warning">Download</button>
+    </div>
+
+   
+</div>
+
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const commonOptions = {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { display: false } },
+            scales: {
+                y: { grid: { color: '#f1f5f9' }, ticks: { font: { size: 10, weight: 'bold' }, color: '#94a3b8' } },
+                x: { grid: { display: false }, ticks: { font: { size: 10, weight: 'bold' }, color: '#94a3b8' } }
+            }
+        };
+
+        // Sales Chart
+        new Chart(document.getElementById('salesChart').getContext('2d'), {
+            type: 'line',
+            data: {
+                labels: ['M','T','W','T','F','S','S'],
+                datasets: [{
+                    data: [3200, 4500, 3800, 6200, 7100, 8400, 7900],
+                    borderColor: '#4361ee',
+                    borderWidth: 3,
+                    pointRadius: 4,
+                    fill: true,
+                    backgroundColor: 'rgba(67, 97, 238, 0.05)',
+                    tension: 0.4
+                }]
+            },
+            options: commonOptions
+        });
+
+        // Order Chart
+        new Chart(document.getElementById('orderChart').getContext('2d'), {
+            type: 'bar',
+            data: {
+                labels: ['M','T','W','T','F','S','S'],
+                datasets: [{
+                    data: [25, 38, 30, 52, 60, 48, 55],
+                    backgroundColor: '#ff9f43',
+                    borderRadius: 6,
+                    barThickness: 16
+                }]
+            },
+            options: commonOptions
+        });
+    });
+</script>
+
+</body>
+</html>
