@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Elegent Dashboard</title>
+    
+    <!-- Dependencies -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --bg-body: #f5f7fb;
+            --text-dark: #1A1F36;
+            --text-muted: #69707a;
+            --brand-primary: #4F46E5;
+            --gradient-time: linear-gradient(135deg, #4F46E5 0%, #7C3AED 100%);
+            --gradient-action: linear-gradient(135deg, #1e1b4b 0%, #312e81 100%);
+        }
+
+        body {
+            background-color: var(--bg-body);
+            font-family: 'Inter', sans-serif;
+            color: var(--text-dark);
+        }
+
+        .fw-semibold { font-weight: 600; }
+        .ls-1 { letter-spacing: 0.5px; }
+        .x-small { font-size: 11px; }
+        
+        /* Header & Widget */
+        .time-widget {
+            background: var(--gradient-time);
+            position: relative;
+            overflow: hidden;
+            min-width: 280px;
+        }
+
+        /* Card Hover Effects */
+        .card-hover {
+            transition: all 0.3s ease;
+            border: 1px solid transparent;
+        }
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.06) !important;
+        }
+
+        /* Icon Boxes */
+        .icon-box {
+            width: 54px; height: 54px;
+            border-radius: 14px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 22px;
+        }
+
+        /* Action Center */
+        .action-center-card {
+            background: var(--gradient-action);
+            position: relative;
+            overflow: hidden;
+        }
+        .blob {
+            position: absolute; border-radius: 50%; filter: blur(40px); z-index: 0;
+        }
+        .blob-1 { top: -20%; right: -20%; width: 150px; height: 150px; background: rgba(124, 58, 237, 0.4); }
+        .blob-2 { bottom: -30%; left: -10%; width: 200px; height: 200px; background: rgba(79, 70, 229, 0.3); }
+
+        .btn-action-list {
+            display: flex; align-items: center;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            color: #fff;
+            padding: 12px 18px;
+            border-radius: 12px;
+            transition: 0.3s;
+            text-align: left;
+        }
+        .btn-action-list:hover {
+            background: rgba(255, 255, 255, 0.2);
+            color: #fff;
+            transform: translateX(5px);
+        }
+        .icon-wrap {
+            width: 32px; height: 32px;
+            border-radius: 8px;
+            display: flex; align-items: center; justify-content: center;
+            margin-right: 12px;
+            font-size: 14px;
+        }
+
+        /* Table Styling */
+        .custom-table thead th {
+            border-top: none;
+            letter-spacing: 0.5px;
+            font-weight: 700;
+        }
+        .custom-table tbody tr {
+            transition: background 0.2s;
+        }
+
+        .split-stat-row h5 {
+            font-size: 1.1rem;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container-fluid main-container px-4 py-4">
+    
+    <!-- Top Header Bar -->
+    <div class="d-flex justify-content-between align-items-center mb-4 p-4 bg-white rounded-4 shadow-sm header-bar">
+        <div>
+            <h2 class="fw-bold text-dark mb-1">Noshahi Store <span class="badge bg-success-subtle text-success border border-success-subtle ms-2" style="font-size: 12px; vertical-align: middle;">Published</span></h2>
+            <p class="text-muted mb-0">Here's what's happening in your store today.</p>
+        </div>
+        <div class="time-widget text-white p-3 rounded-4 text-end pe-4 ps-5">
+            <div id="live-date" style="opacity: 0.8; font-size: 13px;">26-Dec-2025 | 04:15 AM</div>
+            <div class="fw-bold fs-5">New York, USA (GMT-4)</div>
+            <i class="fa-solid fa-clock position-absolute top-50 start-0 translate-middle-y ms-3 fs-2" style="opacity: 0.2;"></i>
+        </div>
+    </div>
+
+    <!-- Stats Grid -->
+    <div class="row g-4 mb-4">
+        <div class="col-md-3">
+            <div class="card-hover p-4 bg-white rounded-4 shadow-sm h-100 d-flex justify-content-between align-items-center border">
+                <div>
+                    <p class="text-muted mb-2 fw-semibold small text-uppercase ls-1">Store Items</p>
+                    <h2 class="fw-bold mb-0 text-dark">191</h2>
+                </div>
+                <div class="icon-box bg-danger-subtle text-danger"><i class="fa-solid fa-box-archive"></i></div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card-hover p-4 bg-white rounded-4 shadow-sm h-100 d-flex justify-content-between align-items-center border">
+                <div>
+                    <p class="text-muted mb-2 fw-semibold small text-uppercase ls-1">New Orders</p>
+                    <h2 class="fw-bold mb-0 text-dark">1</h2>
+                </div>
+                <div class="icon-box bg-primary-subtle text-primary"><i class="fa-solid fa-cart-shopping"></i></div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card-hover p-4 bg-white rounded-4 shadow-sm h-100 d-flex justify-content-between align-items-center border">
+                <div>
+                    <p class="text-muted mb-2 fw-semibold small text-uppercase ls-1">Total Revenue</p>
+                    <h2 class="fw-bold mb-0 text-dark">$42,942</h2>
+                </div>
+                <div class="icon-box bg-success-subtle text-success"><i class="fa-solid fa-chart-line"></i></div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card-hover p-4 bg-white rounded-4 shadow-sm h-100 d-flex justify-content-between align-items-center border">
+                <div>
+                    <p class="text-muted mb-2 fw-semibold small text-uppercase ls-1">Total Profit</p>
+                    <h2 class="fw-bold mb-0 text-dark">$39,507</h2>
+                </div>
+                <div class="icon-box bg-info-subtle text-info"><i class="fa-solid fa-wallet"></i></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Secondary Split Stats -->
+    <div class="bg-white rounded-4 shadow-sm p-4 mb-4 border">
+        <div class="row text-center split-stat-row">
+            <div class="col border-end border-light-subtle">
+                <p class="text-muted x-small mb-1 text-uppercase ls-1">Current Balance</p>
+                <h5 class="fw-bold text-dark mb-0">$819.34</h5>
+            </div>
+            <div class="col border-end border-light-subtle">
+                <p class="text-muted x-small mb-1 text-uppercase ls-1">Total Payout</p>
+                <h5 class="fw-bold text-dark mb-0">$38,682</h5>
+            </div>
+            <div class="col border-end border-light-subtle">
+                <p class="text-muted x-small mb-1 text-uppercase ls-1">Recent Payout</p>
+                <h5 class="fw-bold text-dark mb-0">$2,597</h5>
+            </div>
+            <div class="col border-end border-light-subtle">
+                <p class="text-muted x-small mb-1 text-uppercase ls-1">Reserve Level</p>
+                <h5 class="fw-bold text-dark mb-0">$0.00</h5>
+            </div>
+            <div class="col">
+                <p class="text-muted x-small mb-1 text-uppercase ls-1">Pending Orders</p>
+                <h5 class="fw-bold text-warning mb-0">3 Orders</h5>
+            </div>
+        </div>
+    </div>
+
+    <!-- Charts & Action Center Row -->
+    <div class="row g-4 mb-4">
+        <div class="col-lg-8">
+            <div class="bg-white rounded-4 shadow-sm p-4 h-100 border">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <div>
+                        <h5 class="fw-bold text-dark mb-0">Sales Growth Analytics</h5>
+                        <p class="text-muted small mb-0">Revenue performance over the last 7 days.</p>
+                    </div>
+                    <select class="form-select form-select-sm w-auto bg-light border-0 fw-semibold">
+                        <option>This Week</option>
+                        <option>This Month</option>
+                    </select>
+                </div>
+                <div class="chart-container" style="height: 300px;">
+                    <canvas id="salesChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="action-center-card rounded-4 shadow-sm h-100 overflow-hidden position-relative">
+                <div class="p-4 text-white position-relative z-1">
+                     <h5 class="fw-bold mb-1"><i class="fa fa-bolt me-2"></i>Quick Actions</h5>
+                     <p class="small opacity-75 mb-4">Manage your store operations.</p>
+                     
+                     <div class="d-flex flex-column gap-3">
+                        <button class="btn btn-action-list border-0">
+                            <div class="icon-wrap bg-primary-subtle text-primary"><i class="fa fa-plus"></i></div>
+                            <span class="fw-semibold">Add New Product</span>
+                            <i class="fa fa-chevron-right ms-auto opacity-50 small"></i>
+                        </button>
+                        <button class="btn btn-action-list border-0">
+                            <div class="icon-wrap bg-warning-subtle text-warning"><i class="fa fa-bullhorn"></i></div>
+                            <span class="fw-semibold">Create Ad Campaign</span>
+                            <i class="fa fa-chevron-right ms-auto opacity-50 small"></i>
+                        </button>
+                        <button class="btn btn-action-list border-0">
+                            <div class="icon-wrap bg-success-subtle text-success"><i class="fa fa-file-export"></i></div>
+                            <span class="fw-semibold">Export Sales Report</span>
+                            <i class="fa fa-chevron-right ms-auto opacity-50 small"></i>
+                        </button>
+                     </div>
+                </div>
+                <div class="blob blob-1"></div>
+                <div class="blob blob-2"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Table & Overview Row -->
+    <div class="row g-4">
+        <div class="col-lg-8">
+            <div class="bg-white rounded-4 shadow-sm p-0 h-100 overflow-hidden border">
+                <div class="p-4 border-bottom d-flex justify-content-between align-items-center">
+                    <h5 class="fw-bold mb-0 text-dark">Recent Orders</h5>
+                    <button class="btn btn-sm btn-light fw-semibold text-primary">View All Orders</button>
+                </div>
+                <div class="table-responsive">
+                    <table class="table align-middle mb-0 custom-table table-hover">
+                        <thead class="bg-light text-secondary small text-uppercase">
+                            <tr>
+                                <th class="ps-4 py-3">Order ID</th>
+                                <th class="py-3">Product Details</th>
+                                <th class="py-3">Date</th>
+                                <th class="py-3">Status</th>
+                                <th class="text-end pe-4 py-3">Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="ps-4 fw-bold text-primary">#ORD-2451</td>
+                                <td><span class="d-block fw-semibold text-dark">iPhone 15 Pro Max</span><span class="small text-muted">Electronics</span></td>
+                                <td class="text-muted">26 Dec, 2025</td>
+                                <td><span class="badge bg-success-subtle text-success border border-success-subtle px-3 py-2 rounded-pill">Delivered</span></td>
+                                <td class="text-end pe-4 fw-bold text-dark">$1,199.00</td>
+                            </tr>
+                            <tr>
+                                <td class="ps-4 fw-bold text-primary">#ORD-2450</td>
+                                <td><span class="d-block fw-semibold text-dark">Logitech MX Master 3S</span><span class="small text-muted">Accessories</span></td>
+                                <td class="text-muted">25 Dec, 2025</td>
+                                <td><span class="badge bg-warning-subtle text-warning border border-warning-subtle px-3 py-2 rounded-pill">Pending</span></td>
+                                <td class="text-end pe-4 fw-bold text-dark">$99.99</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="bg-white rounded-4 shadow-sm p-4 h-100 border">
+                 <h5 class="fw-bold mb-4 text-dark">Overview & Alerts</h5>
+                 
+                 <div class="mb-4 d-flex align-items-center">
+                    <div style="height: 120px; width: 120px; position: relative;">
+                        <canvas id="categoryChart"></canvas>
+                         <div class="position-absolute top-50 start-50 translate-middle text-center">
+                            <span class="small text-muted d-block" style="font-size: 10px;">Total</span>
+                            <span class="fw-bold">850</span>
+                        </div>
+                    </div>
+                    <div class="ms-4">
+                        <h6 class="fw-bold mb-2">Sales by Category</h6>
+                        <div class="small text-muted mb-1"><i class="fa fa-circle text-primary me-2" style="font-size: 8px;"></i> Electronics (65%)</div>
+                        <div class="small text-muted"><i class="fa fa-circle text-info me-2" style="font-size: 8px;"></i> Accessories (35%)</div>
+                    </div>
+                 </div>
+
+                 <hr class="bg-light-subtle my-4">
+
+                 <div>
+                     <h6 class="fw-bold mb-3 small text-uppercase text-muted ls-1">Recent Alerts</h6>
+                     <div class="d-flex mb-3">
+                        <i class="fa fa-circle-exclamation text-warning fs-5 me-3 mt-1"></i>
+                        <div>
+                            <p class="fw-semibold text-dark mb-0">3 Orders Need Shipping</p>
+                            <p class="small text-muted mb-0">Print labels before 5 PM today.</p>
+                        </div>
+                     </div>
+                      <div class="d-flex">
+                        <i class="fa fa-circle-check text-success fs-5 me-3 mt-1"></i>
+                        <div>
+                            <p class="fw-semibold text-dark mb-0">Payout Processed</p>
+                            <p class="small text-muted mb-0">$2,597 has been sent to your bank.</p>
+                        </div>
+                     </div>
+                 </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // --- 1. Live Time Update ---
+        function updateTime() {
+            const now = new Date();
+            const options = { 
+                day: '2-digit', 
+                month: 'short', 
+                year: 'numeric', 
+                hour: '2-digit', 
+                minute: '2-digit', 
+                hour12: true 
+            };
+            document.getElementById('live-date').innerText = now.toLocaleString('en-GB', options).replace(',', ' |');
+        }
+        setInterval(updateTime, 1000);
+        updateTime();
+
+        // --- 2. Sales Growth Chart ---
+        const ctxSales = document.getElementById('salesChart').getContext('2d');
+        let saleGradient = ctxSales.createLinearGradient(0, 0, 0, 300);
+        saleGradient.addColorStop(0, 'rgba(79, 70, 229, 0.2)');
+        saleGradient.addColorStop(1, 'rgba(79, 70, 229, 0.01)');
+
+        new Chart(ctxSales, {
+            type: 'line',
+            data: {
+                labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                datasets: [{
+                    label: 'Revenue ($)',
+                    data: [12000, 19000, 15000, 25000, 22000, 30000, 42942],
+                    borderColor: '#4F46E5',
+                    backgroundColor: saleGradient,
+                    borderWidth: 3,
+                    pointRadius: 4,
+                    pointBackgroundColor: '#fff',
+                    pointBorderColor: '#4F46E5',
+                    fill: true,
+                    tension: 0.4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: { borderDash: [5, 5], color: '#f1f5f9' },
+                        ticks: { callback: (v) => '$' + (v / 1000) + 'k' }
+                    },
+                    x: { grid: { display: false } }
+                }
+            }
+        });
+
+        // --- 3. Category Doughnut Chart ---
+        const ctxCategory = document.getElementById('categoryChart').getContext('2d');
+        new Chart(ctxCategory, {
+            type: 'doughnut',
+            data: {
+                labels: ['Electronics', 'Accessories'],
+                datasets: [{
+                    data: [65, 35],
+                    backgroundColor: ['#4F46E5', '#0ea5e9'],
+                    borderWidth: 0,
+                    hoverOffset: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                cutout: '80%',
+                plugins: { legend: { display: false } }
+            }
+        });
+    });
+</script>
+</body>
+</html>
