@@ -179,9 +179,12 @@ body { background-color: var(--bg-body); font-family: 'Inter', sans-serif; color
     background-color: #fff;
     border-radius: 12px;
     box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-    padding: 1.5rem;
     transition: transform 0.3s, box-shadow 0.3s;
     position: relative;
+        min-height: 150px;
+    padding: 16px !important;
+    border-radius: 12px;
+
 }
 
 .card:hover {
@@ -196,6 +199,10 @@ body { background-color: var(--bg-body); font-family: 'Inter', sans-serif; color
     position: relative;
     overflow: hidden;
     text-align: left;
+    width: 320px;
+    height: 90px;
+        min-height: 150px;
+
 }
 
 .time-widget .blob {
@@ -205,8 +212,8 @@ body { background-color: var(--bg-body); font-family: 'Inter', sans-serif; color
 }
 
 .time-widget .blob-1 {
-    width: 150px;
-    height: 150px;
+    /* width: 150px;
+    height: 150px; */
     top: -30px;
     right: -50px;
 }
@@ -219,13 +226,18 @@ body { background-color: var(--bg-body); font-family: 'Inter', sans-serif; color
 
 /* Icon boxes */
 .icon-box {
-    width: 50px;
-    height: 50px;
+        width: 38px;
+    height: 38px;
+    font-size: 16px;
     display: flex;
     justify-content: center;
     align-items: center;
     border-radius: 12px;
     font-size: 1.2rem;
+}
+
+.time-widget h2 {
+    font-size: 2.2rem !important;
 }
 
 .bg-primary { color: #4F46E5 !important; background-color: #EEF2FF !important; }
@@ -315,7 +327,7 @@ h2.fw-bold { font-size: 2rem; }
 <div class="topbar" id="topbar">
     <div class="d-flex align-items-center">
         <i id="sidebar-toggle" class="fa fa-bars me-3 text-muted fs-5 cursor-pointer"></i>
-        <h5 class="fw-bold mb-0">Noshahi Store <span class="badge bg-success-subtle text-success border border-success-subtle ms-2" style="font-size: 10px;">Published</span></h5>
+        <!-- <h5 class="fw-bold mb-0">Noshahi Store <span class="badge bg-success-subtle text-success border border-success-subtle ms-2" style="font-size: 10px;">Published</span></h5> -->
     </div>
     <div class="search-container d-none d-md-block">
         <div class="position-relative">
@@ -350,7 +362,7 @@ h2.fw-bold { font-size: 2rem; }
             <div class="card time-widget h-100 p-4 border-0">
                 <div class="d-flex flex-column justify-content-center h-100">
                     <p class="text-uppercase fw-bold ls-1 mb-1" style="font-size: 12px; opacity: 0.8;">Current Time (USA)</p>
-                    <h2 class="fw-bold mb-1" id="digital-clock" style="font-size: 2.8rem;">00:00:00</h2>
+                    <h2 class="fw-bold mb-1" id="digital-clock" style="font-size: 32rem;">00:00:00</h2>
                     <p class="mb-0 opacity-75" id="current-date">Loading date...</p>
                 </div>
                 <div class="blob blob-1"></div>
