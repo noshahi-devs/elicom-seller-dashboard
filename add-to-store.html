@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Add Product – Store Listing</title>
+
+<style>
+* {
+  box-sizing: border-box;
+  font-family: "Segoe UI", Arial, sans-serif;
+}
+
+body {
+  margin: 0;
+  background: #f1f3f7;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 30px 0;
+  gap: 40px;
+}
+
+/* ================= HEADER ================= */
+.page-header {
+  max-width: 1100px;
+  width: 100%;
+  background: #ffffff;
+  padding: 18px 24px;
+  border-radius: 12px;
+  font-size: 24px;
+  font-weight: 700;
+  color: #6a5cff;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+  text-align: center;
+}
+
+/* ================= COMMON CARD STYLE ================= */
+.card-wrapper,
+.attribute-card {
+  max-width: 1100px;
+  width: 90%;
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 12px 30px rgba(0,0,0,0.12);
+  transition: 0.3s ease;
+}
+
+.card-wrapper:hover,
+.attribute-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 20px 45px rgba(0,0,0,0.18);
+}
+
+.product-card {
+  display: flex;
+  gap: 30px;
+  flex-wrap: wrap;
+}
+
+.gallery {
+  width: 280px;
+}
+
+.main-image {
+  width: 100%;
+  height: 260px;
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.25);
+  margin-bottom: 14px;
+}
+
+.main-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.thumbs {
+  display: flex;
+  gap: 10px;
+}
+
+.thumb {
+  width: 60px;
+  height: 60px;
+  border-radius: 10px;
+  overflow: hidden;
+  cursor: pointer;
+  box-shadow: 0 8px 18px rgba(0,0,0,0.25);
+  transition: 0.25s ease;
+  border: 2px solid transparent;
+}
+
+.thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.thumb:hover {
+  transform: translateY(-4px) scale(1.05);
+}
+
+.thumb.active {
+  border-color: #6a5cff;
+}
+
+.product-content {
+  flex: 1;
+}
+
+.product-title {
+  font-size: 22px;
+  font-weight: 800;
+  margin-bottom: 14px;
+  color: #111827;
+}
+
+.info-row {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.pill {
+  background: #eaf0ff;
+  color: #2f5bff;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.price {
+  margin-top: 10px;
+  background: linear-gradient(135deg, #2ecc71, #1fa85b);
+  color: #fff;
+  padding: 8px 18px;
+  border-radius: 20px;
+  font-size: 15px;
+  font-weight: 800;
+  width: fit-content;
+}
+
+/* ================= ATTRIBUTE CARD ================= */
+.attribute-title {
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 24px;
+  text-decoration: underline;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 22px 26px;
+}
+
+.form-group label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 6px;
+  font-size: 14px;
+}
+
+/* ================= INPUT BOX WITH BUTTON ================= */
+.input-box {
+  height: 44px;
+  border: 1px solid #e3e3e3;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 12px;
+  background: #fff;
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.06);
+}
+
+.input-box input {
+  border: none;
+  outline: none;
+  width: 70%; /* input field takes 70% of box */
+  font-size: 15px;
+}
+
+.input-box span {
+  font-weight: 600;
+  margin-left: 8px; /* move to right side */
+  color: #555;
+}
+
+.input-box button {
+  border: none;
+  background: #3f5efb;
+  color: #fff;
+  padding: 6px 14px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.input-box button:hover {
+  background: linear-gradient(135deg, #5b7cff, #3f5efb);
+  transform: translateY(-2px);
+}
+
+/* ================= TEXTAREA ================= */
+textarea {
+  width: 100%;
+  height: 90px;
+  resize: none;
+  border-radius: 6px;
+  border: 1px solid #e3e3e3;
+  padding: 10px;
+  font-size: 14px;
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.06);
+}
+
+.full {
+  grid-column: span 2;
+}
+
+.actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.btn {
+  padding: 10px 18px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.btn-cancel {
+  background: #ffffff;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+}
+
+.btn-primary {
+  background: #3f5efb;
+  border: none;
+  color: #fff;
+  padding: 12px 26px;
+  border-radius: 14px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  box-shadow: 0 8px 20px rgba(63,94,251,0.5);
+  transition: all .3s ease;
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  background: linear-gradient(135deg, #5b7cff, #3f5efb);
+  box-shadow: 0 14px 35px rgba(63,94,251,0.6);
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="page-header">
+  🏪 Add Product in Your Store Listing
+</div>
+
+<!-- FIRST PRODUCT CARD -->
+<div class="card-wrapper">
+  <div class="product-card">
+
+    <div class="gallery">
+      <div class="main-image">
+        <img id="mainImg" src="images/71j6dCI8O2L._SX425_.jpg" alt="Product Image">
+      </div>
+      <div class="thumbs">
+        <div class="thumb active"><img src="images/71j6dCI8O2L._SX425_.jpg"></div>
+        <div class="thumb"><img src="images/81FwDg60acL._SX425_.jpg"></div>
+        <div class="thumb"><img src="images/81FwDg60acL._SX425_.jpg"></div>
+        <div class="thumb"><img src="images/81JBs9B7y5L._SX425_.jpg"></div>
+      </div>
+    </div>
+
+    <div class="product-content">
+      <div class="product-title">
+        5.1ft-7.4ft Adjustable Height Volleyball Badminton Net Set 17ft Portable Sports Net with Poles, 4 Badminton Rackets, 3 Shuttlecocks and 1 Volleyball for Indoor Outdoor
+      </div>
+      <div class="info-row">
+        <div class="pill">ID: dr81852159</div>
+        <div class="pill">Category: Kitchen Tools</div>
+        <div class="pill">Brand: Umite Kitchen</div>
+      </div>
+      <div class="price">$35.78</div>
+    </div>
+
+  </div>
+</div>
+
+<!-- SECOND ATTRIBUTE CARD -->
+<div class="attribute-card">
+
+  <div class="attribute-title">
+    Set Attributes For Store Listing
+  </div>
+
+  <div class="form-grid">
+
+    <div class="form-group">
+      <label>Maximum Price</label>
+      <div class="input-box">
+        <input value="69.74">
+        <!-- <span>$</span> -->
+        <button>$</button>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label>Standard Price</label>
+      <div class="input-box">
+        <input value="66.49">
+        <!-- <span>$</span> -->
+        <button>$</button>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label>Handling Time</label>
+      <div class="input-box">
+        <input value="2">
+        <!-- <span>Days</span> -->
+        <button>Days</button>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label>Max Order Quantity</label>
+      <div class="input-box">
+        <input value="10">
+        <!-- <span>Units</span> -->
+        <button>Units</button>
+      </div>
+    </div>
+
+    <div class="form-group full">
+      <label>Note For Customer</label>
+      <textarea></textarea>
+    </div>
+
+  </div>
+
+  <div class="actions">
+    <button class="btn btn-cancel">Cancel</button>
+    <button class="btn btn-primary">Update listing data</button>
+  </div>
+
+</div>
+
+<script>
+const mainImg = document.getElementById("mainImg");
+const thumbs = document.querySelectorAll(".thumb");
+let selectedSrc = mainImg.src;
+
+thumbs.forEach(thumb => {
+  const img = thumb.querySelector("img");
+  thumb.addEventListener("mouseenter", () => { mainImg.src = img.src; });
+  thumb.addEventListener("mouseleave", () => { mainImg.src = selectedSrc; });
+  thumb.addEventListener("click", () => {
+    selectedSrc = img.src;
+    mainImg.src = selectedSrc;
+    thumbs.forEach(t => t.classList.remove("active"));
+    thumb.classList.add("active");
+  });
+});
+</script>
+
+</body>
+</html>
