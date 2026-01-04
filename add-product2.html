@@ -515,6 +515,25 @@ h2.fw-bold { font-size: 2rem; }
       flex-wrap: wrap;
       margin-bottom: 6px;
     }
+     .outside-btn {
+        padding: 14px 32px;
+        font-size: 15px;
+        font-weight: 600;
+        border-radius: 999px;
+        border: none;
+        margin-left: 600px;
+        cursor: pointer;
+        background: #3b63f3;
+        color: #ffffff;
+        box-shadow: 0 12px 30px rgba(59,99,243,0.35);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .outside-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 18px 40px rgba(59,99,243,0.45);
+    }
+
 </style>
 
 
@@ -666,7 +685,11 @@ h2.fw-bold { font-size: 2rem; }
     </div>
 
   </div>
-
+  <a href="product-listing.html"> 
+    <button class="outside-btn">
+    Another Page
+    </button>
+</a>
 
 
 <script>
