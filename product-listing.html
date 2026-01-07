@@ -205,7 +205,7 @@ body {
     transform: translateZ(30px) rotateX(5deg) rotateY(5deg);
 }
 
-/* Face styling with hover effect */
+/* Face styling with hover effect - UPDATED FOR FLEX LAYOUT */
 .face {
     position: absolute;
     inset: 0;
@@ -215,9 +215,12 @@ body {
         0 10px 20px rgba(0,0,0,0.1),
         0 0 0 1px rgba(255,255,255,0.8),
         inset 0 1px 0 rgba(255,255,255,0.8);
-    padding: 15px;
+    padding: 0;
     transform-style: preserve-3d;
     transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
 }
 
 /* Enhanced hover effect for face */
@@ -229,10 +232,14 @@ body {
     transform: translateZ(20px);
 }
 
-/* IMAGE */
+/* IMAGE - UPDATED */
+.image-container {
+    flex: 0 0 auto;
+}
+
 .image {
     height: 160px;
-    border-radius: 12px;
+    border-radius: 12px 12px 0 0;
     overflow: hidden;
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     transform: translateZ(25px);
@@ -256,28 +263,121 @@ body {
     transform: scale(1.1);
 }
 
-/* INFO */
+/* INFO SECTION - UPDATED */
+.info-container {
+    flex: 1 1 auto;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+}
+
 .info {
-    margin-top: 12px;
+    flex: 1;
     transform: translateZ(15px);
     transition: all 0.5s ease;
+    position: relative;
+    background: white;
+    border-radius: 0 0 12px 12px;
 }
 
 .scene:hover .info {
     transform: translateZ(25px);
 }
 
+/* ================= TITLE STYLING - IMPROVED ================= */
 .title {
     font-size: 14px;
     font-weight: 700;
     color: #111;
     margin-bottom: 8px;
-    line-height: 1.3;
-    height: 36px;
+    line-height: 1.4;
+    height: 40px; /* Fixed height for exactly 2 lines */
     overflow: hidden;
     display: -webkit-box;
-    -webkit-line-clamp: 2;
+    -webkit-line-clamp: 2; /* Show only 2 lines */
     -webkit-box-orient: vertical;
+    text-overflow: ellipsis; /* Show ... if text is too long */
+    position: relative;
+    cursor: help;
+    transition: all 0.3s ease;
+    padding: 4px 0;
+}
+
+/* Title hover effect */
+.title:hover {
+    color: var(--brand-primary);
+}
+
+/* Tooltip container */
+.title-container {
+    position: relative;
+    display: block;
+    z-index: 5;
+}
+
+/* ================= UPDATED TOOLTIP STYLING ================= */
+.title-container .tooltip-text {
+    visibility: hidden;
+    width: 350px;
+    max-width: 350px;
+    background-color: rgba(0, 0, 0, 0.97);
+    color: #fff;
+    text-align: left;
+    padding: 16px 20px;
+    border-radius: 12px;
+    position: absolute;
+    z-index: 1000;
+    bottom: 100%; /* Position above the title */
+    left: 50%;
+    margin-left: -175px; /* Center the tooltip */
+    margin-bottom: 15px; /* Distance from title */
+    opacity: 0;
+    transition: opacity 0.3s, visibility 0.3s;
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 1.6;
+    box-shadow: 
+        0 10px 40px rgba(0,0,0,0.3),
+        0 0 0 1px rgba(255,255,255,0.1);
+    pointer-events: none;
+    backdrop-filter: blur(15px);
+    border: 1px solid rgba(255,255,255,0.15);
+    word-wrap: break-word;
+    white-space: normal; /* Allow text to wrap */
+}
+
+/* Tooltip arrow */
+.title-container .tooltip-text::after {
+    content: "";
+    position: absolute;
+    top: 100%; /* At the bottom of the tooltip */
+    left: 50%;
+    margin-left: -10px;
+    border-width: 10px;
+    border-style: solid;
+    border-color: rgba(0, 0, 0, 0.97) transparent transparent transparent;
+}
+
+/* Show the tooltip when hovering over the title container */
+.title-container:hover .tooltip-text {
+    visibility: visible;
+    opacity: 1;
+}
+
+/* Tooltip fade-in animation */
+@keyframes tooltipFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.title-container .tooltip-text {
+    animation: tooltipFadeIn 0.3s ease-out;
 }
 
 .tags {
@@ -385,19 +485,15 @@ body {
     color: #ff6b6b; /* Red heart icon - visible on white */
 }
 
-/* Heart Hover Effect - Red background, white heart icon */
+/* Heart Hover Effect - White background, red heart (FILLED) */
 .heart:hover {
     transform: translateZ(40px) scale(1.1);
     box-shadow: 0 12px 25px rgba(255,107,107,0.3);
-    background: #ff6b6b; /* Red background on hover */
+    background: #ffffff; /* White background stays same */
     border: 2px solid #ff6b6b;
 }
 
-.heart:hover i {
-    color: white; /* Heart icon becomes white on hover */
-}
-
-/* Heart Active (Clicked) State - Red background, white heart (filled) */
+/* Heart Active (Clicked) State - Red background, white heart (FILLED) */
 .heart.active {
     background: #ff6b6b; /* Red background */
     border: 2px solid #ff6b6b;
@@ -410,7 +506,7 @@ body {
 }
 
 .heart.active:hover {
-    background: #ff6b6b;
+    background: #ff6b6b; /* Keep red background on hover when active */
     border: 2px solid #ff6b6b;
     box-shadow: 0 15px 30px rgba(255,107,107,0.5);
 }
@@ -444,16 +540,16 @@ body {
     color: #4f46e5; /* Blue cart icon on white background */
 }
 
-/* Cart Hover Effect - Blue background, white cart icon */
+/* Cart Hover Effect - White background, blue cart icon */
 .cart:hover {
     transform: translateZ(45px) scale(1.1);
     box-shadow: 0 15px 30px rgba(79,70,229,0.4);
-    background: #4f46e5; /* Blue background on hover */
+    background: #ffffff; /* White background */
     border: 2px solid #4f46e5;
 }
 
 .cart:hover i {
-    color: white; /* Cart icon becomes white on hover */
+    color: #4f46e5; /* Cart icon remains blue on hover */
 }
 
 /* Cart Active (Clicked) State - Blue background, white checkmark */
@@ -469,7 +565,7 @@ body {
 }
 
 .cart.active:hover {
-    background: #4f46e5;
+    background: #4f46e5; /* Keep blue background on hover when active */
     border: 2px solid #4f46e5;
     box-shadow: 0 18px 35px rgba(79,70,229,0.5);
 }
@@ -492,46 +588,94 @@ body {
     transform: translateZ(-12px);
 }
 
-/* NEW: View More Button */
-.view-more-btn {
+/* ================= NEW LOAD MORE BUTTON ================= */
+.load-more-btn {
     display: block;
-    margin: 30px auto;
-    padding: 14px 40px;
-    font-size: 15px;
+    margin: 40px auto;
+    padding: 16px 50px;
+    font-size: 16px;
     font-weight: 600;
-    border-radius: 25px;
-    border: none;
+    background: transparent;
+    color: #4f46e5;
+    border: 2px solid #4f46e5;
+    border-radius: 8px;
     cursor: pointer;
-    background: linear-gradient(135deg, #4f46e5, #6366f1);
-    color: #ffffff;
-    box-shadow: 0 12px 30px rgba(79,70,229,0.3);
-    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    outline: none;
-    -webkit-tap-highlight-color: transparent;
     position: relative;
     overflow: hidden;
+    transition: all 0.4s ease;
+    outline: none;
+    -webkit-tap-highlight-color: transparent;
+    z-index: 1;
 }
 
-.view-more-btn:hover {
-    transform: translateY(-5px) translateZ(10px);
-    box-shadow: 0 20px 40px rgba(79,70,229,0.4);
+.load-more-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(79, 70, 229, 0.2), transparent);
+    transition: left 0.7s ease;
+    z-index: -1;
 }
 
-.view-more-btn:active {
-    transform: translateY(-2px);
+.load-more-btn::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: #4f46e5;
+    transition: left 0.4s ease;
+    z-index: -2;
 }
 
-.view-more-btn .btn-text {
-    position: relative;
-    z-index: 2;
+/* Hover Effect - Fill from left to right with glow */
+.load-more-btn:hover {
+    color: white;
+    box-shadow: 
+        0 0 20px rgba(79, 70, 229, 0.5),
+        0 0 40px rgba(79, 70, 229, 0.3),
+        0 0 60px rgba(79, 70, 229, 0.1);
+    transform: translateY(-3px);
 }
 
-.view-more-btn .btn-count {
-    background: rgba(255,255,255,0.2);
-    padding: 2px 8px;
-    border-radius: 10px;
-    margin-left: 8px;
-    font-size: 12px;
+.load-more-btn:hover::after {
+    left: 0;
+}
+
+.load-more-btn:hover::before {
+    left: 100%;
+}
+
+/* Active state */
+.load-more-btn:active {
+    transform: translateY(0);
+    box-shadow: 
+        0 0 15px rgba(79, 70, 229, 0.6),
+        0 0 30px rgba(79, 70, 229, 0.4),
+        0 0 45px rgba(79, 70, 229, 0.2);
+}
+
+/* Disabled state */
+.load-more-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    border-color: #a5b4fc;
+    color: #a5b4fc;
+}
+
+.load-more-btn:disabled:hover {
+    color: #a5b4fc;
+    box-shadow: none;
+    transform: none;
+}
+
+.load-more-btn:disabled:hover::after,
+.load-more-btn:disabled:hover::before {
+    left: -100%;
 }
 
 /* OUTSIDE BUTTON */
@@ -806,10 +950,9 @@ body {
         <!-- Initial 8 cards will be loaded here -->
     </div>
     
-    <!-- NEW: View More Button -->
-    <button class="view-more-btn" id="view-more-btn">
-        <span class="btn-text">View More Products</span>
-        <span class="btn-count" id="cards-count">0/0</span>
+    <!-- NEW: Load More Button (Simple Blue Border) -->
+    <button class="load-more-btn" id="load-more-btn">
+        Load More
     </button>
     
     <!-- OUTSIDE BUTTON -->
@@ -919,12 +1062,12 @@ document.addEventListener('click', (e) => {
 
 // ==================== CARD MANAGEMENT SYSTEM ====================
 
-// Card data - more products
+// Card data - LONG TITLES ADDED FOR TESTING
 const cardData = [
     // First 8 cards
     { 
         id: "KU12345", 
-        title: "Premium Kitchen Utensils Set 34PCS", 
+        title: "Premium Kitchen Utensils Set 34PCS with Stainless Steel Material and Non-Stick Coating for Professional Cooking", 
         category: "Kitchen", 
         brand: "Umite Kitchen", 
         price: "$29.99", 
@@ -932,7 +1075,7 @@ const cardData = [
     },
     { 
         id: "CAM4567", 
-        title: "Professional Camera 24MP DSLR", 
+        title: "Professional Camera 24MP DSLR with 4K Video Recording, Wi-Fi Connectivity and Advanced Auto Focus System", 
         category: "Electronics", 
         brand: "Canon", 
         price: "$499.99", 
@@ -940,7 +1083,7 @@ const cardData = [
     },
     { 
         id: "SW7890", 
-        title: "Smart Watch Series 5 GPS", 
+        title: "Smart Watch Series 5 GPS with Heart Rate Monitor, Sleep Tracking and Water Resistance up to 50 Meters", 
         category: "Wearables", 
         brand: "Apple", 
         price: "$199.99", 
@@ -948,7 +1091,7 @@ const cardData = [
     },
     { 
         id: "SG2345", 
-        title: "Polarized Sunglasses UV400", 
+        title: "Polarized Sunglasses UV400 Protection with Anti-Glare Lenses and Lightweight Frame for Outdoor Activities", 
         category: "Accessories", 
         brand: "Ray-Ban", 
         price: "$89.99", 
@@ -956,7 +1099,7 @@ const cardData = [
     },
     { 
         id: "HP5678", 
-        title: "Noise Cancelling Headphones Pro", 
+        title: "Noise Cancelling Headphones Pro with 30 Hours Battery Life, Bluetooth 5.0 and Foldable Design", 
         category: "Audio", 
         brand: "Sony", 
         price: "$149.99", 
@@ -964,7 +1107,7 @@ const cardData = [
     },
     { 
         id: "RS9012", 
-        title: "Running Shoes Pro Max Air", 
+        title: "Running Shoes Pro Max Air with Cushioned Sole, Breathable Mesh Upper and Anti-Slip Technology", 
         category: "Footwear", 
         brand: "Nike", 
         price: "$79.99", 
@@ -972,7 +1115,7 @@ const cardData = [
     },
     { 
         id: "SP3456", 
-        title: "Smartphone X Pro Max 256GB", 
+        title: "Smartphone X Pro Max 256GB with Triple Camera System, 5G Connectivity and Super Retina Display", 
         category: "Mobile", 
         brand: "Apple", 
         price: "$899.99", 
@@ -980,7 +1123,7 @@ const cardData = [
     },
     { 
         id: "SN7890", 
-        title: "Limited Edition Sneakers 2024", 
+        title: "Limited Edition Sneakers 2024 with Premium Leather, Exclusive Design and Collector's Packaging", 
         category: "Collectible", 
         brand: "Adidas", 
         price: "$199.99", 
@@ -989,7 +1132,7 @@ const cardData = [
     // Additional cards (8 more)
     { 
         id: "LT6789", 
-        title: "Gaming Laptop RTX 4060 16GB RAM", 
+        title: "Gaming Laptop RTX 4060 16GB RAM with 144Hz Display, RGB Keyboard and Advanced Cooling System", 
         category: "Computers", 
         brand: "ASUS", 
         price: "$1299.99", 
@@ -997,7 +1140,7 @@ const cardData = [
     },
     { 
         id: "TB1234", 
-        title: "Wireless Bluetooth Speaker Bass", 
+        title: "Wireless Bluetooth Speaker Bass with 360° Sound, Portable Design and 20 Hours Playback Time", 
         category: "Audio", 
         brand: "JBL", 
         price: "$129.99", 
@@ -1005,7 +1148,7 @@ const cardData = [
     },
     { 
         id: "KB5678", 
-        title: "Mechanical Gaming Keyboard RGB", 
+        title: "Mechanical Gaming Keyboard RGB with Customizable Keys, Anti-Ghosting and Ergonomic Wrist Rest", 
         category: "Accessories", 
         brand: "Razer", 
         price: "$149.99", 
@@ -1013,7 +1156,7 @@ const cardData = [
     },
     { 
         id: "MC9012", 
-        title: "Coffee Maker Automatic Espresso", 
+        title: "Coffee Maker Automatic Espresso with Milk Frother, Programmable Settings and Energy Saving Mode", 
         category: "Kitchen", 
         brand: "Nespresso", 
         price: "$249.99", 
@@ -1021,7 +1164,7 @@ const cardData = [
     },
     { 
         id: "FB3456", 
-        title: "Fitness Tracker Heart Rate Monitor", 
+        title: "Fitness Tracker Heart Rate Monitor with GPS, Sleep Analysis and Waterproof Design for Swimming", 
         category: "Wearables", 
         brand: "Fitbit", 
         price: "$89.99", 
@@ -1029,7 +1172,7 @@ const cardData = [
     },
     { 
         id: "TB7890", 
-        title: "Smart TV 55inch 4K UHD Android", 
+        title: "Smart TV 55inch 4K UHD Android with Voice Control, HDR10+ and Built-in Streaming Apps", 
         category: "Electronics", 
         brand: "Samsung", 
         price: "$699.99", 
@@ -1037,7 +1180,7 @@ const cardData = [
     },
     { 
         id: "WB1234", 
-        title: "Water Bottle Insulated 1L Stainless", 
+        title: "Water Bottle Insulated 1L Stainless Steel with Double Wall Vacuum, Leak Proof Lid and BPA Free", 
         category: "Outdoor", 
         brand: "Hydro Flask", 
         price: "$49.99", 
@@ -1045,7 +1188,7 @@ const cardData = [
     },
     { 
         id: "BP5678", 
-        title: "Backpack Waterproof Laptop Compartment", 
+        title: "Backpack Waterproof Laptop Compartment with USB Charging Port, Multiple Pockets and Comfortable Straps", 
         category: "Travel", 
         brand: "North Face", 
         price: "$79.99", 
@@ -1054,7 +1197,7 @@ const cardData = [
     // Even more cards (8 more)
     { 
         id: "SM9012", 
-        title: "Smart Mirror with Voice Control", 
+        title: "Smart Mirror with Voice Control, Built-in Alexa, Weather Display and Fitness Tracking Capabilities", 
         category: "Home", 
         brand: "Google", 
         price: "$299.99", 
@@ -1062,7 +1205,7 @@ const cardData = [
     },
     { 
         id: "DC3456", 
-        title: "Drone Camera 4K with GPS", 
+        title: "Drone Camera 4K with GPS, Auto Follow Mode, 30 Minutes Flight Time and Obstacle Avoidance", 
         category: "Electronics", 
         brand: "DJI", 
         price: "$799.99", 
@@ -1070,7 +1213,7 @@ const cardData = [
     },
     { 
         id: "GP7890", 
-        title: "Gaming Chair Ergonomic RGB", 
+        title: "Gaming Chair Ergonomic RGB with Adjustable Lumbar Support, 360° Swivel and Memory Foam Cushion", 
         category: "Furniture", 
         brand: "Secretlab", 
         price: "$399.99", 
@@ -1078,7 +1221,7 @@ const cardData = [
     },
     { 
         id: "EP1234", 
-        title: "Electric Scooter Foldable 25km/h", 
+        title: "Electric Scooter Foldable 25km/h with LED Display, Dual Braking System and Removable Battery", 
         category: "Transport", 
         brand: "Xiaomi", 
         price: "$499.99", 
@@ -1086,7 +1229,7 @@ const cardData = [
     },
     { 
         id: "SP5678", 
-        title: "Security Camera Wireless 360°", 
+        title: "Security Camera Wireless 360° with Night Vision, Motion Detection and Two-Way Audio Communication", 
         category: "Home", 
         brand: "Ring", 
         price: "$199.99", 
@@ -1094,7 +1237,7 @@ const cardData = [
     },
     { 
         id: "HB9012", 
-        title: "Hair Dryer Professional Ionic", 
+        title: "Hair Dryer Professional Ionic with Multiple Heat Settings, Cool Shot Button and Concentrator Nozzle", 
         category: "Beauty", 
         brand: "Dyson", 
         price: "$399.99", 
@@ -1102,7 +1245,7 @@ const cardData = [
     },
     { 
         id: "VC3456", 
-        title: "Vacuum Cleaner Cordless Powerful", 
+        title: "Vacuum Cleaner Cordless Powerful with HEPA Filter, Multiple Attachments and Long Battery Life", 
         category: "Home", 
         brand: "Dyson", 
         price: "$349.99", 
@@ -1110,7 +1253,7 @@ const cardData = [
     },
     { 
         id: "AP7890", 
-        title: "Air Purifier HEPA Filter Smart", 
+        title: "Air Purifier HEPA Filter Smart with Air Quality Sensor, Auto Mode and Quiet Operation for Bedroom", 
         category: "Home", 
         brand: "Philips", 
         price: "$249.99", 
@@ -1119,35 +1262,105 @@ const cardData = [
 ];
 
 const cardsContainer = document.getElementById('cards-container');
-const viewMoreBtn = document.getElementById('view-more-btn');
-const cardsCount = document.getElementById('cards-count');
+const loadMoreBtn = document.getElementById('load-more-btn');
 
 let visibleCards = 8; // Start with 8 cards visible
 const cardsPerLoad = 8; // Load 8 more cards each time
 
-// Function to create a card element
+// ==================== TOOLTIP TEXT FORMATTING FUNCTIONS ====================
+
+// Function to format tooltip text - shows beginning and end with ellipsis in middle
+function formatTooltipText(text) {
+    // If text is short enough, show it completely
+    if (text.length <= 80) {
+        return text;
+    }
+    
+    // Calculate how many characters to show from start and end
+    // Show approximately 60% from start and 40% from end
+    const startLength = Math.floor(text.length * 0.6);
+    const endLength = Math.floor(text.length * 0.4);
+    
+    // Get start and end parts
+    const start = text.substring(0, startLength);
+    const end = text.substring(text.length - endLength);
+    
+    // Try to break at word boundaries for better readability
+    const words = text.split(' ');
+    if (words.length > 10) {
+        // Show first 6 words and last 4 words
+        const firstPart = words.slice(0, 6).join(' ');
+        const lastPart = words.slice(-4).join(' ');
+        return `${firstPart} ... ${lastPart}`;
+    }
+    
+    return `${start} ... ${end}`;
+}
+
+// Alternative: Smart truncation that preserves meaning
+function smartTruncate(text, maxLength = 100) {
+    if (text.length <= maxLength) return text;
+    
+    const words = text.split(' ');
+    
+    // If the title has key segments (like "with", "for", "and"), try to preserve them
+    const connectors = ['with', 'for', 'and', 'including', 'featuring'];
+    let connectorIndex = -1;
+    
+    // Find a good connector to split around
+    for (let i = words.length - 1; i > 0; i--) {
+        if (connectors.includes(words[i].toLowerCase()) && i > words.length / 2) {
+            connectorIndex = i;
+            break;
+        }
+    }
+    
+    if (connectorIndex > 0 && connectorIndex < words.length - 3) {
+        // Show words before connector and the last few words
+        const firstPart = words.slice(0, Math.min(connectorIndex, 8)).join(' ');
+        const lastPart = words.slice(-5).join(' ');
+        return `${firstPart} ... ${lastPart}`;
+    }
+    
+    // Default: show first 8 words and last 5 words
+    const firstPart = words.slice(0, 8).join(' ');
+    const lastPart = words.slice(-5).join(' ');
+    return `${firstPart} ... ${lastPart}`;
+}
+
+// Function to create a card element - UPDATED STRUCTURE WITH ENHANCED TOOLTIP
 function createCard(card) {
     const scene = document.createElement('div');
     scene.className = 'scene';
     
+    // Format tooltip text using the smart truncation
+    const tooltipText = smartTruncate(card.title);
+    
     scene.innerHTML = `
         <div class="card">
             <div class="face">
-                <div class="image">
-                    <img src="${card.image}" alt="${card.title}">
-                </div>
-                <div class="info">
-                    <div class="title">${card.title}</div>
-                    <div class="tags">
-                        <div class="tag">ID: ${card.id}</div>
-                        <div class="tag">Category: ${card.category}</div>
-                        <div class="tag">Brand: ${card.brand}</div>
+                <div class="image-container">
+                    <div class="image">
+                        <img src="${card.image}" alt="${card.title}">
                     </div>
-                    <div class="bottom-row">
-                        <div class="price">${card.price}</div>
-                        <div class="icons-container">
-                            <button class="heart"><i class="far fa-heart"></i></button>
-                            <button class="cart"><i class="fas fa-shopping-cart"></i></button>
+                </div>
+                <div class="info-container">
+                    <div class="info">
+                        <div class="title-container">
+                            <div class="title">${card.title}</div>
+                            <div class="tooltip-text">${tooltipText}</div>
+                        </div>
+                        <div class="tags">
+                            <div class="tag">ID: ${card.id}</div>
+                            <div class="tag">Category: ${card.category}</div>
+                            <div class="tag">Brand: ${card.brand}</div>
+                        </div>
+                        <div class="bottom-row">
+                            <div class="price">${card.price}</div>
+                            <div class="icons-container">
+                                <button class="heart"><i class="far fa-heart"></i></button>
+                                <button class="cart"><i class="fas fa-shopping-cart"></i></button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -1172,7 +1385,8 @@ function loadInitialCards() {
         card.style.animationDelay = `${i * 0.1}s`;
     }
     
-    updateCardsCount();
+    // Update button state
+    updateButtonState();
     
     // Initialize event listeners for new cards
     initializeCardEventListeners();
@@ -1195,27 +1409,22 @@ function loadMoreCards() {
     }
     
     visibleCards = newCount;
-    updateCardsCount();
+    
+    // Update button state
+    updateButtonState();
     
     // Initialize event listeners for new cards
     initializeCardEventListeners();
-    
-    // If all cards are loaded, hide the button
-    if (visibleCards >= cardData.length) {
-        viewMoreBtn.style.display = 'none';
-    }
 }
 
-// Function to update the cards count display
-function updateCardsCount() {
-    cardsCount.textContent = `${visibleCards}/${cardData.length}`;
-    
-    // Update button text based on remaining cards
-    const remaining = cardData.length - visibleCards;
-    if (remaining > 0) {
-        viewMoreBtn.querySelector('.btn-text').textContent = `Load ${Math.min(cardsPerLoad, remaining)} More Products`;
+// Function to update button state
+function updateButtonState() {
+    if (visibleCards >= cardData.length) {
+        loadMoreBtn.disabled = true;
+        loadMoreBtn.textContent = "All Loaded";
     } else {
-        viewMoreBtn.querySelector('.btn-text').textContent = 'All Products Loaded';
+        loadMoreBtn.disabled = false;
+        loadMoreBtn.textContent = "Load More";
     }
 }
 
@@ -1293,8 +1502,28 @@ function initializeCardEventListeners() {
         });
     });
 
-    // Heart icon functionality
+    // Heart icon functionality with hover effect
     document.querySelectorAll('.heart').forEach(heartBtn => {
+        const icon = heartBtn.querySelector('i');
+        
+        // Store original icon class
+        const originalIconClass = icon.className;
+        
+        // Mouse enter (hover) - change to filled heart (if not active)
+        heartBtn.addEventListener('mouseenter', function() {
+            if (!this.classList.contains('active')) {
+                icon.className = 'fas fa-heart';
+            }
+        });
+        
+        // Mouse leave - change back to outline heart (if not active)
+        heartBtn.addEventListener('mouseleave', function() {
+            if (!this.classList.contains('active')) {
+                icon.className = originalIconClass;
+            }
+        });
+        
+        // Click functionality
         heartBtn.addEventListener('click', function(e) {
             e.preventDefault();
             e.stopPropagation();
@@ -1306,8 +1535,8 @@ function initializeCardEventListeners() {
             this.classList.toggle('active');
             
             if (this.classList.contains('active')) {
-                // If liking (show filled heart)
-                this.innerHTML = '<i class="fas fa-heart"></i>';
+                // If liking (show filled heart with white color)
+                icon.className = 'fas fa-heart';
                 console.log(`Liked: ${title}`);
                 
                 // Create pulse effect
@@ -1317,8 +1546,8 @@ function initializeCardEventListeners() {
                 createHeartParticles(this);
                 
             } else {
-                // If unliking (show outline heart)
-                this.innerHTML = '<i class="far fa-heart"></i>';
+                // If unliking (show outline heart with red color)
+                icon.className = 'far fa-heart';
                 console.log(`Unliked: ${title}`);
             }
             
@@ -1375,8 +1604,8 @@ function createHeartParticles(heartElement) {
 document.addEventListener('DOMContentLoaded', () => {
     loadInitialCards();
     
-    // View More button event listener
-    viewMoreBtn.addEventListener('click', loadMoreCards);
+    // Load More button event listener
+    loadMoreBtn.addEventListener('click', loadMoreCards);
     
     // Add no-select class to all price elements
     document.querySelectorAll('.price').forEach(price => {
