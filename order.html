@@ -23,14 +23,20 @@
     --nav-hover: #f1f5f9;
     --topbar-height: 60px;
 }
-:root{
-    --bg:#f4f6fb;
-    --card:#ffffff;
-    --primary:#2563eb;
-    --border:#e5e7eb;
-    --text:#1f2937;
-    --muted:#6b7280;
+
+:root {
+    --border-color: #334155;
+    --bg-color: #e9eff5;
+    --card-bg: #ffffff;
+    --accent: #3182bd;
+    --step-inactive: #9ac2e0;
+    --warning:#f59e0b;
+    --danger:#ef4444;
+    /* Naya Piyara Color: Emerald Green */
+    --btn-confirm: #10b981; 
+    --btn-confirm-shadow: #059669;
 }
+
 *{box-sizing:border-box;font-family:Segoe UI,Arial}
 
 body { background-color: var(--bg-body); font-family: 'Inter', sans-serif; color: var(--text-dark); overflow-x: hidden; margin:0; 
@@ -426,245 +432,215 @@ h2.fw-bold { font-size: 2rem; }
 
 
 
-
-/* Container for the stepper */
-    .stepper-container {
+/* PAGE */
+.page-border {
+    width: 95%;
+    max-width: 1500px;
+    height: 90vh;
+    border: 3px solid var(--border-color);
+    border-radius: 20px;
+    padding: 20px;
+    background: white;
+    box-shadow: 12px 12px 0px rgba(0,0,0,0.1);
     display: flex;
-    width: 100%;              /* 🔥 full page */
-    max-width: 100%;          /* 🔥 no limit */
-    margin: 0 auto;           /* center safety */
-    background-color: transparent;
+    flex-direction: column;
+    animation: pageEntry 1s ease-out;
+}
+
+@keyframes pageEntry {
+    from { transform: rotateX(10deg) translateY(20px); opacity: 0; }
+    to { transform: rotateX(0deg) translateY(0); opacity: 1; }
+}
+
+/* ===== STEPPER (UNCHANGED) ===== */
+.stepper-container {
+    display: flex;
+    width: 100%;
+    margin-bottom: 20px;
     user-select: none;
+    border: 2px solid var(--border-color);
+    border-radius: 10px;
+    overflow: hidden;
+    background: #f5f7f9;
 }
 
-
-    /* Base Step Item */
-    .step {
-        position: relative;
-        flex: 1;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        height: 100px; /* Oversized height to be clipped by container if necessary, but 42px is the visual target */
-        height: 42px;
-        margin-right: 4px; /* Gap between arrows */
-        background-color: #9ac2e0; /* Light blue color from image */
-        color: #ffffff;
-        font-size: 14px;
-        font-weight: 500;
-        cursor: pointer;
-        transition: background-color 0.2s ease;
-    }
-
-    /* Remove margin from last child */
-    .step:last-child {
-        margin-right: 0;
-        border-top-right-radius: 4px;
-        border-bottom-right-radius: 4px;
-    }
-
-    /* First child rounding */
-    .step:first-child {
-        border-top-left-radius: 4px;
-        border-bottom-left-radius: 4px;
-    }
-
-    /* Active State */
-    .step.active {
-        background-color: #3182bd; /* Darker blue color from image */
-    }
-
-    /* Arrow Tip (Right Side) */
-    .step::after {
-        content: "";
-        position: absolute;
-        right: -14px; /* Positioned to overlap the next item's notch */
-        top: 0;
-        width: 0;
-        height: 0;
-        border-top: 21px solid transparent;
-        border-bottom: 21px solid transparent;
-        border-left: 14px solid #9ac2e0; /* Matches step background */
-        z-index: 2;
-    }
-
-    .step.active::after {
-        border-left-color: #3182bd;
-    }
-
-    /* Arrow Notch (Left Side) - except first one */
-    .step:not(:first-child)::before {
-        content: "";
-        position: absolute;
-        left: 0;
-        top: 0;
-        width: 0;
-        height: 0;
-        border-top: 21px solid transparent;
-        border-bottom: 21px solid transparent;
-        border-left: 14px solid #f5f7f9; /* Matches background color to create "cutout" */
-        z-index: 1;
-    }
-
-    /* Last step doesn't need a right arrow tip */
-    .step:last-child::after {
-        display: none;
-    }
-
-    /* Text styling */
-    .step span {
-        position: relative;
-        z-index: 3;
-        padding-left: 10px; /* Offset to center text visually considering the arrow shapes */
-    }
-
-    .step:first-child span {
-        padding-left: 0;
-    }
-
-
-
-
-
-/* ===== CONTAINER ===== */
-.dashboard{
-    max-width:1400px;
-    margin:auto;
-    padding:30px;
+.step {
+    position: relative;
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 45px;
+    margin-right: 4px;
+    background-color: var(--step-inactive);
+    color: #ffffff;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
 }
 
-/* ===== HEADER ===== */
-.header h1{
-    font-size:24px;
-    font-weight:600;
-    transform:translateZ(30px);
+.step.active {
+    background-color: var(--accent);
 }
 
-/* ===== STATS ===== */
-.stats{
-    display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-    gap:18px;
-    margin-bottom:25px;
+.step::after {
+    content: "";
+    position: absolute;
+    right: -14px;
+    top: 0;
+    border-top: 22.5px solid transparent;
+    border-bottom: 22.5px solid transparent;
+    border-left: 14px solid var(--step-inactive);
+    z-index: 2;
 }
 
-.stat{
-    background:var(--card);
-    padding:18px;
-    border-radius:16px;
-    box-shadow:
-        0 15px 35px rgba(0,0,0,.15),
-        inset 0 1px 0 rgba(255,255,255,.6);
-    transform-style:preserve-3d;
-    transition:.4s ease;
+.step.active::after {
+    border-left-color: var(--accent);
 }
 
-.stat:hover{
-    transform:rotateX(8deg) rotateY(-8deg) translateY(-8px);
+.step:not(:first-child)::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    border-top: 22.5px solid transparent;
+    border-bottom: 22.5px solid transparent;
+    border-left: 14px solid white;
+    z-index: 1;
 }
 
-.stat strong{
-    font-size:28px;
-    color:var(--primary);
-}
+.step:last-child::after { display: none; }
 
-/* ===== FILTERS ===== */
-.filters{
-    background:var(--card);
-    padding:22px;
-    border-radius:18px;
-    box-shadow:0 20px 45px rgba(0,0,0,.18);
-    margin-bottom:25px;
-    transform:translateZ(20px);
-}
-
-.filter-grid{
-    display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
-    gap:18px;
-}
-
-label{
-    font-size:12px;
-    color:var(--muted);
-    display:block;
-    margin-bottom:6px;
-}
-
-input,select{
-    width:100%;
-    padding:10px;
-    border-radius:12px;
-    border:1px solid var(--border);
-    transition:.3s;
-}
-
-input:focus,select:focus{
-    outline:none;
-    border-color:var(--primary);
-    box-shadow:0 0 0 3px rgba(37,99,235,.2);
-}
-
-/* ===== TABLE ===== */
-.table-card{
-    background:var(--card);
-    border-radius:20px;
-    box-shadow:0 25px 60px rgba(0,0,0,.2);
-    overflow:hidden;
-    transform-style:preserve-3d;
+/* ===== TABLE AREA ===== */
+.content-border {
+    flex:1;
+    border: 2px solid var(--border-color);
+    border-radius: 10px;
+    padding: 20px;
+    background:#fafafa;
+    overflow:auto;
 }
 
 table{
     width:100%;
-    border-collapse:collapse;
+    border-collapse:separate;
+    border-spacing:0 14px;
     font-size:13px;
 }
 
-thead{
-    background:#f9fafb;
+th{
+    background:#f1f5f9;
+    border:2px solid var(--border-color);
+    padding:12px;
+    text-align:left;
+    border-radius:8px;
 }
 
-th,td{
-    padding:13px;
-    border-bottom:1px solid var(--border);
+td{
+    background:#fff;
+    border-top:2px solid var(--border-color);
+    border-bottom:2px solid var(--border-color);
+    padding:16px;
+    vertical-align:top;
+    transition: transform 0.3s ease;
 }
 
-tbody tr{
-    transition:.3s;
+tr:hover td {
+    transform: translateZ(10px) translateY(-2px);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
 }
 
-tbody tr:hover{
-    background:#eef2ff;
-    transform:translateZ(10px) scale(1.01);
+tr td:first-child{
+    border-left:2px solid var(--border-color);
+    border-radius:12px 0 0 12px;
+    width:180px;
 }
 
-/* ===== FOOTER ===== */
-.footer{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    padding:14px 18px;
-    font-size:13px;
-    color:var(--muted);
+tr td:last-child{
+    border-right:2px solid var(--border-color);
+    border-radius:0 12px 12px 0;
+    width:200px;
 }
 
-.pagination{
-    list-style:none;
-    display:flex;
-    gap:8px;
+.small{font-size:12px;color:#64748b}
+.link{color:#2563eb;font-weight:600}
+
+.badge{
+    display:inline-block;
+    padding:4px 10px;
+    border-radius:6px;
+    font-size:12px;
+    font-weight:700;
+}
+.unshipped{background:#fde68a;color:#92400e}
+
+/* BUTTONS - NEW PIYARA 3D STYLE */
+.btn {
+    width: 100%;
+    padding: 10px;
+    border-radius: 8px;
+    border: none;
+    font-size: 11px;
+    font-weight: 800;
+    cursor: pointer;
+    margin-bottom: 12px;
+    text-transform: uppercase;
+    transition: all 0.2s ease;
 }
 
-.pagination li{
-    padding:6px 14px;
-    border-radius:10px;
-    background:#e5e7eb;
-    cursor:pointer;
+/* Confirm Button - Emerald Green */
+.confirm {
+    background: var(--btn-confirm);
+    color: #fff;
+    box-shadow: 0 4px 0px var(--btn-confirm-shadow);
 }
 
-.pagination .active{
-    background:var(--primary);
-    color:#fff;
+.confirm:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 0px var(--btn-confirm-shadow);
+    filter: brightness(1.05);
 }
+
+.confirm:active {
+    transform: translateY(2px);
+    box-shadow: 0 0px 0px var(--btn-confirm-shadow);
+}
+
+/* Cancel Button - 3D Red */
+.cancel {
+    background: #fff;
+    border: 2px solid var(--danger);
+    color: var(--danger);
+    box-shadow: 0 4px 0px var(--danger);
+}
+
+.cancel:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 0px var(--danger);
+    background: #fef2f2;
+}
+
+.cancel:active {
+    transform: translateY(2px);
+    box-shadow: 0 0px 0px var(--danger);
+}
+
+.controls{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:15px;
+}
+.controls select,
+.controls input{
+  padding:6px 10px;
+  border:2px solid var(--border-color);
+  border-radius:6px;
+  font-size:13px;
+}
+
+
+
 
 </style>
 
@@ -806,105 +782,62 @@ tbody tr:hover{
 <!-- Main Content -->
 <div class="main-wrapper" id="main-wrapper">
 
-<div class="stepper-container" id="stepper">
-    <div class="step active" onclick="setActive(this)">
-        <span>1. Unshipped</span>
-    </div>
-    <div class="step" onclick="setActive(this)">
-        <span>2. Verifying</span>
-    </div>
-    <div class="step" onclick="setActive(this)">
-        <span>3. Shipped</span>
-    </div>
-    <div class="step active" onclick="setActive(this)">
-        <span>4. Completed</span>
-    </div>
-    <div class="step" onclick="setActive(this)">
-        <span>5. Cancelled</span>
-    </div>
-    <div class="step" onclick="setActive(this)">
-        <span>6. Rejected</span>
-    </div>
-    <div class="step" onclick="setActive(this)">
-        <span>7. Returned</span>
-    </div>
 
 
 
-    
+    <div class="page-border">
+
+<div class="stepper-container">
+    <div class="step active" onclick="setActive(this)"><span>Unshipped</span></div>
+    <div class="step" onclick="setActive(this)"><span>Verifying</span></div>
+    <div class="step" onclick="setActive(this)"><span>Shipped</span></div>
+    <div class="step" onclick="setActive(this)"><span>Completed</span></div>
+    <div class="step" onclick="setActive(this)"><span>Cancelled</span></div>
+    <div class="step" onclick="setActive(this)"><span>Rejected</span></div>
+    <div class="step" onclick="setActive(this)"><span>Returned</span></div>
 </div>
 
-
-<div class="dashboard">
-
-<div class="header">
-    <h1>Employee Management</h1>
+<div class="content-border">
+    <div class="controls">
+  <div>
+    Show 
+    <select>
+      <option>10</option>
+      <option>20</option>
+      <option>50</option>
+    </select>
+    entries
+  </div>
+  <input type="search" placeholder="Search orders...">
 </div>
-
-<!-- STATS -->
-<div class="stats">
-    <div class="stat">
-        <small>Total Employees</small><br>
-        <strong id="totalEmp">0</strong>
-    </div>
-    <div class="stat">
-        <small>Showing Records</small><br>
-        <strong id="visibleEmp">0</strong>
-    </div>
-</div>
-
-<!-- FILTERS -->
-<!-- <div class="filters">
-    <div class="filter-grid">
-        <div>
-            <label>Search by Name</label>
-            <input type="text" id="nameSearch">
-        </div>
-        <div>
-            <label>Location</label>
-            <select id="locationFilter"><option value="">All</option></select>
-        </div>
-        <div>
-            <label>Department</label>
-            <select id="deptFilter"><option value="">All</option></select>
-        </div>
-        <div>
-            <label>Grade</label>
-            <select id="gradeFilter"><option value="">All</option></select>
-        </div>
-    </div>
-</div> -->
-
-<!-- TABLE -->
-<div class="table-card">
 <table>
 <thead>
 <tr>
-<th>#</th><th>Name</th><th>ID</th><th>Contact</th>
-<th>Location</th><th>Department</th>
-<th>Designation</th><th>Grade</th><th>Salary</th>
+  <th>Order date</th>
+  <th>Order details</th>
+  <th>Customer option</th>
+  <th>Order status</th>
+  <th>Action</th>
 </tr>
 </thead>
-<tbody id="employee-data"></tbody>
+<tbody id="orders"></tbody>
 </table>
-
-<div class="footer">
-    <span id="entriesInfo"></span>
-    <ul class="pagination">
-        <li>Back</li>
-        <li class="active">1</li>
-        <li>2</li>
-        <li>3</li>
-        <li>4</li>
-        <li>5</li>
-        <li>6</li>
-        <li>Forward</li>
-    </ul>
 </div>
 
 </div>
 
+
+
+
+
+
+
 </div>
+
+
+
+
+
 
 
 
@@ -1486,85 +1419,53 @@ document.querySelectorAll('.dropdown-trigger').forEach(trigger => {
 
 
 
-/**
-     * Logic to handle the active state on click
-     * @param {HTMLElement} element - The clicked step element
-     */
-    function setActive(element) {
-        // Remove 'active' class from all steps
-        const steps = document.querySelectorAll('.step');
-        steps.forEach(step => {
-            step.classList.remove('active');
-        });
 
-        // Add 'active' class to the clicked step
-        element.classList.add('active');
-    }
-
-
-
-
-
-const employees=[
- {sr:1,name:"Hunza Irfan",loc:"DHA",dept:"Finance",desig:"Officer",grade:"G1",salary:85000,id:"EMP-101",contact:"0310"},
- {sr:2,name:"Ayesha Khan",loc:"Clifton",dept:"HR",desig:"Manager",grade:"G2",salary:95000,id:"EMP-102",contact:"0320"},
- {sr:3,name:"Ali Raza",loc:"F-7",dept:"IT",desig:"Developer",grade:"G3",salary:105000,id:"EMP-103",contact:"0330"},
- {sr:4,name:"Usman Tariq",loc:"DHA",dept:"IT",desig:"Engineer",grade:"G2",salary:98000,id:"EMP-104",contact:"0340"},
- {sr:5,name:"Sara Ahmed",loc:"PECHS",dept:"Finance",desig:"Analyst",grade:"G1",salary:78000,id:"EMP-105",contact:"0350"},
- {sr:6,name:"Bilal Khan",loc:"Gulshan",dept:"HR",desig:"Executive",grade:"G1",salary:72000,id:"EMP-106",contact:"0360"},
- {sr:7,name:"Hina Noor",loc:"Clifton",dept:"IT",desig:"UI Designer",grade:"G2",salary:88000,id:"EMP-107",contact:"0370"},
- {sr:8,name:"Zeeshan Ali",loc:"DHA",dept:"Admin",desig:"Supervisor",grade:"G1",salary:65000,id:"EMP-108",contact:"0380"},
- {sr:9,name:"Komal Shah",loc:"F-11",dept:"HR",desig:"Coordinator",grade:"G1",salary:70000,id:"EMP-109",contact:"0390"},
- {sr:10,name:"Hamza Siddiq",loc:"G-10",dept:"IT",desig:"Tester",grade:"G2",salary:90000,id:"EMP-110",contact:"0301"}
+const orders=[
+{
+date:`<b>1 week ago</b><br><span class="small">27-12-2025<br>04:05:22</span>`,
+details:`<span class="link">Order id: mX6y08ihnUIx</span><br>
+Buyer Name: <b>Charlotte M. Henderson</b><br>
+<span class="small">Fulfillment Method: Seller<br>Sales Channel: Uviltro.com</span>`,
+option:`<b>Standard</b><br>
+<span class="small">Ship by: Dec 27–28, 2025<br>
+Deliver by: Dec 29, 2025 – Jan 02, 2026</span>`
+},
+{
+date:`<b>1 week ago</b><br><span class="small">27-12-2025<br>01:29:58</span>`,
+details:`<span class="link">Order id: ILBHA23hPo</span><br>
+Buyer Name: <b>Keith Jenkins</b><br>
+<span class="small">Fulfillment Method: Seller<br>Sales Channel: Uviltro.com</span>`,
+option:`<b>Standard</b><br>
+<span class="small">Ship by: Dec 27–28, 2025<br>
+Deliver by: Dec 29, 2025 – Jan 02, 2026</span>`
+}
 ];
 
-const tbody=document.getElementById("employee-data");
+const tbody=document.getElementById("orders");
+orders.forEach(o=>{
+    const tr=document.createElement("tr");
+    tr.innerHTML=`
+      <td>${o.date}</td>
+      <td>${o.details}</td>
+      <td>${o.option}</td>
+      <td><span class="badge unshipped">Unshipped</span></td>
+      <td>
+        <button class="btn confirm">Confirm shipment</button>
+        <button class="btn cancel">Cancel order</button>
+      </td>`;
+    tbody.appendChild(tr);
+});
 
-function render(data){
-    tbody.innerHTML=data.map(e=>`
-    <tr>
-        <td>${e.sr}</td>
-        <td>${e.name}</td>
-        <td>${e.id}</td>
-        <td>${e.contact}</td>
-        <td>${e.loc}</td>
-        <td>${e.dept}</td>
-        <td>${e.desig}</td>
-        <td>${e.grade}</td>
-        <td>${e.salary}</td>
-    </tr>`).join("");
-
-    totalEmp.textContent=employees.length;
-    visibleEmp.textContent=data.length;
-    entriesInfo.textContent=`Showing ${data.length} of ${employees.length}`;
+function setActive(el){
+  document.querySelectorAll(".step").forEach(s=>s.classList.remove("active"));
+  el.classList.add("active");
 }
 
-function fill(id,key){
-    const s=document.getElementById(id);
-    [...new Set(employees.map(e=>e[key]))].forEach(v=>{
-        s.innerHTML+=`<option value="${v}">${v}</option>`;
-    });
-}
 
-fill("locationFilter","loc");
-fill("deptFilter","dept");
-fill("gradeFilter","grade");
 
-function apply(){
-    const name=nameSearch.value.toLowerCase();
-    render(
-        employees.filter(e=>
-            (!locationFilter.value||e.loc===locationFilter.value)&&
-            (!deptFilter.value||e.dept===deptFilter.value)&&
-            (!gradeFilter.value||e.grade===gradeFilter.value)&&
-            e.name.toLowerCase().includes(name)
-        )
-    );
-}
 
-document.querySelectorAll("input,select").forEach(el=>el.addEventListener("input",apply));
 
-render(employees);
+
 </script>
 
 
