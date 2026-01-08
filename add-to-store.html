@@ -125,9 +125,8 @@ body {
   font-size: 32px;
 }
 
-/* COMMON CARD STYLE */
-.card-wrapper,
-.attribute-card {
+/* MAIN CARD CONTAINER - COMBINED BOTH CARDS */
+.main-card-container {
   max-width: 1200px;
   width: 100%;
   background: #ffffff;
@@ -136,32 +135,38 @@ body {
   box-shadow: 0 15px 40px rgba(0,0,0,0.1);
   transition: 0.3s ease;
   margin-bottom: 30px;
+  /* ADDED BORDER */
+  border: 2px solid #e5e7eb;
 }
 
-.card-wrapper:hover,
-.attribute-card:hover {
+.main-card-container:hover {
   transform: translateY(-5px);
   box-shadow: 0 25px 50px rgba(0,0,0,0.15);
+  border-color: var(--brand-primary);
 }
 
 .product-card {
   display: flex;
-  gap: 40px;
+  gap: 20px;
   flex-wrap: wrap;
+  margin-bottom: 40px;
+  padding-bottom: 30px;
+  border-bottom: 2px solid #f1f5f9;
 }
 
+/* GALLERY - LARGER MAIN IMAGE */
 .gallery {
-  width: 320px;
+  width: 400px;
   flex-shrink: 0;
 }
 
 .main-image {
   width: 100%;
-  height: 300px;
+  height: 380px;
   border-radius: 16px;
   overflow: hidden;
-  box-shadow: 0 25px 50px rgba(0,0,0,0.2);
-  margin-bottom: 20px;
+  box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+  margin-bottom: 15px;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
 }
 
@@ -176,55 +181,12 @@ body {
   transform: scale(1.05);
 }
 
-.thumbs {
-  display: flex;
-  gap: 12px;
-  flex-wrap: wrap;
-}
-
-.thumb {
-  width: 70px;
-  height: 70px;
-  border-radius: 12px;
-  overflow: hidden;
-  cursor: pointer;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  border: 3px solid transparent;
-  position: relative;
-}
-
-.thumb img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.thumb:hover {
-  transform: translateY(-6px) scale(1.1);
-  box-shadow: 0 15px 35px rgba(0,0,0,0.3);
-}
-
-.thumb.active {
-  border-color: var(--brand-primary);
-  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2), 0 15px 35px rgba(0,0,0,0.3);
-}
-
-.thumb.active::after {
-  content: '';
-  position: absolute;
-  top: 5px;
-  right: 5px;
-  width: 12px;
-  height: 12px;
-  background: var(--brand-primary);
-  border-radius: 50%;
-  border: 2px solid white;
-}
-
+/* PRODUCT CONTENT RIGHT SIDE */
 .product-content {
   flex: 1;
   min-width: 300px;
+  display: flex;
+  flex-direction: column;
 }
 
 .product-title {
@@ -235,61 +197,120 @@ body {
   line-height: 1.4;
 }
 
-.info-row {
+/* ID, CATEGORY, BRAND, PRICE SECTIONS - ALL SAME SIZE AND STYLE */
+.info-sections-container {
   display: flex;
-  gap: 15px;
-  flex-wrap: wrap;
+  flex-direction: column;
+  gap: 10px;
   margin-bottom: 20px;
 }
 
-.pill {
-  background: #eef2ff;
-  color: var(--brand-primary);
-  padding: 8px 18px;
-  border-radius: 25px;
+.info-row {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+/* COMMON PILL STYLE FOR ALL (ID, CATEGORY, BRAND) - NO HOVER EFFECTS */
+.info-pill {
+  background: #f3f4f6;
+  color: #4b5563;
+  padding: 10px 18px;
+  border-radius: 20px;
   font-size: 14px;
   font-weight: 600;
   display: flex;
   align-items: center;
   gap: 8px;
-  box-shadow: 0 4px 15px rgba(79, 70, 229, 0.1);
-  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  border: 1px solid #e5e7eb;
+  transition: none;
 }
 
-.pill:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 8px 25px rgba(79, 70, 229, 0.2);
-}
-
-.pill i {
+.info-pill i {
   font-size: 12px;
+  color: var(--brand-primary);
 }
 
-.price {
+/* PRICE PILL - SEPARATE STYLE */
+.price-pill {
   background: linear-gradient(135deg, #10b981, #059669);
   color: #fff;
-  padding: 12px 25px;
+  padding: 12px 24px;
   border-radius: 25px;
-  font-size: 18px;
-  font-weight: 800;
-  width: fit-content;
+  font-size: 16px;
+  font-weight: 700;
   display: flex;
   align-items: center;
   gap: 10px;
-  box-shadow: 0 10px 30px rgba(16, 185, 129, 0.3);
+  box-shadow: 0 10px 30px rgba(16, 185, 129, 0.4);
   transition: all 0.3s ease;
+  border: none;
+  cursor: pointer;
 }
 
-.price:hover {
+.price-pill:hover {
   transform: translateY(-3px);
-  box-shadow: 0 15px 40px rgba(16, 185, 129, 0.4);
+  box-shadow: 0 15px 40px rgba(16, 185, 129, 0.5);
+  background: linear-gradient(135deg, #059669, #10b981);
 }
 
-/* ATTRIBUTE CARD */
+/* THUMBNAILS SECTION - COMPACT WITHOUT LABEL */
+.thumbs-section {
+  margin-top: 15px;
+}
+
+.thumbs-container {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.thumb {
+  width: 70px;
+  height: 70px;
+  border-radius: 10px;
+  overflow: hidden;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  transition: all 0.2s ease;
+  border: 2px solid transparent;
+  position: relative;
+}
+
+.thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.thumb:hover {
+  border-color: var(--brand-primary);
+  box-shadow: 0 6px 18px rgba(79, 70, 229, 0.2);
+}
+
+.thumb.active {
+  border-color: var(--brand-primary);
+  box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.3), 0 6px 18px rgba(0,0,0,0.15);
+}
+
+.thumb.active::after {
+  content: '';
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  width: 10px;
+  height: 10px;
+  background: var(--brand-primary);
+  border-radius: 50%;
+  border: 2px solid white;
+}
+
+/* ATTRIBUTES SECTION */
 .attribute-title {
   font-size: 22px;
   font-weight: 700;
-  margin-bottom: 30px;
+  margin-bottom: 25px;
   color: #111827;
   display: flex;
   align-items: center;
@@ -302,15 +323,15 @@ body {
 
 .form-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 25px;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
 }
 
 .form-group label {
   display: block;
   font-weight: 600;
-  margin-bottom: 10px;
-  font-size: 15px;
+  margin-bottom: 8px;
+  font-size: 14px;
   color: #374151;
   display: flex;
   align-items: center;
@@ -319,30 +340,29 @@ body {
 
 /* INPUT BOX WITH BUTTON */
 .input-box {
-  height: 52px;
+  height: 48px;
   border: 2px solid #e5e7eb;
-  border-radius: 12px;
+  border-radius: 10px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 15px;
+  padding: 0 12px;
   background: #fff;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  transition: all 0.2s ease;
   position: relative;
   overflow: hidden;
 }
 
 .input-box:hover {
   border-color: var(--brand-primary);
-  box-shadow: 0 8px 25px rgba(79, 70, 229, 0.1);
 }
 
 .input-box input {
   border: none;
   outline: none;
   width: 65%;
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 500;
   color: #111827;
   background: transparent;
@@ -355,52 +375,47 @@ body {
 .input-box span {
   font-weight: 600;
   color: #6b7280;
-  font-size: 14px;
+  font-size: 13px;
 }
 
 .input-box button {
   border: none;
   background: linear-gradient(135deg, var(--brand-primary), #6366f1);
   color: #fff;
-  padding: 10px 20px;
-  border-radius: 10px;
+  padding: 8px 16px;
+  border-radius: 8px;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.3s ease;
-  min-width: 80px;
+  transition: all 0.2s ease;
+  min-width: 70px;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
+  gap: 6px;
+  font-size: 13px;
 }
 
 .input-box button:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 25px rgba(79, 70, 229, 0.3);
-}
-
-.input-box button:active {
-  transform: translateY(0);
+  transform: translateY(-1px);
 }
 
 /* TEXTAREA */
 textarea {
   width: 100%;
-  height: 120px;
+  height: 100px;
   resize: none;
-  border-radius: 12px;
+  border-radius: 10px;
   border: 2px solid #e5e7eb;
-  padding: 15px;
-  font-size: 15px;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-  transition: all 0.3s ease;
+  padding: 12px;
+  font-size: 14px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  transition: all 0.2s ease;
   font-family: 'Inter', sans-serif;
 }
 
 textarea:focus {
   outline: none;
   border-color: var(--brand-primary);
-  box-shadow: 0 8px 25px rgba(79, 70, 229, 0.1);
 }
 
 .full {
@@ -409,58 +424,50 @@ textarea:focus {
 
 .actions {
   display: flex;
-  gap: 15px;
-  margin-top: 40px;
+  gap: 12px;
+  margin-top: 30px;
   justify-content: flex-end;
 }
 
 .btn {
-  padding: 14px 28px;
-  border-radius: 12px;
+  padding: 12px 24px;
+  border-radius: 10px;
   border: none;
   cursor: pointer;
   font-weight: 600;
-  font-size: 15px;
-  transition: all 0.3s ease;
+  font-size: 14px;
+  transition: all 0.2s ease;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 10px;
-  min-width: 140px;
+  gap: 8px;
+  min-width: 120px;
 }
 
 .btn-cancel {
   background: #f3f4f6;
   color: #6b7280;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
 }
 
 .btn-cancel:hover {
   background: #e5e7eb;
-  transform: translateY(-3px);
-  box-shadow: 0 8px 25px rgba(0,0,0,0.15);
 }
 
 .btn-primary {
   background: linear-gradient(135deg, var(--brand-primary), #6366f1);
   border: none;
   color: #fff;
-  padding: 16px 32px;
-  border-radius: 12px;
+  padding: 14px 28px;
+  border-radius: 10px;
   font-weight: 700;
-  letter-spacing: 0.3px;
-  box-shadow: 0 10px 30px rgba(79, 70, 229, 0.4);
-  transition: all 0.3s ease;
+  box-shadow: 0 6px 20px rgba(79, 70, 229, 0.3);
+  transition: all 0.2s ease;
 }
 
 .btn-primary:hover {
-  transform: translateY(-3px);
-  background: linear-gradient(135deg, #6366f1, var(--brand-primary));
-  box-shadow: 0 15px 40px rgba(79, 70, 229, 0.5);
-}
-
-.btn-primary:active {
-  transform: translateY(0);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px rgba(79, 70, 229, 0.4);
 }
 
 /* Mobile sidebar */
@@ -498,6 +505,15 @@ textarea:focus {
     }
     .form-grid {
         grid-template-columns: 1fr;
+    }
+    .info-row {
+        flex-direction: column;
+    }
+    .main-image {
+        height: 300px;
+    }
+    .main-card-container {
+        padding: 20px;
     }
 }
 
@@ -717,19 +733,14 @@ textarea:focus {
         Add Product in Your Store Listing
     </div>
 
-    <!-- FIRST PRODUCT CARD -->
-    <div class="card-wrapper">
+    <!-- MAIN CARD CONTAINER - COMBINES BOTH SECTIONS -->
+    <div class="main-card-container">
+        
+        <!-- PRODUCT DISPLAY SECTION -->
         <div class="product-card">
-
             <div class="gallery">
                 <div class="main-image">
                     <img id="mainImg" src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="Product Image">
-                </div>
-                <div class="thumbs">
-                    <div class="thumb active"><img src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80"></div>
-                    <div class="thumb"><img src="https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80"></div>
-                    <div class="thumb"><img src="https://images.unsplash.com/photo-1546868871-7041f2a55e12?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80"></div>
-                    <div class="thumb"><img src="https://images.unsplash.com/photo-1572635196237-14b3f281503f?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80"></div>
                 </div>
             </div>
 
@@ -737,115 +748,93 @@ textarea:focus {
                 <div class="product-title">
                     5.1ft-7.4ft Adjustable Height Volleyball Badminton Net Set 17ft Portable Sports Net with Poles, 4 Badminton Rackets, 3 Shuttlecocks and 1 Volleyball for Indoor Outdoor
                 </div>
-                <div class="info-row">
-                    <div class="pill"><i class="fas fa-hashtag"></i> ID: dr81852159</div>
-                    <div class="pill"><i class="fas fa-tag"></i> Category: Kitchen Tools</div>
-                    <div class="pill"><i class="fas fa-copyright"></i> Brand: Umite Kitchen</div>
+                
+                <!-- ALL INFO SECTIONS TOGETHER - COMPACT -->
+                <div class="info-sections-container">
+                    <div class="info-row">
+                        <div class="info-pill">
+                            <i class="fas fa-hashtag"></i> ID: dr81852159
+                        </div>
+                        <div class="info-pill">
+                            <i class="fas fa-tag"></i> Category: Kitchen Tools
+                        </div>
+                    </div>
+                    
+                    <div class="info-row">
+                        <div class="info-pill">
+                            <i class="fas fa-copyright"></i> Brand: Umite Kitchen
+                        </div>
+                        <div class="price-pill">
+                            <i class="fas fa-tag"></i> $35.78
+                        </div>
+                    </div>
                 </div>
-                <div class="price"><i class="fas fa-tag"></i> $35.78</div>
-            </div>
-
-        </div>
-    </div>
-
-    <!-- SECOND ATTRIBUTE CARD -->
-    <div class="attribute-card">
-
-        <div class="attribute-title">
-            <i class="fas fa-sliders-h"></i>
-            Set Attributes For Store Listing
-        </div>
-
-        <div class="form-grid">
-
-            <div class="form-group">
-                <label><i class="fas fa-arrow-up"></i> Maximum Price</label>
-                <div class="input-box">
-                    <input type="number" value="69.74" step="0.01">
-                    <button><i class="fas fa-dollar-sign"></i></button>
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label><i class="fas fa-balance-scale"></i> Standard Price</label>
-                <div class="input-box">
-                    <input type="number" value="66.49" step="0.01">
-                    <button><i class="fas fa-dollar-sign"></i></button>
+                
+                <!-- THUMBNAILS SECTION - COMPACT WITHOUT LABEL -->
+                <div class="thumbs-section">
+                    <div class="thumbs-container">
+                        <div class="thumb active"><img src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80"></div>
+                        <div class="thumb"><img src="https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80"></div>
+                        <div class="thumb"><img src="https://images.unsplash.com/photo-1546868871-7041f2a55e12?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80"></div>
+                        <div class="thumb"><img src="https://images.unsplash.com/photo-1572635196237-14b3f281503f?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80"></div>
+                    </div>
                 </div>
             </div>
-
-            <div class="form-group">
-                <label><i class="fas fa-clock"></i> Handling Time</label>
-                <div class="input-box">
-                    <input type="number" value="2" min="1" max="30">
-                    <button><i class="fas fa-calendar-day"></i> Days</button>
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label><i class="fas fa-boxes"></i> Max Order Quantity</label>
-                <div class="input-box">
-                    <input type="number" value="10" min="1" max="100">
-                    <button><i class="fas fa-cube"></i> Units</button>
-                </div>
-            </div>
-
-            <div class="form-group full">
-                <label><i class="fas fa-sticky-note"></i> Note For Customer</label>
-                <textarea placeholder="Add any special instructions or notes for customers..."></textarea>
-            </div>
-
         </div>
 
-        <div class="actions">
-            <button class="btn btn-cancel"><i class="fas fa-times"></i> Cancel</button>
-            <button class="btn btn-primary"><i class="fas fa-check-circle"></i> Save</button>
+        <!-- ATTRIBUTES SECTION -->
+        <div class="attributes-section">
+            <div class="attribute-title">
+                <i class="fas fa-sliders-h"></i>
+                Set Attributes For Store Listing
+            </div>
+
+            <div class="form-grid">
+                <div class="form-group">
+                    <label><i class="fas fa-arrow-up"></i> Maximum Price</label>
+                    <div class="input-box">
+                        <input type="number" value="69.74" step="0.01">
+                        <button><i class="fas fa-dollar-sign"></i></button>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label><i class="fas fa-balance-scale"></i> Standard Price</label>
+                    <div class="input-box">
+                        <input type="number" value="66.49" step="0.01">
+                        <button><i class="fas fa-dollar-sign"></i></button>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label><i class="fas fa-boxes"></i> Max Order Quantity</label>
+                    <div class="input-box">
+                        <input type="number" value="10" min="1" max="100">
+                        <button><i class="fas fa-cube"></i> Units</button>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label><i class="fas fa-clock"></i> Handling Time</label>
+                    <div class="input-box">
+                        <input type="number" value="2" min="1" max="30">
+                        <button><i class="fas fa-calendar-day"></i> Days</button>
+                    </div>
+                </div>
+
+                <div class="form-group full">
+                    <label><i class="fas fa-sticky-note"></i> Note For Customer</label>
+                    <textarea placeholder="Add any special instructions or notes for customers..."></textarea>
+                </div>
+            </div>
+
+            <div class="actions">
+                <button class="btn btn-cancel"><i class="fas fa-times"></i> Cancel</button>
+                <button class="btn btn-primary"><i class="fas fa-check-circle"></i> Save</button>
+            </div>
         </div>
-
+        
     </div>
-<<<<<<< HEAD
-=======
-
-    <div class="form-group">
-      <label>Standard Price</label>
-      <div class="input-box">
-        <input value="66.49">
-        <!-- <span>$</span> -->
-        <button>$</button>
-      </div>
-    </div>
-
-    <div class="form-group">
-      <label>Handling Time</label>
-      <div class="input-box">
-        <input value="2">
-        <!-- <span>Days</span> -->
-        <button>Days</button>
-      </div>
-    </div>
-
-    <div class="form-group">
-      <label>Max Order Quantity</label>
-      <div class="input-box">
-        <input value="10">
-        <!-- <span>Units</span> -->
-        <button>Units</button>
-      </div>
-    </div>
-
-    <div class="form-group full">
-      <label>Note For Customer</label>
-      <textarea></textarea>
-    </div>
-
-  </div>
-
-  <div class="actions">
-    <button class="btn btn-cancel">Cancel</button>
-    <a href="product-listing.html">    <button class="btn btn-primary">Update listing data</button></a>
-  </div>
-
->>>>>>> 63f3e8fd507701fe18e0547e427c1c553a9c71c0
 </div>
 
 <script>
