@@ -102,7 +102,7 @@ body {
     margin-left: 70px;
 }
 
-/* ================= MAIN BOX ================= */
+/* ================= MAIN BOX - HEIGHT INCREASED ================= */
 .main-box {
     max-width: 1200px;
     width: 100%;
@@ -112,11 +112,11 @@ body {
     box-shadow: 0 15px 40px rgba(0,0,0,0.1);
     margin: 0 auto;
     margin-bottom: 30px;
+    min-height: 1000px; /* Increased height */
 }
 
-/* Page Header */
+/* PAGE HEADER NOW INSIDE MAIN BOX */
 .page-header {
-  max-width: 1200px;
   width: 100%;
   background: #ffffff;
   padding: 24px 30px;
@@ -619,6 +619,7 @@ textarea:focus {
     }
     .main-box {
         padding: 20px;
+        min-height: auto;
     }
     .card-wrapper,
     .attribute-card {
@@ -840,14 +841,14 @@ textarea:focus {
 
 <!-- Main Content -->
 <div class="main-content" id="main-content">
-    <!-- Page Header -->
-    <div class="page-header">
-        <i class="fas fa-store"></i>
-        Add Product in Your Store Listing
-    </div>
-
-    <!-- MAIN BOX - Contains both cards inside -->
+    <!-- MAIN BOX - Contains everything now -->
     <div class="main-box">
+        <!-- Page Header - NOW INSIDE MAIN BOX -->
+        <div class="page-header">
+            <i class="fas fa-store"></i>
+            Add Product in Your Store Listing
+        </div>
+
         <!-- FIRST PRODUCT CARD -->
         <div class="card-wrapper">
             <div class="product-card">
