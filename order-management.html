@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Status Stepper</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    background:#EEF0F4;
+    font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    padding:20px;
+}
+
+.white-box{
+    background:#fff;
+    border-radius:16px;
+    box-shadow:0 12px 30px rgba(0,0,0,0.12);
+    max-width:1100px;
+    width:100%;
+    padding:25px;
+}
+
+/* ===== OUTER 3D BOX ===== */
+.stepper-3d-box{
+    background:#fff;
+    border-radius:12px;
+    padding:14px;
+    box-shadow:0 6px 18px rgba(0,0,0,0.12);
+    transition:all 0.35s ease;
+}
+
+.stepper-3d-box:hover{
+    transform:translateY(-6px);
+    box-shadow:0 18px 40px rgba(0,0,0,0.18);
+}
+
+/* ===== STEPPER ===== */
+.stepper{
+    display:flex;
+    width:100%;
+    gap:2px;
+}
+
+/* ===== STEP ===== */
+.step{
+    flex:1;
+    padding:12px 8px;
+    text-align:center;
+    font-size:13px;
+    font-weight:600;
+    color:#fff;
+    background:#9cc9e3;
+
+    cursor:default;
+    user-select:none;
+    -webkit-user-select:none;
+    -moz-user-select:none;
+    -ms-user-select:none;
+
+    transition:all 0.25s ease;
+    box-shadow:0 3px 8px rgba(0,0,0,0.12);
+
+    clip-path:polygon(0 0, 92% 0, 100% 50%, 92% 100%, 0 100%, 6% 50%);
+}
+
+/* first & last */
+.step:first-child{
+    clip-path:polygon(0 0, 92% 0, 100% 50%, 92% 100%, 0 100%);
+}
+.step:last-child{
+    clip-path:polygon(0 0, 100% 0, 100% 100%, 0 100%, 6% 50%);
+}
+
+/* ===== STEP HOVER (3D LIFT) ===== */
+.step:hover{
+    transform:translateY(-4px);
+    box-shadow:0 10px 22px rgba(0,0,0,0.18);
+    background:#7fb8dc;
+}
+
+/* ===== ACTIVE ===== */
+.step.active{
+    background:#5B59EC;
+    box-shadow:0 12px 26px rgba(91,89,236,0.45);
+}
+
+/* Content */
+.box-content{
+    padding:30px 10px 10px;
+    height:260px;
+}
+
+/* ===== RESPONSIVE ===== */
+@media(max-width:900px){
+    .stepper{
+        flex-wrap:wrap;
+        gap:6px;
+    }
+    .step{
+        flex:1 1 30%;
+        clip-path:none;
+        border-radius:8px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="white-box">
+
+    <!-- Status Stepper -->
+    <div class="stepper-3d-box">
+        <div class="stepper">
+            <div class="step active">Unshipped</div>
+            <div class="step">Tracking Verifications</div>
+            <div class="step">Shipped</div>
+            <div class="step">Canceled</div>
+            <div class="step">Rejected Trackings</div>
+            <div class="step">Returned &amp; Refunded</div>
+            <div class="step">3PL Partners</div>
+        </div>
+    </div>
+
+    <div class="box-content">
+        <!-- status wise content -->
+    </div>
+
+</div>
+
+<script>
+const steps = document.querySelectorAll('.step');
+
+steps.forEach(step=>{
+    step.addEventListener('click',()=>{
+        steps.forEach(s=>s.classList.remove('active'));
+        step.classList.add('active');
+    });
+});
+</script>
+
+</body>
+</html>
