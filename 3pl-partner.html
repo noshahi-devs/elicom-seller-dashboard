@@ -1,0 +1,1316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>3PL Partner Service | Smart Cart</title>
+
+<!-- Dependencies -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+:root {
+    --bg-body: #f8fafc;
+    --sidebar-bg: #ffffff;
+    --sidebar-width: 280px;
+    --text-dark: #1e293b;
+    --text-muted: #64748b;
+    --brand-primary: #4F46E5;
+    --nav-hover: #f1f5f9;
+    --topbar-height: 60px;
+}
+
+body { background-color: var(--bg-body); font-family: 'Inter', sans-serif; color: var(--text-dark); overflow-x: hidden; margin:0; }
+
+/* Sidebar */
+.sidebar { width: var(--sidebar-width); height: 100vh; position: fixed; left: 0; top: 0; background: var(--sidebar-bg); border-right: 1px solid #e2e8f0; z-index: 1000; overflow-y: auto; transition: all 0.3s ease; }
+.sidebar.collapsed { width: 60px; }
+.sidebar.collapsed .nav-link span { display: none; }
+.sidebar.collapsed .nav-label { display: none; }
+.sidebar::-webkit-scrollbar { width: 6px; }
+.sidebar::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.1); border-radius: 3px; }
+.sidebar-brand { padding: 1.5rem; display: flex; align-items: center; border-bottom: 1px solid #f1f5f9; }
+.brand-logo { width: 32px; height: 32px; background: var(--brand-primary); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: white; margin-right: 12px; }
+.nav-label { padding: 1.5rem 1.5rem 0.5rem; font-size: 11px; text-transform: uppercase; letter-spacing: 1px; font-weight: 700; color: var(--text-muted); }
+.nav-link { padding: 0.8rem 1.5rem; display: flex; align-items: center; color: var(--text-dark); font-weight: 500; font-size: 14px; transition: all 0.2s; border-radius: 0; }
+.nav-link i { width: 20px; margin-right: 12px; font-size: 16px; color: var(--text-muted); }
+.nav-link:hover { background-color: var(--nav-hover); color: var(--brand-primary); }
+.nav-link.active { color: var(--brand-primary); background: #eef2ff; border-right: 3px solid var(--brand-primary); }
+.submenu { background: #fcfcfd; padding-left: 1rem; display: none; }
+.nav-item.open .submenu { display: block; }
+.chevron-icon { margin-left: auto; font-size: 10px; transition: transform 0.2s; }
+.nav-item.open .chevron-icon { transform: rotate(90deg); }
+.search-container { flex: 1; max-width: 500px; margin: 0 auto; }
+.search-input {
+    background: #f3f6f9; border: none; border-radius: 10px;
+    padding: 10px 20px; width: 100%;
+}
+/* Topbar */
+.topbar { height: var(--topbar-height); background: #fff; position: fixed; top: 0; right: 0; left: var(--sidebar-width); z-index: 999; display: flex; align-items: center; justify-content: space-between; padding: 0 30px; border-bottom: 1px solid #eef2f7; }
+.topbar.collapsed { left: 70px; }
+#sidebar-toggle { cursor: pointer; padding: 8px; border-radius: 6px; display: flex; align-items: center; justify-content: center; transition: all 0.2s ease; }
+#sidebar-toggle:hover { background-color: var(--nav-hover); color: var(--brand-primary); }
+.overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.3); z-index: 1040; }
+.overlay.active { display: block; }
+
+/* Main wrapper */
+.main-wrapper { margin-left: var(--sidebar-width); min-height: 100vh; padding: 2rem; padding-top: calc(var(--topbar-height) + 1rem); transition: margin-left 0.3s ease; }
+
+/* Cards General */
+.card {
+    background-color: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    transition: transform 0.3s, box-shadow 0.3s;
+    position: relative;
+    padding: 20px;
+    border: none;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+}
+
+/* 3PL Partner Specific Styles */
+.partner-card {
+    border-left: 4px solid var(--brand-primary);
+    background: linear-gradient(135deg, #f8fafc, #ffffff);
+    transition: all 0.3s ease;
+}
+
+.partner-card:hover {
+    border-left-width: 6px;
+    transform: translateY(-3px);
+}
+
+.service-icon {
+    width: 60px;
+    height: 60px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    margin-bottom: 15px;
+}
+
+.service-icon.primary { background: rgba(79, 70, 229, 0.1); color: #4F46E5; }
+.service-icon.success { background: rgba(34, 197, 94, 0.1); color: #22C55E; }
+.service-icon.warning { background: rgba(245, 158, 11, 0.1); color: #F59E0B; }
+.service-icon.danger { background: rgba(239, 68, 68, 0.1); color: #EF4444; }
+
+.stat-box {
+    background: linear-gradient(135deg, #f8fafc, #ffffff);
+    border-radius: 12px;
+    padding: 20px;
+    border: 1px solid #e2e8f0;
+    transition: all 0.3s ease;
+}
+
+.stat-box:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+}
+
+.stat-number {
+    font-size: 2rem;
+    font-weight: 800;
+    color: var(--text-dark);
+}
+
+.stat-label {
+    font-size: 0.875rem;
+    color: var(--text-muted);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.feature-item {
+    padding: 15px;
+    border-radius: 8px;
+    background: #f8fafc;
+    margin-bottom: 10px;
+    border-left: 3px solid transparent;
+    transition: all 0.3s ease;
+}
+
+.feature-item:hover {
+    background: #ffffff;
+    border-left-color: var(--brand-primary);
+    transform: translateX(5px);
+}
+
+.btn-gradient {
+    background: linear-gradient(135deg, #4F46E5, #6366F1);
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.btn-gradient:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 16px rgba(79, 70, 229, 0.3);
+    color: white;
+}
+
+/* Mobile sidebar */
+@media (max-width: 991.98px) {
+    .sidebar {
+        position: fixed;
+        left: -280px;
+        top: 0;
+        height: 100%;
+        z-index: 1050;
+        transition: left 0.3s ease;
+    }
+    .sidebar.open {
+        left: 0;
+    }
+    .topbar {
+        left: 0 !important;
+    }
+    .main-wrapper {
+        margin-left: 0;
+        margin-right: -100px;
+        transition: none;
+    }
+    .overlay {
+        display: none;
+    }
+    .overlay.active {
+        display: block;
+    }
+}
+
+/* Sidebar 3D Styles */
+.sidebar {
+    width: 280px;
+    height: 100vh;
+    background: linear-gradient(180deg, #ffffff, #f8fafc);
+    padding: 25px 16px;
+    box-shadow: 8px 0 30px rgba(0, 0, 0, 0.08);
+    position: fixed;
+    top: 0;
+    left: 0;
+    overflow-y: auto;
+    transform-style: preserve-3d;
+    perspective: 1200px;
+}
+
+.sidebar-brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px;
+    margin-bottom: 30px;
+    border-radius: 14px;
+    background: white;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+    transform: translateZ(8px);
+}
+
+.brand-logo {
+    width: 42px;
+    height: 42px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #4f46e5, #6366f1);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.nav-link {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 18px;
+    border-radius: 12px;
+    color: #4b5563;
+    text-decoration: none;
+    margin-bottom: 16px;
+    background: linear-gradient(180deg, #f9fafb, #f1f5f9);
+    box-shadow: 0 4px 0 #e5e7eb, 0 6px 12px rgba(0,0,0,0.06);
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    border: 1px solid rgba(255,255,255,0.8);
+    transform: translateZ(2px);
+}
+
+.nav-link:hover {
+    transform: translateY(-2px) translateZ(8px);
+    color: #4f46e5;
+    box-shadow: 0 8px 0 #e5e7eb, 0 12px 20px rgba(0,0,0,0.12);
+}
+
+.nav-link:active {
+    transform: translateY(3px) translateZ(0);
+    box-shadow: 0 1px 0 #e5e7eb, 0 4px 8px rgba(0,0,0,0.08);
+}
+
+.nav-link.active {
+    background: linear-gradient(135deg, #4f46e5, #6366f1);
+    color: #ffffff !important;
+    border: none;
+    transform: translateY(-6px) translateZ(12px);
+    z-index: 10;
+    box-shadow:
+        0 14px 28px rgba(79,70,229,0.55),
+        0 6px 0 #4338ca,
+        0 0 20px rgba(79,70,229,0.45),
+        0 0 40px rgba(79,70,229,0.3),
+        0 0 60px rgba(79,70,229,0.2);
+    animation: spotlightPulse 2s infinite ease-in-out;
+}
+
+@keyframes spotlightPulse {
+    0% { box-shadow: 0 14px 28px rgba(79,70,229,0.55),0 6px 0 #4338ca,0 0 20px rgba(79,70,229,0.45),0 0 40px rgba(79,70,229,0.3),0 0 60px rgba(79,70,229,0.2);}
+    50% { box-shadow: 0 16px 32px rgba(79,70,229,0.65),0 6px 0 #4338ca,0 0 24px rgba(79,70,229,0.55),0 0 48px rgba(79,70,229,0.35),0 0 70px rgba(79,70,229,0.25);}
+    100% { box-shadow: 0 14px 28px rgba(79,70,229,0.55),0 6px 0 #4338ca,0 0 20px rgba(79,70,229,0.45),0 0 40px rgba(79,70,229,0.3),0 0 60px rgba(79,70,229,0.2);}
+}
+
+.nav-item {
+    margin-bottom: 16px;
+}
+
+.nav-item .nav-link {
+    margin-bottom: 0;
+}
+
+.submenu {
+    margin-left: 20px;
+    padding-left: 10px;
+    border-left: 2px solid #f1f5f9;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.submenu .nav-link.small {
+    margin-top: 10px;
+    font-size: 13px;
+    padding: 10px 14px;
+    background: #ffffff;
+    box-shadow: 0 2px 0 #f1f5f9, 0 5px 10px rgba(0,0,0,0.05);
+}
+
+.chevron-icon {
+    font-size: 10px;
+    transition: transform 0.3s ease;
+}
+
+.nav-item.open .chevron-icon {
+    transform: rotate(90deg);
+}
+</style>
+</head>
+<body>
+
+<div class="overlay" id="overlay"></div>
+
+<!-- Sidebar -->
+<aside class="sidebar" id="sidebar">
+    <div class="sidebar-brand">
+        <div class="brand-logo"><i class="fa fa-shop"></i></div>
+        <h5 class="fw-bold mb-0">Smart Cart</h5>
+    </div>
+
+    <a href="adeel-final.html" class="nav-link"><i class="fa-solid fa-house"></i> Dashboard</a>
+    <a href="add-product2.html" class="nav-link"><i class="fa-solid fa-circle-plus"></i> Add Products</a>
+
+    <div class="nav-item">
+        <a href="javascript:void(0)" class="nav-link dropdown-trigger"><i class="fa-solid fa-list-check"></i> Listing Center <i class="fa fa-chevron-right chevron-icon"></i></a>
+        <div class="submenu">
+            <a href="product-listing.html" class="nav-link small">Store Listing</a>
+            <a href="#" class="nav-link small">Favorite Listing</a>
+        </div>
+    </div>
+
+    <div class="nav-item">
+        <a href="javascript:void(0)" class="nav-link dropdown-trigger"><i class="fa-solid fa-cart-flatbed"></i> Order Center <i class="fa fa-chevron-right chevron-icon"></i></a>
+        <div class="submenu">
+            <a href="#" class="nav-link small">Unshipped Order</a>
+            <a href="#" class="nav-link small">Tracking Verification</a>
+            <a href="#" class="nav-link small">Shipped Complete</a>
+            <a href="#" class="nav-link small">Cancelled Order</a>
+            <a href="#" class="nav-link small">Rejected Trackings</a>
+            <a href="#" class="nav-link small">Order Returned</a>
+        </div>
+    </div>
+
+    <a href="3pl-partner.html" class="nav-link active"><i class="fa-solid fa-handshake"></i> 3PL Partner Service</a>
+    <a href="#" class="nav-link"><i class="fa-solid fa-warehouse"></i> Smart Cart Warehouses</a>
+
+    <div class="nav-item">
+        <a href="javascript:void(0)" class="nav-link dropdown-trigger"><i class="fa-solid fa-money-bill-transfer"></i> Withdrawal Section <i class="fa fa-chevron-right chevron-icon"></i></a>
+        <div class="submenu">
+            <a href="#" class="nav-link small">Add Payment Method</a>
+            <a href="#" class="nav-link small">Seller Wallet Center</a>
+            <a href="#" class="nav-link small">Pending Payouts</a>
+            <a href="#" class="nav-link small">Completed Payouts</a>
+            <a href="#" class="nav-link small">Refunded Payouts</a>
+        </div>
+    </div>
+
+    <a href="#" class="nav-link"><i class="fa-solid fa-gears"></i> Account Settings</a>
+    <a href="#" class="nav-link"><i class="fa-solid fa-headset"></i> Customer Support</a>
+    <a href="#" class="nav-link"><i class="fa-solid fa-download"></i> Download App</a>
+</aside>
+
+<!-- Topbar -->
+<div class="topbar" id="topbar">
+    <div class="d-flex align-items-center">
+        <i id="sidebar-toggle" class="fa fa-bars me-3 text-muted fs-5 cursor-pointer"></i>
+    </div>
+    <div class="search-container d-none d-md-block">
+        <div class="position-relative">
+            <i class="fa fa-search position-absolute top-50 start-0 translate-middle-y ms-3 text-muted"></i>
+            <input type="text" class="search-input ps-5" placeholder="Search 3PL services...">
+        </div>
+    </div>
+    <div class="d-flex align-items-center">
+        <div class="position-relative me-4">
+            <i class="fa fa-bell text-muted fs-5"></i>
+            <span class="position-absolute top-0 start-100 translate-middle p-1 bg-danger border border-light rounded-circle"></span>
+        </div>
+        <div class="d-flex align-items-center">
+            <div class="text-end me-2 d-none d-sm-block">
+                <p class="mb-0 fw-bold small">Arslan Noshahi</p>
+                <p class="mb-0 x-small text-muted" style="font-size: 10px;">Admin</p>
+            </div>
+            <img src="https://ui-avatars.com/api/?name=Arslan+Noshahi&background=4F46E5&color=fff" class="rounded-circle" width="40" height="40" alt="DP">
+        </div>
+    </div>
+</div> 
+
+<!-- Main Content -->
+<div class="main-wrapper" id="main-wrapper">
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="fw-bold mb-1">3PL Partner Service</h2>
+            <p class="text-muted">Manage your third-party logistics partnerships and services</p>
+        </div>
+        <button class="btn btn-gradient" data-bs-toggle="modal" data-bs-target="#addPartnerModal">
+            <i class="fa fa-plus me-2"></i> Add New Partner
+        </button>
+    </div>
+
+    <!-- Stats Overview -->
+    <div class="row g-4 mb-4">
+        <div class="col-lg-3 col-md-6">
+            <div class="stat-box">
+                <div class="d-flex align-items-center">
+                    <div class="service-icon primary me-3">
+                        <i class="fa fa-handshake"></i>
+                    </div>
+                    <div>
+                        <div class="stat-number">24</div>
+                        <div class="stat-label">Active Partners</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6">
+            <div class="stat-box">
+                <div class="d-flex align-items-center">
+                    <div class="service-icon success me-3">
+                        <i class="fa fa-box"></i>
+                    </div>
+                    <div>
+                        <div class="stat-number">1,847</div>
+                        <div class="stat-label">Orders Processed</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6">
+            <div class="stat-box">
+                <div class="d-flex align-items-center">
+                    <div class="service-icon warning me-3">
+                        <i class="fa fa-truck"></i>
+                    </div>
+                    <div>
+                        <div class="stat-number">98.5%</div>
+                        <div class="stat-label">On-Time Delivery</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6">
+            <div class="stat-box">
+                <div class="d-flex align-items-center">
+                    <div class="service-icon danger me-3">
+                        <i class="fa fa-dollar-sign"></i>
+                    </div>
+                    <div>
+                        <div class="stat-number">$45.2K</div>
+                        <div class="stat-label">Total Savings</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Services Grid -->
+    <div class="row g-4 mb-4">
+        <div class="col-lg-6">
+            <div class="card partner-card h-100">
+                <div class="d-flex align-items-start">
+                    <div class="service-icon primary me-3">
+                        <i class="fa fa-warehouse"></i>
+                    </div>
+                    <div class="flex-grow-1">
+                        <h5 class="fw-bold mb-3">Warehousing Services</h5>
+                        <p class="text-muted mb-3">Secure storage solutions with real-time inventory management and climate-controlled facilities.</p>
+                        
+                        <div class="feature-item">
+                            <div class="d-flex align-items-center">
+                                <i class="fa fa-check-circle text-success me-2"></i>
+                                <span>Climate-controlled storage facilities</span>
+                            </div>
+                        </div>
+                        <div class="feature-item">
+                            <div class="d-flex align-items-center">
+                                <i class="fa fa-check-circle text-success me-2"></i>
+                                <span>Real-time inventory tracking</span>
+                            </div>
+                        </div>
+                        <div class="feature-item">
+                            <div class="d-flex align-items-center">
+                                <i class="fa fa-check-circle text-success me-2"></i>
+                                <span>24/7 security monitoring</span>
+                            </div>
+                        </div>
+                        
+                        <div id="warehousing-details" class="service-details" style="display: none;">
+                            <h6 class="fw-bold mb-3">Detailed Information</h6>
+                            <div class="row g-3">
+                                <div class="col-12">
+                                    <strong>Storage Capacity:</strong> Over 500,000 sq ft of climate-controlled storage space across multiple locations.
+                                </div>
+                                <div class="col-12">
+                                    <strong>Inventory Management:</strong> Real-time tracking with advanced WMS integration and barcode scanning.
+                                </div>
+                                <div class="col-12">
+                                    <strong>Security Features:</strong> 24/7 surveillance, restricted access, and insurance coverage up to $1M.
+                                </div>
+                                <div class="col-12">
+                                    <strong>Special Requirements:</strong> Hazardous materials, temperature-sensitive goods, and oversized items.
+                                </div>
+                            </div>
+                        </div>
+                        <button id="warehousing-btn" class="btn btn-outline-primary btn-sm mt-3" onclick="toggleServiceDetails('warehousing-details', 'warehousing-btn')">
+                            <i class="fa fa-arrow-right me-2"></i>Learn More
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-6">
+            <div class="card partner-card h-100">
+                <div class="d-flex align-items-start">
+                    <div class="service-icon success me-3">
+                        <i class="fa fa-shipping-fast"></i>
+                    </div>
+                    <div class="flex-grow-1">
+                        <h5 class="fw-bold mb-3">Order Fulfillment</h5>
+                        <p class="text-muted mb-3">Fast and accurate order processing with pick-and-pack services and same-day shipping options.</p>
+                        
+                        <div class="feature-item">
+                            <div class="d-flex align-items-center">
+                                <i class="fa fa-check-circle text-success me-2"></i>
+                                <span>Same-day shipping available</span>
+                            </div>
+                        </div>
+                        <div class="feature-item">
+                            <div class="d-flex align-items-center">
+                                <i class="fa fa-check-circle text-success me-2"></i>
+                                <span>99.9% picking accuracy</span>
+                            </div>
+                        </div>
+                        <div class="feature-item">
+                            <div class="d-flex align-items-center">
+                                <i class="fa fa-check-circle text-success me-2"></i>
+                                <span>Custom packaging solutions</span>
+                            </div>
+                        </div>
+                        
+                        <div id="fulfillment-details" class="service-details" style="display: none;">
+                            <h6 class="fw-bold mb-3">Detailed Information</h6>
+                            <div class="row g-3">
+                                <div class="col-12">
+                                    <strong>Processing Speed:</strong> Same-day shipping for orders placed before 2 PM, 99.9% accuracy rate.
+                                </div>
+                                <div class="col-12">
+                                    <strong>Custom Packaging:</strong> Branded packaging, gift wrapping, and special handling available.
+                                </div>
+                                <div class="col-12">
+                                    <strong>Integration:</strong> Seamless integration with all major e-commerce platforms.
+                                </div>
+                                <div class="col-12">
+                                    <strong>Returns Processing:</strong> Automated returns handling with quality inspection and restocking.
+                                </div>
+                            </div>
+                        </div>
+                        <button id="fulfillment-btn" class="btn btn-outline-success btn-sm mt-3" onclick="toggleServiceDetails('fulfillment-details', 'fulfillment-btn')">
+                            <i class="fa fa-arrow-right me-2"></i>Learn More
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-6">
+            <div class="card partner-card h-100">
+                <div class="d-flex align-items-start">
+                    <div class="service-icon warning me-3">
+                        <i class="fa fa-truck"></i>
+                    </div>
+                    <div class="flex-grow-1">
+                        <h5 class="fw-bold mb-3">Shipping & Delivery</h5>
+                        <p class="text-muted mb-3">Reliable shipping networks with multiple carrier options and real-time tracking capabilities.</p>
+                        
+                        <div class="feature-item">
+                            <div class="d-flex align-items-center">
+                                <i class="fa fa-check-circle text-success me-2"></i>
+                                <span>Multiple carrier partnerships</span>
+                            </div>
+                        </div>
+                        <div class="feature-item">
+                            <div class="d-flex align-items-center">
+                                <i class="fa fa-check-circle text-success me-2"></i>
+                                <span>Real-time shipment tracking</span>
+                            </div>
+                        </div>
+                        <div class="feature-item">
+                            <div class="d-flex align-items-center">
+                                <i class="fa fa-check-circle text-success me-2"></i>
+                                <span>International shipping support</span>
+                            </div>
+                        </div>
+                        
+                        <div id="shipping-details" class="service-details" style="display: none;">
+                            <h6 class="fw-bold mb-3">Detailed Information</h6>
+                            <div class="row g-3">
+                                <div class="col-12">
+                                    <strong>Carrier Network:</strong> Partnerships with 15+ major carriers for optimal rates and coverage.
+                                </div>
+                                <div class="col-12">
+                                    <strong>Tracking Solutions:</strong> Real-time tracking with SMS/email notifications and delivery confirmation.
+                                </div>
+                                <div class="col-12">
+                                    <strong>International Shipping:</strong> Customs documentation and international delivery to 150+ countries.
+                                </div>
+                                <div class="col-12">
+                                    <strong>Express Options:</strong> Next-day, 2-day, and same-day delivery options available.
+                                </div>
+                            </div>
+                        </div>
+                        <button id="shipping-btn" class="btn btn-outline-warning btn-sm mt-3" onclick="toggleServiceDetails('shipping-details', 'shipping-btn')">
+                            <i class="fa fa-arrow-right me-2"></i>Learn More
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-6">
+            <div class="card partner-card h-100">
+                <div class="d-flex align-items-start">
+                    <div class="service-icon danger me-3">
+                        <i class="fa fa-undo"></i>
+                    </div>
+                    <div class="flex-grow-1">
+                        <h5 class="fw-bold mb-3">Returns Management</h5>
+                        <p class="text-muted mb-3">Streamlined returns processing with quality inspection and restocking services.</p>
+                        
+                        <div class="feature-item">
+                            <div class="d-flex align-items-center">
+                                <i class="fa fa-check-circle text-success me-2"></i>
+                                <span>Hassle-free return processing</span>
+                            </div>
+                        </div>
+                        <div class="feature-item">
+                            <div class="d-flex align-items-center">
+                                <i class="fa fa-check-circle text-success me-2"></i>
+                                <span>Quality inspection services</span>
+                            </div>
+                        </div>
+                        <div class="feature-item">
+                            <div class="d-flex align-items-center">
+                                <i class="fa fa-check-circle text-success me-2"></i>
+                                <span>Automated restocking</span>
+                            </div>
+                        </div>
+                        
+                        <div id="returns-details" class="service-details" style="display: none;">
+                            <h6 class="fw-bold mb-3">Detailed Information</h6>
+                            <div class="row g-3">
+                                <div class="col-12">
+                                    <strong>Processing Time:</strong> Returns processed within 24-48 hours of receipt.
+                                </div>
+                                <div class="col-12">
+                                    <strong>Quality Control:</strong> Thorough inspection and testing of all returned items.
+                                </div>
+                                <div class="col-12">
+                                    <strong>Restocking:</strong> Automated restocking with condition grading and inventory updates.
+                                </div>
+                                <div class="col-12">
+                                    <strong>Customer Portal:</strong> Self-service portal for customers to initiate returns and track status.
+                                </div>
+                            </div>
+                        </div>
+                        <button id="returns-btn" class="btn btn-outline-danger btn-sm mt-3" onclick="toggleServiceDetails('returns-details', 'returns-btn')">
+                            <i class="fa fa-arrow-right me-2"></i>Learn More
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Active Partners Table -->
+    <div class="card">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h5 class="fw-bold mb-0">Active Partners</h5>
+            <div class="d-flex gap-2">
+                <button class="btn btn-sm btn-outline-secondary">
+                    <i class="fa fa-filter me-1"></i> Filter
+                </button>
+                <button class="btn btn-sm btn-outline-secondary">
+                    <i class="fa fa-download me-1"></i> Export
+                </button>
+            </div>
+        </div>
+        
+        <div class="table-responsive">
+            <table class="table table-hover align-middle">
+                <thead class="table-light">
+                    <tr>
+                        <th>Partner Name</th>
+                        <th>Service Type</th>
+                        <th>Location</th>
+                        <th>Performance</th>
+                        <th>Status</th>
+                        <th class="text-end">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            <div class="d-flex align-items-center">
+                                <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center me-2" style="width: 32px; height: 32px; font-size: 12px;">
+                                    FL
+                                </div>
+                                <div>
+                                    <div class="fw-bold">Flex Logistics</div>
+                                    <div class="text-muted small">Partner since 2022</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td><span class="badge bg-primary">Full Service</span></td>
+                        <td>New York, USA</td>
+                        <td>
+                            <div class="d-flex align-items-center">
+                                <div class="progress me-2" style="width: 60px; height: 6px;">
+                                    <div class="progress-bar bg-success" style="width: 95%"></div>
+                                </div>
+                                <span class="small">95%</span>
+                            </div>
+                        </td>
+                        <td><span class="badge bg-success">Active</span></td>
+                        <td class="text-end">
+                            <button class="btn btn-sm btn-light me-1" data-bs-toggle="modal" data-bs-target="#viewPartnerModal" data-partner="flex"><i class="fa fa-eye"></i></button>
+                            <button class="btn btn-sm btn-light" data-bs-toggle="modal" data-bs-target="#settingsModal" data-partner="flex"><i class="fa fa-cog"></i></button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="d-flex align-items-center">
+                                <div class="rounded-circle bg-success text-white d-flex align-items-center justify-content-center me-2" style="width: 32px; height: 32px; font-size: 12px;">
+                                    SP
+                                </div>
+                                <div>
+                                    <div class="fw-bold">ShipPro Solutions</div>
+                                    <div class="text-muted small">Partner since 2023</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td><span class="badge bg-info">Shipping Only</span></td>
+                        <td>Los Angeles, USA</td>
+                        <td>
+                            <div class="d-flex align-items-center">
+                                <div class="progress me-2" style="width: 60px; height: 6px;">
+                                    <div class="progress-bar bg-success" style="width: 88%"></div>
+                                </div>
+                                <span class="small">88%</span>
+                            </div>
+                        </td>
+                        <td><span class="badge bg-success">Active</span></td>
+                        <td class="text-end">
+                            <button class="btn btn-sm btn-light me-1" data-bs-toggle="modal" data-bs-target="#viewPartnerModal" data-partner="shippro"><i class="fa fa-eye"></i></button>
+                            <button class="btn btn-sm btn-light" data-bs-toggle="modal" data-bs-target="#settingsModal" data-partner="shippro"><i class="fa fa-cog"></i></button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="d-flex align-items-center">
+                                <div class="rounded-circle bg-warning text-white d-flex align-items-center justify-content-center me-2" style="width: 32px; height: 32px; font-size: 12px;">
+                                    WH
+                                </div>
+                                <div>
+                                    <div class="fw-bold">Warehouse Hub</div>
+                                    <div class="text-muted small">Partner since 2021</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td><span class="badge bg-warning">Warehousing</span></td>
+                        <td>Chicago, USA</td>
+                        <td>
+                            <div class="d-flex align-items-center">
+                                <div class="progress me-2" style="width: 60px; height: 6px;">
+                                    <div class="progress-bar bg-warning" style="width: 72%"></div>
+                                </div>
+                                <span class="small">72%</span>
+                            </div>
+                        </td>
+                        <td><span class="badge bg-warning">Review</span></td>
+                        <td class="text-end">
+                            <button class="btn btn-sm btn-light me-1" data-bs-toggle="modal" data-bs-target="#viewPartnerModal" data-partner="warehouse"><i class="fa fa-eye"></i></button>
+                            <button class="btn btn-sm btn-light" data-bs-toggle="modal" data-bs-target="#settingsModal" data-partner="warehouse"><i class="fa fa-cog"></i></button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Success Confirmation Modal -->
+<div class="modal fade" id="successModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-body text-center py-5">
+                <div class="mb-4">
+                    <div class="rounded-circle bg-success d-inline-flex align-items-center justify-content-center" style="width: 80px; height: 80px;">
+                        <i class="fa fa-check text-white fa-2x"></i>
+                    </div>
+                </div>
+                <h5 class="fw-bold mb-3">Success!</h5>
+                <p class="text-muted mb-4" id="successMessage">Operation completed successfully.</p>
+                <button type="button" class="btn btn-gradient" data-bs-dismiss="modal">OK</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add Partner Modal -->
+<div class="modal fade" id="addPartnerModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Add New 3PL Partner</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Partner Name</label>
+                            <input type="text" class="form-control" placeholder="Enter partner name">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Service Type</label>
+                            <select class="form-select">
+                                <option>Select service type</option>
+                                <option>Full Service</option>
+                                <option>Warehousing</option>
+                                <option>Shipping Only</option>
+                                <option>Returns Management</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Email</label>
+                            <input type="email" class="form-control" placeholder="partner@example.com">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Phone</label>
+                            <input type="tel" class="form-control" placeholder="+1 (555) 123-4567">
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label">Address</label>
+                            <input type="text" class="form-control" placeholder="Enter full address">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">City</label>
+                            <input type="text" class="form-control" placeholder="City">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Country</label>
+                            <select class="form-select">
+                                <option>Select country</option>
+                                <option>United States</option>
+                                <option>Canada</option>
+                                <option>United Kingdom</option>
+                            </select>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label">Notes</label>
+                            <textarea class="form-control" rows="3" placeholder="Additional notes..."></textarea>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-gradient" onclick="submitPartnerForm()">Add Partner</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Learn More Modal -->
+<div class="modal fade" id="learnMoreModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="serviceModalTitle">Service Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="serviceModalContent">
+                <!-- Content will be dynamically loaded based on service type -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-gradient" onclick="showServiceConfirmation()">Get Started</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- View Partner Modal -->
+<div class="modal fade" id="viewPartnerModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="partnerModalTitle">Partner Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="partnerModalContent">
+                <!-- Content will be dynamically loaded based on partner -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-gradient" onclick="showPartnerConfirmation()">Contact Partner</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Settings Modal -->
+<div class="modal fade" id="settingsModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Partner Settings</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="mb-3">
+                        <label class="form-label">Status</label>
+                        <select class="form-select">
+                            <option>Active</option>
+                            <option>Inactive</option>
+                            <option>Under Review</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Priority Level</label>
+                        <select class="form-select">
+                            <option>High</option>
+                            <option>Medium</option>
+                            <option>Low</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Commission Rate (%)</label>
+                        <input type="number" class="form-control" placeholder="5.0" step="0.1">
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="autoAssign">
+                        <label class="form-check-label" for="autoAssign">
+                            Auto-assign orders
+                        </label>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-gradient">Save Changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+// Sidebar toggle
+const sidebar = document.getElementById('sidebar');
+const topbar = document.getElementById('topbar');
+const mainWrapper = document.getElementById('main-wrapper');
+const toggleBtn = document.getElementById('sidebar-toggle');
+const overlay = document.getElementById('overlay');
+
+function setInitialSidebar() {
+    if(window.innerWidth >= 992) {
+        // Desktop: expanded by default
+        sidebar.classList.remove('collapsed');
+        topbar.classList.remove('collapsed');
+        mainWrapper.style.marginLeft = '280px';
+    } else {
+        // Mobile: collapsed by default
+        sidebar.classList.remove('collapsed');
+        topbar.classList.remove('collapsed');
+        mainWrapper.style.marginLeft = '0';
+    }
+}
+
+// Toggle button for manual collapse/expand
+function toggleSidebar() {
+    if(window.innerWidth >= 992) {
+        sidebar.classList.toggle('collapsed');
+        topbar.classList.toggle('collapsed');
+        mainWrapper.style.marginLeft = sidebar.classList.contains('collapsed') ? '60px' : '280px';
+    } else {
+        sidebar.classList.toggle('open');
+        overlay.classList.toggle('active');
+    }
+}
+
+// Initialize
+window.addEventListener('load', setInitialSidebar);
+window.addEventListener('resize', setInitialSidebar);
+
+// Button & overlay events
+toggleBtn.addEventListener('click', toggleSidebar);
+overlay.addEventListener('click', () => {
+    sidebar.classList.remove('open');
+    overlay.classList.remove('active');
+});
+
+// Submenu toggle
+document.querySelectorAll('.dropdown-trigger').forEach(trigger => {
+    trigger.addEventListener('click', () => {
+        trigger.parentElement.classList.toggle('open');
+    });
+});
+
+// Modal functionality
+const serviceData = {
+    warehousing: {
+        title: 'Warehousing Services',
+        content: `
+            <div class="row g-4">
+                <div class="col-md-6">
+                    <h6 class="fw-bold">Storage Capacity</h6>
+                    <p>Over 500,000 sq ft of climate-controlled storage space across multiple locations.</p>
+                </div>
+                <div class="col-md-6">
+                    <h6 class="fw-bold">Inventory Management</h6>
+                    <p>Real-time tracking with advanced WMS integration and barcode scanning.</p>
+                </div>
+                <div class="col-md-6">
+                    <h6 class="fw-bold">Security Features</h6>
+                    <p>24/7 surveillance, restricted access, and insurance coverage up to $1M.</p>
+                </div>
+                <div class="col-md-6">
+                    <h6 class="fw-bold">Special Requirements</h6>
+                    <p>Hazardous materials, temperature-sensitive goods, and oversized items.</p>
+                </div>
+            </div>
+        `
+    },
+    fulfillment: {
+        title: 'Order Fulfillment Services',
+        content: `
+            <div class="row g-4">
+                <div class="col-md-6">
+                    <h6 class="fw-bold">Processing Speed</h6>
+                    <p>Same-day shipping for orders placed before 2 PM, 99.9% accuracy rate.</p>
+                </div>
+                <div class="col-md-6">
+                    <h6 class="fw-bold">Custom Packaging</h6>
+                    <p>Branded packaging, gift wrapping, and special handling available.</p>
+                </div>
+                <div class="col-md-6">
+                    <h6 class="fw-bold">Integration</h6>
+                    <p>Seamless integration with all major e-commerce platforms.</p>
+                </div>
+                <div class="col-md-6">
+                    <h6 class="fw-bold">Returns Processing</h6>
+                    <p>Automated returns handling with quality inspection and restocking.</p>
+                </div>
+            </div>
+        `
+    },
+    shipping: {
+        title: 'Shipping & Delivery Services',
+        content: `
+            <div class="row g-4">
+                <div class="col-md-6">
+                    <h6 class="fw-bold">Carrier Network</h6>
+                    <p>Partnerships with 15+ major carriers for optimal rates and coverage.</p>
+                </div>
+                <div class="col-md-6">
+                    <h6 class="fw-bold">Tracking Solutions</h6>
+                    <p>Real-time tracking with SMS/email notifications and delivery confirmation.</p>
+                </div>
+                <div class="col-md-6">
+                    <h6 class="fw-bold">International Shipping</h6>
+                    <p>Customs documentation and international delivery to 150+ countries.</p>
+                </div>
+                <div class="col-md-6">
+                    <h6 class="fw-bold">Express Options</h6>
+                    <p>Next-day, 2-day, and same-day delivery options available.</p>
+                </div>
+            </div>
+        `
+    },
+    returns: {
+        title: 'Returns Management Services',
+        content: `
+            <div class="row g-4">
+                <div class="col-md-6">
+                    <h6 class="fw-bold">Processing Time</h6>
+                    <p>Returns processed within 24-48 hours of receipt.</p>
+                </div>
+                <div class="col-md-6">
+                    <h6 class="fw-bold">Quality Control</h6>
+                    <p>Thorough inspection and testing of all returned items.</p>
+                </div>
+                <div class="col-md-6">
+                    <h6 class="fw-bold">Restocking</h6>
+                    <p>Automated restocking with condition grading and inventory updates.</p>
+                </div>
+                <div class="col-md-6">
+                    <h6 class="fw-bold">Customer Portal</h6>
+                    <p>Self-service portal for customers to initiate returns and track status.</p>
+                </div>
+            </div>
+        `
+    }
+};
+
+const partnerData = {
+    flex: {
+        title: 'Flex Logistics',
+        content: `
+            <div class="row g-4">
+                <div class="col-md-6">
+                    <h6 class="fw-bold">Contact Information</h6>
+                    <p><strong>Email:</strong> info@flexlogistics.com<br>
+                    <strong>Phone:</strong> +1 (555) 123-4567<br>
+                    <strong>Address:</strong> 123 Logistics Ave, New York, NY 10001</p>
+                </div>
+                <div class="col-md-6">
+                    <h6 class="fw-bold">Services Offered</h6>
+                    <p>• Full-service 3PL<br>
+                    • Warehousing<br>
+                    • Order fulfillment<br>
+                    • Shipping & delivery</p>
+                </div>
+                <div class="col-md-6">
+                    <h6 class="fw-bold">Performance Metrics</h6>
+                    <p>• On-time delivery: 95%<br>
+                    • Order accuracy: 99.8%<br>
+                    • Response time: < 2 hours</p>
+                </div>
+                <div class="col-md-6">
+                    <h6 class="fw-bold">Capacity</h6>
+                    <p>• Storage: 100,000 sq ft<br>
+                    • Daily orders: 5,000<br>
+                    • Coverage: Nationwide</p>
+                </div>
+            </div>
+        `
+    },
+    shippro: {
+        title: 'ShipPro Solutions',
+        content: `
+            <div class="row g-4">
+                <div class="col-md-6">
+                    <h6 class="fw-bold">Contact Information</h6>
+                    <p><strong>Email:</strong> support@shippro.com<br>
+                    <strong>Phone:</strong> +1 (555) 987-6543<br>
+                    <strong>Address:</strong> 456 Shipping Blvd, Los Angeles, CA 90001</p>
+                </div>
+                <div class="col-md-6">
+                    <h6 class="fw-bold">Services Offered</h6>
+                    <p>• Express shipping<br>
+                    • International delivery<br>
+                    • Freight forwarding<br>
+                    • Package tracking</p>
+                </div>
+                <div class="col-md-6">
+                    <h6 class="fw-bold">Performance Metrics</h6>
+                    <p>• On-time delivery: 88%<br>
+                    • Package safety: 99.5%<br>
+                    • Response time: < 4 hours</p>
+                </div>
+                <div class="col-md-6">
+                    <h6 class="fw-bold">Specialties</h6>
+                    <p>• E-commerce shipping<br>
+                    • B2B logistics<br>
+                    • International freight<br>
+                    • Express delivery</p>
+                </div>
+            </div>
+        `
+    },
+    warehouse: {
+        title: 'Warehouse Hub',
+        content: `
+            <div class="row g-4">
+                <div class="col-md-6">
+                    <h6 class="fw-bold">Contact Information</h6>
+                    <p><strong>Email:</strong> info@warehousehub.com<br>
+                    <strong>Phone:</strong> +1 (555) 246-8135<br>
+                    <strong>Address:</strong> 789 Storage Dr, Chicago, IL 60601</p>
+                </div>
+                <div class="col-md-6">
+                    <h6 class="fw-bold">Services Offered</h6>
+                    <p>• Climate-controlled storage<br>
+                    • Inventory management<br>
+                    • Cross-docking<br>
+                    • Distribution services</p>
+                </div>
+                <div class="col-md-6">
+                    <h6 class="fw-bold">Performance Metrics</h6>
+                    <p>• Storage accuracy: 99.2%<br>
+                    • Order processing: 72%<br>
+                    • Response time: < 6 hours</p>
+                </div>
+                <div class="col-md-6">
+                    <h6 class="fw-bold">Facility Details</h6>
+                    <p>• Total space: 200,000 sq ft<br>
+                    • Climate zones: 5<br>
+                    • Loading docks: 24</p>
+                </div>
+            </div>
+        `
+    }
+};
+
+// Handle Learn More modal
+document.querySelectorAll('[data-bs-target="#learnMoreModal"]').forEach(button => {
+    button.addEventListener('click', function() {
+        const service = this.getAttribute('data-service');
+        const data = serviceData[service];
+        if (data) {
+            document.getElementById('serviceModalTitle').textContent = data.title;
+            document.getElementById('serviceModalContent').innerHTML = data.content;
+        }
+    });
+});
+
+// Handle View Partner modal
+document.querySelectorAll('[data-bs-target="#viewPartnerModal"]').forEach(button => {
+    button.addEventListener('click', function() {
+        const partner = this.getAttribute('data-partner');
+        const data = partnerData[partner];
+        if (data) {
+            document.getElementById('partnerModalTitle').textContent = data.title;
+            document.getElementById('partnerModalContent').innerHTML = data.content;
+        }
+    });
+});
+
+// Form submission and confirmation functions
+function toggleServiceDetails(detailsId, buttonId) {
+    const details = document.getElementById(detailsId);
+    const button = document.getElementById(buttonId);
+    const icon = button.querySelector('i');
+    
+    if (details.style.display === 'none') {
+        // Show details and change button to "Show Less"
+        details.style.display = 'block';
+        button.innerHTML = '<i class="fa fa-arrow-up me-2"></i>Show Less';
+        
+        // Add margin to details section
+        details.style.marginTop = '15px';
+        details.style.paddingTop = '15px';
+        details.style.borderTop = '1px solid #e2e8f0';
+    } else {
+        // Hide details and change button back to "Learn More"
+        details.style.display = 'none';
+        button.innerHTML = '<i class="fa fa-arrow-right me-2"></i>Learn More';
+        
+        // Remove margin and padding when hidden
+        details.style.marginTop = '0';
+        details.style.paddingTop = '0';
+        details.style.borderTop = 'none';
+    }
+}
+
+function submitPartnerForm() {
+    // Close the add partner modal
+    const addPartnerModal = bootstrap.Modal.getInstance(document.getElementById('addPartnerModal'));
+    addPartnerModal.hide();
+    
+    // Show success message
+    document.getElementById('successMessage').textContent = 'New 3PL partner has been successfully added to your network!';
+    
+    // Show success modal after a short delay
+    setTimeout(() => {
+        const successModal = new bootstrap.Modal(document.getElementById('successModal'));
+        successModal.show();
+    }, 300);
+    
+    // Reset form
+    document.querySelector('#addPartnerModal form').reset();
+}
+
+function showServiceConfirmation() {
+    // Close the learn more modal
+    const learnMoreModal = bootstrap.Modal.getInstance(document.getElementById('learnMoreModal'));
+    learnMoreModal.hide();
+    
+    // Show success message
+    document.getElementById('successMessage').textContent = 'Service request submitted successfully! Our team will contact you within 24 hours.';
+    
+    // Show success modal after a short delay
+    setTimeout(() => {
+        const successModal = new bootstrap.Modal(document.getElementById('successModal'));
+        successModal.show();
+    }, 300);
+}
+
+function showPartnerConfirmation() {
+    // Close the view partner modal
+    const viewPartnerModal = bootstrap.Modal.getInstance(document.getElementById('viewPartnerModal'));
+    viewPartnerModal.hide();
+    
+    // Show success message
+    document.getElementById('successMessage').textContent = 'Partner contact request sent! The partner will get back to you soon.';
+    
+    // Show success modal after a short delay
+    setTimeout(() => {
+        const successModal = new bootstrap.Modal(document.getElementById('successModal'));
+        successModal.show();
+    }, 300);
+}
+</script>
+
+</body>
+</html>
