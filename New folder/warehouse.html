@@ -1,0 +1,1571 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Smart Cart Warehouses | Noshahi Store</title>
+
+<!-- Dependencies -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<style>
+:root {
+    --bg-body: #f8fafc;
+    --sidebar-bg: #ffffff;
+    --sidebar-width: 280px;
+    --text-dark: #1e293b;
+    --text-muted: #64748b;
+    --brand-primary: #4F46E5;
+    --nav-hover: #f1f5f9;
+    --topbar-height: 60px;
+}
+
+body { background-color: var(--bg-body); font-family: 'Inter', sans-serif; color: var(--text-dark); overflow-x: hidden; margin:0; }
+
+/* Sidebar */
+.sidebar { width: var(--sidebar-width); height: 100vh; position: fixed; left: 0; top: 0; background: var(--sidebar-bg); border-right: 1px solid #e2e8f0; z-index: 1000; overflow-y: auto; transition: all 0.3s ease; }
+.sidebar.collapsed { width: 60px; }
+.sidebar.collapsed .nav-link span { display: none; }
+.sidebar.collapsed .nav-label { display: none; }
+.sidebar::-webkit-scrollbar { width: 6px; }
+.sidebar::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.1); border-radius: 3px; }
+.sidebar-brand { padding: 1.5rem; display: flex; align-items: center; border-bottom: 1px solid #f1f5f9; }
+.brand-logo { width: 32px; height: 32px; background: var(--brand-primary); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: white; margin-right: 12px; }
+.nav-label { padding: 1.5rem 1.5rem 0.5rem; font-size: 11px; text-transform: uppercase; letter-spacing: 1px; font-weight: 700; color: var(--text-muted); }
+.nav-link { padding: 0.8rem 1.5rem; display: flex; align-items: center; color: var(--text-dark); font-weight: 500; font-size: 14px; transition: all 0.2s; border-radius: 0; text-decoration: none; }
+.nav-link i { width: 20px; margin-right: 12px; font-size: 16px; color: var(--text-muted); }
+.nav-link:hover { background-color: var(--nav-hover); color: var(--brand-primary); }
+.nav-link.active { color: var(--brand-primary); background: #eef2ff; border-right: 3px solid var(--brand-primary); }
+.submenu { background: #fcfcfd; padding-left: 1rem; display: none; }
+.nav-item.open .submenu { display: block; }
+.chevron-icon { margin-left: auto; font-size: 10px; transition: transform 0.2s; }
+.nav-item.open .chevron-icon { transform: rotate(90deg); }
+.search-container { flex: 1; max-width: 500px; margin: 0 auto; }
+.search-input {
+    background: #f3f6f9; border: none; border-radius: 10px;
+    padding: 10px 20px; width: 100%;
+}
+/* Topbar */
+.topbar { height: var(--topbar-height); background: #fff; position: fixed; top: 0; right: 0; left: var(--sidebar-width); z-index: 999; display: flex; align-items: center; justify-content: space-between; padding: 0 30px; border-bottom: 1px solid #eef2f7; }
+.topbar.collapsed { left: 70px; }
+#sidebar-toggle { cursor: pointer; padding: 8px; border-radius: 6px; display: flex; align-items: center; justify-content: center; transition: all 0.2s ease; }
+#sidebar-toggle:hover { background-color: var(--nav-hover); color: var(--brand-primary); }
+.overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.3); z-index: 1040; }
+.overlay.active { display: block; }
+
+/* Main wrapper */
+.main-wrapper { margin-left: var(--sidebar-width); min-height: 100vh; padding: 2rem; padding-top: calc(var(--topbar-height) + 1rem); transition: margin-left 0.3s ease; }
+
+/* Stat Cards */
+.stat-card-new { border-radius: 15px; padding: 20px; color: white; position: relative; overflow: hidden; height: 150px; margin-bottom: 0; }
+.stat-card-new h5 { font-size: 0.75rem; opacity: 0.9; text-transform: uppercase; margin-bottom: 5px; }
+.stat-card-new h2 { font-size: 1.8rem; font-weight: 800; margin-bottom: 5px; }
+.stat-card-new .badge-soft { background: rgba(255,255,255,0.25); padding: 4px 8px; border-radius: 6px; font-size: 0.75rem; font-weight: 600; display: inline-block; }
+.icon-circle-bg { width: 40px; height: 40px; background: rgba(255,255,255,0.3); border-radius: 50%; display: flex; align-items: center; justify-content: center; position: absolute; top: 20px; right: 20px; }
+
+/* Mobile sidebar */
+@media (max-width: 991.98px) {
+    .sidebar {
+        position: fixed;
+        left: -280px;
+        top: 0;
+        height: 100%;
+        z-index: 1050;
+        transition: left 0.3s ease;
+    }
+    .sidebar.open {
+        left: 0;
+    }
+    .topbar {
+        left: 0 !important;
+    }
+    .main-wrapper {
+        margin-left: 0;
+        margin-right: -100px;
+        transition: none;
+    }
+    .overlay {
+        display: none;
+    }
+    .overlay.active {
+        display: block;
+    }
+}
+
+/* Sidebar 3D Effects */
+.sidebar {
+    background: linear-gradient(180deg, #ffffff, #f8fafc);
+    padding: 25px 16px;
+    box-shadow: 8px 0 30px rgba(0, 0, 0, 0.08);
+    transform-style: preserve-3d;
+    perspective: 1200px;
+}
+
+.sidebar-brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px;
+    margin-bottom: 30px;
+    border-radius: 14px;
+    background: white;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+    transform: translateZ(8px);
+}
+
+.brand-logo {
+    width: 42px;
+    height: 42px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #4f46e5, #6366f1);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.nav-link {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 18px;
+    border-radius: 12px;
+    color: #4b5563;
+    margin-bottom: 16px;
+    background: linear-gradient(180deg, #f9fafb, #f1f5f9);
+    box-shadow: 0 4px 0 #e5e7eb, 0 6px 12px rgba(0,0,0,0.06);
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    border: 1px solid rgba(255,255,255,0.8);
+    transform: translateZ(2px);
+}
+
+.nav-link:hover {
+    transform: translateY(-2px) translateZ(8px);
+    color: #4f46e5;
+    box-shadow: 0 8px 0 #e5e7eb, 0 12px 20px rgba(0,0,0,0.12);
+}
+
+.nav-link.active {
+    background: linear-gradient(135deg, #4f46e5, #6366f1);
+    color: #ffffff !important;
+    border: none;
+    transform: translateY(-6px) translateZ(12px);
+    z-index: 10;
+    box-shadow:
+        0 14px 28px rgba(79,70,229,0.55),
+        0 6px 0 #4338ca,
+        0 0 20px rgba(79,70,229,0.45),
+        0 0 40px rgba(79,70,229,0.3),
+        0 0 60px rgba(79,70,229,0.2);
+    animation: spotlightPulse 2s infinite ease-in-out;
+}
+
+@keyframes spotlightPulse {
+    0% { box-shadow: 0 14px 28px rgba(79,70,229,0.55),0 6px 0 #4338ca,0 0 20px rgba(79,70,229,0.45),0 0 40px rgba(79,70,229,0.3),0 0 60px rgba(79,70,229,0.2);}
+    50% { box-shadow: 0 16px 32px rgba(79,70,229,0.65),0 6px 0 #4338ca,0 0 24px rgba(79,70,229,0.55),0 0 48px rgba(79,70,229,0.35),0 0 70px rgba(79,70,229,0.25);}
+    100% { box-shadow: 0 14px 28px rgba(79,70,229,0.55),0 6px 0 #4338ca,0 0 20px rgba(79,70,229,0.45),0 0 40px rgba(79,70,229,0.3),0 0 60px rgba(79,70,229,0.2);}
+}
+
+.nav-item {
+    margin-bottom: 16px;
+}
+
+.nav-item .nav-link {
+    margin-bottom: 0;
+}
+
+.submenu {
+    margin-left: 20px;
+    padding-left: 10px;
+    border-left: 2px solid #f1f5f9;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.submenu .nav-link.small {
+    margin-top: 10px;
+    font-size: 13px;
+    padding: 10px 14px;
+    background: #ffffff;
+    box-shadow: 0 2px 0 #f1f5f9, 0 5px 10px rgba(0,0,0,0.05);
+}
+
+.chevron-icon {
+    font-size: 10px;
+    transition: transform 0.3s ease;
+}
+
+.nav-item.open .chevron-icon {
+    transform: rotate(90deg);
+}
+
+/* Warehouse specific styles */
+.warehouse-card {
+    border: none;
+    border-radius: 15px;
+    padding: 24px;
+    background: linear-gradient(135deg, #ffffff, #f8fafc);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.warehouse-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+}
+
+.warehouse-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.warehouse-icon {
+    width: 60px;
+    height: 60px;
+    border-radius: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    color: white;
+    background: linear-gradient(135deg, #4f46e5, #6366f1);
+}
+
+.warehouse-status {
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.status-active {
+    background: #f0fdf4;
+    color: #16a34a;
+}
+
+.status-maintenance {
+    background: #fff7ed;
+    color: #ea580c;
+}
+
+.capacity-bar {
+    height: 8px;
+    background: #e5e7eb;
+    border-radius: 10px;
+    overflow: hidden;
+    margin: 10px 0;
+}
+
+.capacity-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #4f46e5, #6366f1);
+    border-radius: 10px;
+    transition: width 0.3s ease;
+}
+
+.inventory-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.inventory-item:last-child {
+    border-bottom: none;
+}
+
+.inventory-label {
+    font-weight: 500;
+    color: #374151;
+}
+
+.inventory-value {
+    font-weight: 700;
+    color: #1f2937;
+}
+
+</style>
+
+</head>
+<body>
+
+<div class="overlay" id="overlay"></div>
+
+
+
+<aside class="sidebar" id="sidebar">
+    <div class="sidebar-brand">
+        <div class="brand-logo"><i class="fa fa-shop"></i></div>
+        <h5 class="fw-bold mb-0">Smart Cart</h5>
+    </div>
+
+    <a href="adeel-final.html" class="nav-link"><i class="fa-solid fa-house"></i> Dashboard</a>
+    <a href="add-product2.html" class="nav-link"><i class="fa-solid fa-circle-plus"></i> Add Products</a>
+
+    <div class="nav-item">
+        <a href="javascript:void(0)" class="nav-link dropdown-trigger"><i class="fa-solid fa-list-check"></i> Listing Center <i class="fa fa-chevron-right chevron-icon"></i></a>
+        <div class="submenu">
+            <a href="product-listing.html" class="nav-link small">Store Listing</a>
+            <a href="favorite-listing.html" class="nav-link small">Favorite Listing</a>
+        </div>
+    </div>
+
+    <div class="nav-item">
+        <a href="javascript:void(0)" class="nav-link dropdown-trigger"><i class="fa-solid fa-cart-flatbed"></i> Order Center <i class="fa fa-chevron-right chevron-icon"></i></a>
+        <div class="submenu">
+            <a href="unshipped-order.html" class="nav-link small">Unshipped Order</a>
+            <a href="tracking-verification.html" class="nav-link small">Tracking Verification</a>
+            <a href="shipped-complete.html" class="nav-link small">Shipped Complete</a>
+            <a href="cancelled-order.html" class="nav-link small">Cancelled Order</a>
+            <a href="rejected-trackings.html" class="nav-link small">Rejected Trackings</a>
+            <a href="order-returned.html" class="nav-link small">Order Returned</a>
+        </div>
+    </div>
+
+    <a href="3pl-partner.html" class="nav-link"><i class="fa-solid fa-handshake"></i> 3PL Partner Service</a>
+    <a href="warehouse.html" class="nav-link active"><i class="fa-solid fa-warehouse"></i> Smart Cart Warehouses</a>
+
+    <div class="nav-item">
+        <a href="javascript:void(0)" class="nav-link dropdown-trigger"><i class="fa-solid fa-money-bill-transfer"></i> Withdrawal Section <i class="fa fa-chevron-right chevron-icon"></i></a>
+        <div class="submenu">
+            <a href="add-payment-method.html" class="nav-link small">Add Payment Method</a>
+            <a href="seller-wallet-center.html" class="nav-link small">Seller Wallet Center</a>
+            <a href="pending-payouts.html" class="nav-link small">Pending Payouts</a>
+            <a href="completed-payouts.html" class="nav-link small">Completed Payouts</a>
+            <a href="refunded-payouts.html" class="nav-link small">Refunded Payouts</a>
+        </div>
+    </div>
+
+    <a href="account-settings.html" class="nav-link"><i class="fa-solid fa-gears"></i> Account Settings</a>
+    <!-- <a href="#" class="nav-link"><i class="fa-solid fa-headset"></i> Customer Support</a>
+    <a href="#" class="nav-link"><i class="fa-solid fa-download"></i> Download App</a> -->
+</aside>
+
+<!-- Topbar -->
+<div class="topbar" id="topbar">
+    <div class="d-flex align-items-center">
+        <i id="sidebar-toggle" class="fa fa-bars me-3 text-muted fs-5 cursor-pointer"></i>
+    </div>
+    <div class="search-container d-none d-md-block">
+        <div class="position-relative">
+            <i class="fa fa-search position-absolute top-50 start-0 translate-middle-y ms-3 text-muted"></i>
+            <input type="text" class="search-input ps-5" placeholder="Search warehouses...">
+        </div>
+    </div>
+    <div class="d-flex align-items-center">
+        <div class="position-relative me-4">
+            <i class="fa fa-bell text-muted fs-5"></i>
+            <span class="position-absolute top-0 start-100 translate-middle p-1 bg-danger border border-light rounded-circle"></span>
+        </div>
+        <div class="d-flex align-items-center">
+            <div class="text-end me-2 d-none d-sm-block">
+                <p class="mb-0 fw-bold small">Arslan Noshahi</p>
+                <p class="mb-0 x-small text-muted" style="font-size: 10px;">Admin</p>
+            </div>
+            <img src="https://ui-avatars.com/api/?name=Arslan+Noshahi&background=4F46E5&color=fff" class="rounded-circle" width="40" height="40" alt="DP">
+        </div>
+    </div>
+</div> 
+
+<!-- Main Content -->
+<div class="main-wrapper" id="main-wrapper">
+    <!-- Page Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4 p-4 rounded-4" 
+        style="background:rgba(255,255,255,0.9); backdrop-filter: blur(10px); box-shadow:0 20px 40px rgba(0,0,0,0.12);">
+
+        <div>
+            <h2 class="fw-bold mb-1" style="color:#0f172a;">
+                Smart Cart Warehouses
+                <span style="margin-left:8px; padding:4px 10px; font-size:12px; border-radius:12px; 
+                            background:linear-gradient(135deg,#10b981,#059669); 
+                            color:white; box-shadow:0 4px 10px rgba(16,185,129,0.45);">
+                    Active
+                </span>
+            </h2>
+            <p style="color:#64748b;">Manage your warehouse inventory and operations.</p>
+        </div>
+
+        <button class="btn btn-primary px-4 py-2 rounded-3" style="background: linear-gradient(135deg, #4f46e5, #6366f1); border: none; box-shadow: 0 4px 15px rgba(79,70,229,0.3);" onclick="openWarehouseModal()">
+            <i class="fa fa-plus me-2"></i> Add New Warehouse
+        </button>
+    </div>
+
+    <!-- Warehouse Statistics -->
+    <div class="row g-3 mb-4">
+        <div class="col-12 col-md-6 col-lg-3">
+            <div class="stat-card-new" style="background: #00C9E8; position: relative;">
+                <h5>TOTAL WAREHOUSES</h5>
+                <h2>12</h2>
+                <span class="badge-soft">3 Active, 2 Maintenance</span>
+                <div class="icon-circle-bg"><i class="fa fa-warehouse"></i></div>
+            </div>
+        </div>
+        <div class="col-12 col-md-6 col-lg-3">
+            <div class="stat-card-new" style="background: #00A34D; position: relative;">
+                <h5>TOTAL CAPACITY</h5>
+                <h2>85,420</h2>
+                <span class="badge-soft">Units Available</span>
+                <div class="icon-circle-bg"><i class="fa fa-boxes"></i></div>
+            </div>
+        </div>
+        <div class="col-12 col-md-6 col-lg-3">
+            <div class="stat-card-new" style="background: #0d6efd; position: relative;">
+                <h5>OCCUPIED SPACE</h5>
+                <h2>67,890</h2>
+                <span class="badge-soft">79.4% Utilization</span>
+                <div class="icon-circle-bg"><i class="fa fa-chart-pie"></i></div>
+            </div>
+        </div>
+        <div class="col-12 col-md-6 col-lg-3">
+            <div class="stat-card-new" style="background: #ffc107; position: relative;">
+                <h5>PENDING ORDERS</h5>
+                <h2>156</h2>
+                <span class="badge-soft">Ready for Dispatch</span>
+                <div class="icon-circle-bg"><i class="fa fa-clock"></i></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Warehouse List -->
+    <div class="row g-4">
+        <div class="col-lg-6">
+            <div class="warehouse-card">
+                <div class="warehouse-header">
+                    <div class="d-flex align-items-center">
+                        <div class="warehouse-icon me-3">
+                            <i class="fa fa-warehouse"></i>
+                        </div>
+                        <div>
+                            <h5 class="fw-bold mb-1">New York Warehouse</h5>
+                            <p class="text-muted small mb-0">Brooklyn, NY 11201</p>
+                        </div>
+                    </div>
+                    <span class="warehouse-status status-active">Active</span>
+                </div>
+                
+                <div class="mb-3">
+                    <div class="d-flex justify-content-between mb-1">
+                        <span class="small text-muted">Capacity</span>
+                        <span class="small fw-bold">8,450 / 10,000 units</span>
+                    </div>
+                    <div class="capacity-bar">
+                        <div class="capacity-fill" style="width: 84.5%"></div>
+                    </div>
+                </div>
+
+                <div class="inventory-item">
+                    <span class="inventory-label">Total Products</span>
+                    <span class="inventory-value">2,847</span>
+                </div>
+                <div class="inventory-item">
+                    <span class="inventory-label">Pending Orders</span>
+                    <span class="inventory-value">45</span>
+                </div>
+                <div class="inventory-item">
+                    <span class="inventory-label">Staff Members</span>
+                    <span class="inventory-value">24</span>
+                </div>
+
+                <div class="mt-3 d-flex gap-2">
+                    <button class="btn btn-sm btn-outline-primary flex-fill" onclick="viewWarehouse(1)">
+                        <i class="fa fa-eye me-1"></i>View Details
+                    </button>
+                    <button class="btn btn-sm btn-outline-secondary flex-fill" onclick="manageWarehouse(1)">
+                        <i class="fa fa-cog me-1"></i>Manage
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-6">
+            <div class="warehouse-card">
+                <div class="warehouse-header">
+                    <div class="d-flex align-items-center">
+                        <div class="warehouse-icon me-3" style="background: linear-gradient(135deg, #10b981, #059669);">
+                            <i class="fa fa-warehouse"></i>
+                        </div>
+                        <div>
+                            <h5 class="fw-bold mb-1">Los Angeles Warehouse</h5>
+                            <p class="text-muted small mb-0">Commerce, CA 90040</p>
+                        </div>
+                    </div>
+                    <span class="warehouse-status status-active">Active</span>
+                </div>
+                
+                <div class="mb-3">
+                    <div class="d-flex justify-content-between mb-1">
+                        <span class="small text-muted">Capacity</span>
+                        <span class="small fw-bold">12,200 / 15,000 units</span>
+                    </div>
+                    <div class="capacity-bar">
+                        <div class="capacity-fill" style="width: 81.3%"></div>
+                    </div>
+                </div>
+
+                <div class="inventory-item">
+                    <span class="inventory-label">Total Products</span>
+                    <span class="inventory-value">3,926</span>
+                </div>
+                <div class="inventory-item">
+                    <span class="inventory-label">Pending Orders</span>
+                    <span class="inventory-value">67</span>
+                </div>
+                <div class="inventory-item">
+                    <span class="inventory-label">Staff Members</span>
+                    <span class="inventory-value">32</span>
+                </div>
+
+                <div class="mt-3 d-flex gap-2">
+                    <button class="btn btn-sm btn-outline-primary flex-fill" onclick="viewWarehouse(2)">
+                        <i class="fa fa-eye me-1"></i>View Details
+                    </button>
+                    <button class="btn btn-sm btn-outline-secondary flex-fill" onclick="manageWarehouse(2)">
+                        <i class="fa fa-cog me-1"></i>Manage
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Sidebar toggle
+const sidebar = document.getElementById('sidebar');
+const topbar = document.getElementById('topbar');
+const mainWrapper = document.getElementById('main-wrapper');
+const toggleBtn = document.getElementById('sidebar-toggle');
+const overlay = document.getElementById('overlay');
+
+function setInitialSidebar() {
+    if(window.innerWidth >= 992) {
+        sidebar.classList.remove('collapsed');
+        topbar.classList.remove('collapsed');
+        mainWrapper.style.marginLeft = '280px';
+    } else {
+        sidebar.classList.remove('collapsed');
+        topbar.classList.remove('collapsed');
+        mainWrapper.style.marginLeft = '0';
+    }
+}
+
+function toggleSidebar() {
+    if(window.innerWidth >= 992) {
+        sidebar.classList.toggle('collapsed');
+        topbar.classList.toggle('collapsed');
+        mainWrapper.style.marginLeft = sidebar.classList.contains('collapsed') ? '60px' : '280px';
+    } else {
+        sidebar.classList.toggle('open');
+        overlay.classList.toggle('active');
+    }
+}
+
+// Initialize
+window.addEventListener('load', setInitialSidebar);
+window.addEventListener('resize', setInitialSidebar);
+
+// Button & overlay events
+toggleBtn.addEventListener('click', toggleSidebar);
+overlay.addEventListener('click', () => {
+    sidebar.classList.remove('open');
+    overlay.classList.remove('active');
+});
+
+// Submenu toggle
+document.querySelectorAll('.dropdown-trigger').forEach(trigger => {
+    trigger.addEventListener('click', () => {
+        const parent = trigger.closest('.nav-item');
+        document.querySelectorAll('.nav-item.open').forEach(item => {
+            if (item !== parent) item.classList.remove('open');
+        });
+        parent.classList.toggle('open');
+    });
+});
+</script>
+
+<!-- Add Warehouse Modal -->
+<div class="modal fade" id="warehouseModal" tabindex="-1" aria-labelledby="warehouseModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header border-0">
+                <h5 class="modal-title fw-bold" id="warehouseModalLabel">
+                    <i class="fa fa-warehouse me-2 text-primary"></i>Add New Warehouse
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="warehouseForm">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Warehouse Name</label>
+                            <input type="text" class="form-control" id="warehouseName" placeholder="e.g., Miami Warehouse" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Location</label>
+                            <input type="text" class="form-control" id="warehouseLocation" placeholder="e.g., Miami, FL 33101" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Total Capacity</label>
+                            <input type="number" class="form-control" id="warehouseCapacity" placeholder="e.g., 20000" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Staff Members</label>
+                            <input type="number" class="form-control" id="warehouseStaff" placeholder="e.g., 15" required>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label fw-semibold">Status</label>
+                            <select class="form-select" id="warehouseStatus">
+                                <option value="active">Active</option>
+                                <option value="maintenance">Maintenance</option>
+                            </select>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer border-0">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" onclick="saveWarehouse()">
+                    <i class="fa fa-save me-2"></i>Save Warehouse
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Success Modal -->
+<div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body text-center py-5">
+                <div class="mb-4">
+                    <div style="width: 80px; height: 80px; margin: 0 auto; background: linear-gradient(135deg, #10b981, #059669); border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                        <i class="fa fa-check text-white" style="font-size: 32px;"></i>
+                    </div>
+                </div>
+                <h4 class="fw-bold mb-2">Warehouse Added Successfully!</h4>
+                <p class="text-muted mb-3">Your new warehouse has been created and is now active in the system.</p>
+                <div class="alert alert-success border-0 bg-light" id="warehouseDetails">
+                    <!-- Details will be populated here -->
+                </div>
+                <div class="d-flex gap-2 justify-content-center">
+                    <button type="button" class="btn btn-primary px-4" data-bs-dismiss="modal" onclick="closeSuccessModal()">
+                        <i class="fa fa-thumbs-up me-2"></i>Great!
+                    </button>
+                    <button type="button" class="btn btn-outline-primary px-4" onclick="viewNewWarehouse()">
+                        <i class="fa fa-eye me-2"></i>View Now
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Error Modal -->
+<div class="modal fade" id="errorModal" tabindex="-1" aria-labelledby="errorModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body text-center py-5">
+                <div class="mb-4">
+                    <div style="width: 80px; height: 80px; margin: 0 auto; background: linear-gradient(135deg, #ef4444, #dc2626); border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                        <i class="fa fa-exclamation-triangle text-white" style="font-size: 32px;"></i>
+                    </div>
+                </div>
+                <h4 class="fw-bold mb-2 text-danger">Validation Error!</h4>
+                <p class="text-muted mb-3" id="errorMessage">Please correct the following errors:</p>
+                <div class="alert alert-danger border-0 bg-light text-start" id="errorDetails">
+                    <!-- Error details will be populated here -->
+                </div>
+                <button type="button" class="btn btn-danger px-4" data-bs-dismiss="modal">
+                    <i class="fa fa-times me-2"></i>Close
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Confirmation Modal -->
+<div class="modal fade" id="confirmModal" tabindex="-1" aria-labelledby="confirmModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body text-center py-5">
+                <div class="mb-4">
+                    <div style="width: 80px; height: 80px; margin: 0 auto; background: linear-gradient(135deg, #f59e0b, #d97706); border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                        <i class="fa fa-question text-white" style="font-size: 32px;"></i>
+                    </div>
+                </div>
+                <h4 class="fw-bold mb-2">Confirm Warehouse Creation</h4>
+                <p class="text-muted mb-3">Are you sure you want to create this warehouse?</p>
+                <div class="alert alert-warning border-0 bg-light text-start" id="confirmDetails">
+                    <!-- Confirmation details will be populated here -->
+                </div>
+                <div class="d-flex gap-2 justify-content-center">
+                    <button type="button" class="btn btn-secondary px-4" data-bs-dismiss="modal">
+                        <i class="fa fa-times me-2"></i>Cancel
+                    </button>
+                    <button type="button" class="btn btn-warning px-4" onclick="confirmSaveWarehouse()">
+                        <i class="fa fa-check me-2"></i>Confirm
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Warehouse Details Modal -->
+<div class="modal fade" id="warehouseDetailsModal" tabindex="-1" aria-labelledby="warehouseDetailsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header border-0">
+                <h5 class="modal-title fw-bold" id="warehouseDetailsModalLabel">
+                    <i class="fa fa-warehouse me-2 text-primary"></i><span id="detailWarehouseName">Warehouse Details</span>
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="warehouseDetailsContent">
+                <!-- Warehouse details will be populated here -->
+            </div>
+            <div class="modal-footer border-0">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" onclick="editWarehouse()">
+                    <i class="fa fa-edit me-2"></i>Edit Warehouse
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Warehouse Management Modal -->
+<div class="modal fade" id="warehouseManageModal" tabindex="-1" aria-labelledby="warehouseManageModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header border-0">
+                <h5 class="modal-title fw-bold" id="warehouseManageModalLabel">
+                    <i class="fa fa-cog me-2 text-primary"></i><span id="manageWarehouseName">Warehouse Management</span>
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="warehouseManageContent">
+                <!-- Management interface will be populated here -->
+            </div>
+            <div class="modal-footer border-0">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-success" onclick="saveManagementChanges()">
+                    <i class="fa fa-save me-2"></i>Save Changes
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+// Warehouse Management Functions
+let warehouseCount = 12;
+let warehouseIdCounter = 3;
+let currentWarehouseData = null;
+let newWarehouseId = null;
+
+function openWarehouseModal() {
+    const modal = new bootstrap.Modal(document.getElementById('warehouseModal'));
+    document.getElementById('warehouseForm').reset();
+    modal.show();
+}
+
+function saveWarehouse() {
+    const name = document.getElementById('warehouseName').value.trim();
+    const location = document.getElementById('warehouseLocation').value.trim();
+    const capacity = document.getElementById('warehouseCapacity').value.trim();
+    const staff = document.getElementById('warehouseStaff').value.trim();
+    const status = document.getElementById('warehouseStatus').value;
+
+    // Validation
+    const errors = [];
+    if (!name) errors.push('Warehouse name is required');
+    if (!location) errors.push('Location is required');
+    if (!capacity || capacity <= 0) errors.push('Valid capacity is required');
+    if (!staff || staff <= 0) errors.push('Valid staff count is required');
+    if (capacity > 100000) errors.push('Capacity cannot exceed 100,000 units');
+    if (staff > 500) errors.push('Staff count cannot exceed 500');
+
+    if (errors.length > 0) {
+        showError(errors);
+        return;
+    }
+
+    // Store data for confirmation
+    currentWarehouseData = {
+        name: name,
+        location: location,
+        capacity: parseInt(capacity),
+        staff: parseInt(staff),
+        status: status
+    };
+
+    // Show confirmation modal
+    showConfirmation();
+}
+
+function showConfirmation() {
+    const confirmDetails = document.getElementById('confirmDetails');
+    confirmDetails.innerHTML = `
+        <strong>Warehouse Details:</strong><br>
+        <i class="fa fa-building me-2"></i>Name: ${currentWarehouseData.name}<br>
+        <i class="fa fa-map-marker me-2"></i>Location: ${currentWarehouseData.location}<br>
+        <i class="fa fa-boxes me-2"></i>Capacity: ${currentWarehouseData.capacity.toLocaleString()} units<br>
+        <i class="fa fa-users me-2"></i>Staff: ${currentWarehouseData.staff} members<br>
+        <i class="fa fa-toggle-on me-2"></i>Status: ${currentWarehouseData.status.charAt(0).toUpperCase() + currentWarehouseData.status.slice(1)}
+    `;
+
+    const modal = new bootstrap.Modal(document.getElementById('confirmModal'));
+    modal.show();
+}
+
+function confirmSaveWarehouse() {
+    // Close confirmation modal
+    bootstrap.Modal.getInstance(document.getElementById('confirmModal')).hide();
+
+    // Create new warehouse card
+    const newWarehouse = createWarehouseCard({
+        id: warehouseIdCounter++,
+        name: currentWarehouseData.name,
+        location: currentWarehouseData.location,
+        capacity: currentWarehouseData.capacity,
+        occupied: Math.floor(currentWarehouseData.capacity * 0.7),
+        products: Math.floor(Math.random() * 3000) + 1000,
+        pendingOrders: Math.floor(Math.random() * 80) + 10,
+        staff: currentWarehouseData.staff,
+        status: currentWarehouseData.status
+    });
+
+    // Store new warehouse ID for viewing
+    newWarehouseId = warehouseIdCounter - 1;
+
+    // Add to warehouse list
+    const warehouseList = document.querySelector('.row.g-4');
+    warehouseList.insertAdjacentHTML('beforeend', newWarehouse);
+
+    // Update statistics
+    updateStatistics();
+
+    // Show enhanced success modal
+    showSuccess();
+}
+
+function showSuccess() {
+    const warehouseDetails = document.getElementById('warehouseDetails');
+    warehouseDetails.innerHTML = `
+        <strong>New Warehouse Created:</strong><br>
+        <i class="fa fa-building me-2"></i>${currentWarehouseData.name}<br>
+        <i class="fa fa-map-marker me-2"></i>${currentWarehouseData.location}<br>
+        <i class="fa fa-boxes me-2"></i>Capacity: ${currentWarehouseData.capacity.toLocaleString()} units<br>
+        <i class="fa fa-users me-2"></i>Staff: ${currentWarehouseData.staff} members
+    `;
+
+    const successModal = new bootstrap.Modal(document.getElementById('successModal'));
+    successModal.show();
+}
+
+function showError(errors) {
+    const errorDetails = document.getElementById('errorDetails');
+    errorDetails.innerHTML = errors.map(error => `<i class="fa fa-times-circle me-2 text-danger"></i>${error}`).join('<br>');
+
+    const errorModal = new bootstrap.Modal(document.getElementById('errorModal'));
+    errorModal.show();
+}
+
+function viewNewWarehouse() {
+    bootstrap.Modal.getInstance(document.getElementById('successModal')).hide();
+    viewWarehouse(newWarehouseId);
+}
+
+function createWarehouseCard(warehouse) {
+    const statusClass = warehouse.status === 'active' ? 'status-active' : 'status-maintenance';
+    const statusText = warehouse.status === 'active' ? 'Active' : 'Maintenance';
+    const occupancyPercentage = ((warehouse.occupied / warehouse.capacity) * 100).toFixed(1);
+    const iconColors = ['#4f46e5', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6'];
+    const iconColor = iconColors[warehouse.id % iconColors.length];
+
+    return `
+        <div class="col-lg-6">
+            <div class="warehouse-card">
+                <div class="warehouse-header">
+                    <div class="d-flex align-items-center">
+                        <div class="warehouse-icon me-3" style="background: linear-gradient(135deg, ${iconColor}, ${iconColor}dd);">
+                            <i class="fa fa-warehouse"></i>
+                        </div>
+                        <div>
+                            <h5 class="fw-bold mb-1">${warehouse.name}</h5>
+                            <p class="text-muted small mb-0">${warehouse.location}</p>
+                        </div>
+                    </div>
+                    <span class="warehouse-status ${statusClass}">${statusText}</span>
+                </div>
+                
+                <div class="mb-3">
+                    <div class="d-flex justify-content-between mb-1">
+                        <span class="small text-muted">Capacity</span>
+                        <span class="small fw-bold">${warehouse.occupied.toLocaleString()} / ${warehouse.capacity.toLocaleString()} units</span>
+                    </div>
+                    <div class="capacity-bar">
+                        <div class="capacity-fill" style="width: ${occupancyPercentage}%"></div>
+                    </div>
+                </div>
+
+                <div class="inventory-item">
+                    <span class="inventory-label">Total Products</span>
+                    <span class="inventory-value">${warehouse.products.toLocaleString()}</span>
+                </div>
+                <div class="inventory-item">
+                    <span class="inventory-label">Pending Orders</span>
+                    <span class="inventory-value">${warehouse.pendingOrders}</span>
+                </div>
+                <div class="inventory-item">
+                    <span class="inventory-label">Staff Members</span>
+                    <span class="inventory-value">${warehouse.staff}</span>
+                </div>
+
+                <div class="mt-3 d-flex gap-2">
+                    <button class="btn btn-sm btn-outline-primary flex-fill" onclick="viewWarehouse(${warehouse.id})">
+                        <i class="fa fa-eye me-1"></i>View Details
+                    </button>
+                    <button class="btn btn-sm btn-outline-secondary flex-fill" onclick="manageWarehouse(${warehouse.id})">
+                        <i class="fa fa-cog me-1"></i>Manage
+                    </button>
+                </div>
+            </div>
+        </div>
+    `;
+}
+
+function updateStatistics() {
+    warehouseCount++;
+    document.querySelector('.stat-card-new h2').textContent = warehouseCount;
+    
+    const capacityCard = document.querySelectorAll('.stat-card-new')[1];
+    const currentCapacity = parseInt(capacityCard.querySelector('h2').textContent.replace(',', ''));
+    const newCapacity = currentCapacity + currentWarehouseData.capacity;
+    capacityCard.querySelector('h2').textContent = newCapacity.toLocaleString();
+}
+
+function viewWarehouse(id) {
+    // Simulate warehouse data for existing warehouses
+    const warehouseData = {
+        1: {
+            id: 1,
+            name: 'New York Warehouse',
+            location: 'Brooklyn, NY 11201',
+            capacity: 10000,
+            occupied: 8450,
+            products: 2847,
+            pendingOrders: 45,
+            staff: 24,
+            status: 'active',
+            createdAt: '01/15/2024',
+            lastUpdated: '01/25/2024'
+        },
+        2: {
+            id: 2,
+            name: 'Los Angeles Warehouse',
+            location: 'Commerce, CA 90040',
+            capacity: 15000,
+            occupied: 12200,
+            products: 3926,
+            pendingOrders: 67,
+            staff: 32,
+            status: 'active',
+            createdAt: '01/10/2024',
+            lastUpdated: '01/24/2024'
+        }
+    };
+
+    // Get warehouse data or use new warehouse data
+    const data = warehouseData[id] || {
+        id: id,
+        name: id === newWarehouseId ? currentWarehouseData.name : `Warehouse ${id}`,
+        location: id === newWarehouseId ? currentWarehouseData.location : `Location ${id}`,
+        capacity: id === newWarehouseId ? currentWarehouseData.capacity : 15000,
+        occupied: id === newWarehouseId ? Math.floor(currentWarehouseData.capacity * 0.7) : 10500,
+        products: Math.floor(Math.random() * 3000) + 1000,
+        pendingOrders: Math.floor(Math.random() * 80) + 10,
+        staff: id === newWarehouseId ? currentWarehouseData.staff : 20,
+        status: id === newWarehouseId ? currentWarehouseData.status : 'active',
+        createdAt: new Date().toLocaleDateString(),
+        lastUpdated: new Date().toLocaleDateString()
+    };
+
+    const occupancyPercentage = ((data.occupied / data.capacity) * 100).toFixed(1);
+
+    document.getElementById('detailWarehouseName').textContent = data.name;
+    document.getElementById('warehouseDetailsContent').innerHTML = `
+        <div class="row g-4">
+            <div class="col-md-6">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body">
+                        <h6 class="text-muted mb-3">Basic Information</h6>
+                        <div class="mb-3">
+                            <label class="small text-muted">Warehouse ID</label>
+                            <p class="fw-bold mb-0">#WH${String(data.id).padStart(4, '0')}</p>
+                        </div>
+                        <div class="mb-3">
+                            <label class="small text-muted">Location</label>
+                            <p class="fw-bold mb-0"><i class="fa fa-map-marker me-2"></i>${data.location}</p>
+                        </div>
+                        <div class="mb-3">
+                            <label class="small text-muted">Status</label>
+                            <p class="mb-0"><span class="badge ${data.status === 'active' ? 'bg-success' : 'bg-warning'}">${data.status.charAt(0).toUpperCase() + data.status.slice(1)}</span></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body">
+                        <h6 class="text-muted mb-3">Capacity Information</h6>
+                        <div class="mb-3">
+                            <label class="small text-muted">Total Capacity</label>
+                            <p class="fw-bold mb-0">${data.capacity.toLocaleString()} units</p>
+                        </div>
+                        <div class="mb-3">
+                            <label class="small text-muted">Occupied Space</label>
+                            <p class="fw-bold mb-0">${data.occupied.toLocaleString()} units (${occupancyPercentage}%)</p>
+                        </div>
+                        <div class="progress mb-2" style="height: 8px;">
+                            <div class="progress-bar" style="width: ${occupancyPercentage}%; background: linear-gradient(90deg, #4f46e5, #6366f1);"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body">
+                        <h6 class="text-muted mb-3">Operations</h6>
+                        <div class="mb-3">
+                            <label class="small text-muted">Total Products</label>
+                            <p class="fw-bold mb-0">${data.products.toLocaleString()}</p>
+                        </div>
+                        <div class="mb-3">
+                            <label class="small text-muted">Pending Orders</label>
+                            <p class="fw-bold mb-0">${data.pendingOrders}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body">
+                        <h6 class="text-muted mb-3">Staff & Timeline</h6>
+                        <div class="mb-3">
+                            <label class="small text-muted">Staff Members</label>
+                            <p class="fw-bold mb-0">${data.staff} employees</p>
+                        </div>
+                        <div class="mb-3">
+                            <label class="small text-muted">Created Date</label>
+                            <p class="fw-bold mb-0">${data.createdAt}</p>
+                        </div>
+                        <div class="mb-3">
+                            <label class="small text-muted">Last Updated</label>
+                            <p class="fw-bold mb-0">${data.lastUpdated}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+
+    const modal = new bootstrap.Modal(document.getElementById('warehouseDetailsModal'));
+    modal.show();
+}
+
+function manageWarehouse(id) {
+    // Simulate warehouse data for existing warehouses
+    const warehouseNames = {
+        1: 'New York Warehouse',
+        2: 'Los Angeles Warehouse'
+    };
+    
+    const warehouseName = warehouseNames[id] || (id === newWarehouseId ? currentWarehouseData.name : `Warehouse ${id}`);
+    
+    document.getElementById('manageWarehouseName').textContent = warehouseName;
+    document.getElementById('warehouseManageContent').innerHTML = `
+        <div class="row g-4">
+            <div class="col-12">
+                <ul class="nav nav-tabs" role="tablist">
+                    <li class="nav-item">
+                        <a class="nav-link active" data-bs-toggle="tab" href="#inventory-tab">Inventory</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-bs-toggle="tab" href="#orders-tab">Orders</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-bs-toggle="tab" href="#staff-tab">Staff</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-bs-toggle="tab" href="#settings-tab">Settings</a>
+                    </li>
+                </ul>
+                <div class="tab-content mt-3">
+                    <div class="tab-pane fade show active" id="inventory-tab">
+                        <div class="card border-0 shadow-sm">
+                            <div class="card-body">
+                                <h6 class="mb-3">Inventory Management</h6>
+                                <div class="table-responsive">
+                                    <table class="table table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th>Product ID</th>
+                                                <th>Product Name</th>
+                                                <th>Quantity</th>
+                                                <th>Status</th>
+                                                <th>Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>#PRD001</td>
+                                                <td>Electronics Package</td>
+                                                <td>150</td>
+                                                <td><span class="badge bg-success">In Stock</span></td>
+                                                <td>
+                                                    <button class="btn btn-sm btn-outline-primary" onclick="editProduct('#PRD001')">Edit</button>
+                                                    <button class="btn btn-sm btn-outline-danger" onclick="removeProduct('#PRD001')">Remove</button>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>#PRD002</td>
+                                                <td>Clothing Bundle</td>
+                                                <td>85</td>
+                                                <td><span class="badge bg-warning">Low Stock</span></td>
+                                                <td>
+                                                    <button class="btn btn-sm btn-outline-primary" onclick="editProduct('#PRD002')">Edit</button>
+                                                    <button class="btn btn-sm btn-outline-danger" onclick="removeProduct('#PRD002')">Remove</button>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <button class="btn btn-primary mt-3" onclick="addProduct()">
+                                    <i class="fa fa-plus me-2"></i>Add Product
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="orders-tab">
+                        <div class="card border-0 shadow-sm">
+                            <div class="card-body">
+                                <h6 class="mb-3">Order Management</h6>
+                                <div class="table-responsive">
+                                    <table class="table table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th>Order ID</th>
+                                                <th>Customer</th>
+                                                <th>Items</th>
+                                                <th>Status</th>
+                                                <th>Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>#ORD001</td>
+                                                <td>John Doe</td>
+                                                <td>3 items</td>
+                                                <td><span class="badge bg-info">Processing</span></td>
+                                                <td>
+                                                    <button class="btn btn-sm btn-success" onclick="processOrder('#ORD001')">Process</button>
+                                                    <button class="btn btn-sm btn-outline-primary" onclick="viewOrder('#ORD001')">View</button>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="staff-tab">
+                        <div class="card border-0 shadow-sm">
+                            <div class="card-body">
+                                <h6 class="mb-3">Staff Management</h6>
+                                <div class="table-responsive">
+                                    <table class="table table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th>Employee ID</th>
+                                                <th>Name</th>
+                                                <th>Role</th>
+                                                <th>Status</th>
+                                                <th>Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>#EMP001</td>
+                                                <td>Alice Johnson</td>
+                                                <td>Manager</td>
+                                                <td><span class="badge bg-success">Active</span></td>
+                                                <td>
+                                                    <button class="btn btn-sm btn-outline-primary" onclick="editStaff('#EMP001')">Edit</button>
+                                                    <button class="btn btn-sm btn-outline-secondary" onclick="scheduleStaff('#EMP001')">Schedule</button>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <button class="btn btn-primary mt-3" onclick="addStaffMember()">
+                                    <i class="fa fa-user-plus me-2"></i>Add Staff Member
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="settings-tab">
+                        <div class="card border-0 shadow-sm">
+                            <div class="card-body">
+                                <h6 class="mb-3">Warehouse Settings</h6>
+                                <div class="row g-3">
+                                    <div class="col-md-6">
+                                        <label class="form-label">Operating Hours</label>
+                                        <input type="text" class="form-control" value="9:00 AM - 6:00 PM">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Contact Email</label>
+                                        <input type="email" class="form-control" value="warehouse${id}@smartcart.com">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Phone Number</label>
+                                        <input type="tel" class="form-control" value="+1 (555) 123-4567">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Manager</label>
+                                        <input type="text" class="form-control" value="Alice Johnson">
+                                    </div>
+                                    <div class="col-12">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="autoProcessing" checked>
+                                            <label class="form-check-label" for="autoProcessing">
+                                                Enable automatic order processing
+                                            </label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="emailNotifications" checked>
+                                            <label class="form-check-label" for="emailNotifications">
+                                                Send email notifications for low stock
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+
+    const modal = new bootstrap.Modal(document.getElementById('warehouseManageModal'));
+    modal.show();
+}
+
+function editWarehouse() {
+    // Get current warehouse data
+    const warehouseData = currentWarehouseData || {
+        name: 'Default Warehouse',
+        location: 'Default Location',
+        capacity: 15000,
+        staff: 20,
+        status: 'active'
+    };
+
+    // Populate edit form
+    document.getElementById('warehouseName').value = warehouseData.name;
+    document.getElementById('warehouseLocation').value = warehouseData.location;
+    document.getElementById('warehouseCapacity').value = warehouseData.capacity;
+    document.getElementById('warehouseStaff').value = warehouseData.staff;
+    document.getElementById('warehouseStatus').value = warehouseData.status;
+
+    // Close details modal and open edit modal
+    bootstrap.Modal.getInstance(document.getElementById('warehouseDetailsModal')).hide();
+    const editModal = new bootstrap.Modal(document.getElementById('warehouseModal'));
+    editModal.show();
+}
+
+// Inventory Management Functions
+let inventoryData = [
+    { id: '#PRD001', name: 'Electronics Package', quantity: 150, status: 'In Stock' },
+    { id: '#PRD002', name: 'Clothing Bundle', quantity: 85, status: 'Low Stock' }
+];
+
+function editProduct(productId) {
+    const product = inventoryData.find(p => p.id === productId);
+    if (!product) return;
+
+    const newQuantity = prompt(`Edit quantity for ${product.name}:`, product.quantity);
+    if (newQuantity !== null && !isNaN(newQuantity) && newQuantity >= 0) {
+        product.quantity = parseInt(newQuantity);
+        product.status = newQuantity < 50 ? 'Low Stock' : 'In Stock';
+        refreshInventoryTable();
+        showNotification('Product updated successfully!', 'success');
+    }
+}
+
+function removeProduct(productId) {
+    const product = inventoryData.find(p => p.id === productId);
+    if (!product) return;
+
+    if (confirm(`Are you sure you want to remove ${product.name} from inventory?`)) {
+        inventoryData = inventoryData.filter(p => p.id !== productId);
+        refreshInventoryTable();
+        showNotification('Product removed successfully!', 'warning');
+    }
+}
+
+function addProduct() {
+    const productId = `#PRD${String(inventoryData.length + 3).padStart(3, '0')}`;
+    const productName = prompt('Enter product name:');
+    if (!productName) return;
+
+    const quantity = prompt('Enter quantity:');
+    if (!quantity || isNaN(quantity) || quantity < 0) {
+        showNotification('Invalid quantity!', 'error');
+        return;
+    }
+
+    const newProduct = {
+        id: productId,
+        name: productName,
+        quantity: parseInt(quantity),
+        status: parseInt(quantity) < 50 ? 'Low Stock' : 'In Stock'
+    };
+
+    inventoryData.push(newProduct);
+    refreshInventoryTable();
+    showNotification('Product added successfully!', 'success');
+}
+
+function refreshInventoryTable() {
+    const tableBody = document.querySelector('#inventory-tab table tbody');
+    if (!tableBody) return;
+
+    tableBody.innerHTML = inventoryData.map(product => `
+        <tr>
+            <td>${product.id}</td>
+            <td>${product.name}</td>
+            <td>${product.quantity}</td>
+            <td><span class="badge ${product.status === 'In Stock' ? 'bg-success' : 'bg-warning'}">${product.status}</span></td>
+            <td>
+                <button class="btn btn-sm btn-outline-primary" onclick="editProduct('${product.id}')">Edit</button>
+                <button class="btn btn-sm btn-outline-danger" onclick="removeProduct('${product.id}')">Remove</button>
+            </td>
+        </tr>
+    `).join('');
+}
+
+// Order Management Functions
+let orderData = [
+    { id: '#ORD001', customer: 'John Doe', items: '3 items', status: 'Processing' },
+    { id: '#ORD002', customer: 'Jane Smith', items: '5 items', status: 'Pending' }
+];
+
+function processOrder(orderId) {
+    const order = orderData.find(o => o.id === orderId);
+    if (!order) return;
+
+    if (confirm(`Process order ${orderId} for ${order.customer}?`)) {
+        order.status = 'Shipped';
+        refreshOrderTable();
+        showNotification(`Order ${orderId} processed successfully!`, 'success');
+    }
+}
+
+function viewOrder(orderId) {
+    const order = orderData.find(o => o.id === orderId);
+    if (!order) return;
+
+    alert(`Order Details:\n\nOrder ID: ${orderId}\nCustomer: ${order.customer}\nItems: ${order.items}\nStatus: ${order.status}\n\nThis would open a detailed order view page.`);
+}
+
+function refreshOrderTable() {
+    const tableBody = document.querySelector('#orders-tab table tbody');
+    if (!tableBody) return;
+
+    tableBody.innerHTML = orderData.map(order => {
+        let statusBadge = '';
+        let actionButton = '';
+        
+        if (order.status === 'Processing') {
+            statusBadge = '<span class="badge bg-info">Processing</span>';
+            actionButton = `<button class="btn btn-sm btn-success" onclick="processOrder('${order.id}')">Process</button>`;
+        } else if (order.status === 'Pending') {
+            statusBadge = '<span class="badge bg-warning">Pending</span>';
+            actionButton = `<button class="btn btn-sm btn-success" onclick="processOrder('${order.id}')">Process</button>`;
+        } else if (order.status === 'Shipped') {
+            statusBadge = '<span class="badge bg-success">Shipped</span>';
+            actionButton = `<button class="btn btn-sm btn-outline-secondary" disabled>Completed</button>`;
+        }
+
+        return `
+            <tr>
+                <td>${order.id}</td>
+                <td>${order.customer}</td>
+                <td>${order.items}</td>
+                <td>${statusBadge}</td>
+                <td>
+                    ${actionButton}
+                    <button class="btn btn-sm btn-outline-primary" onclick="viewOrder('${order.id}')">View</button>
+                </td>
+            </tr>
+        `;
+    }).join('');
+}
+
+// Staff Management Functions
+let staffData = [
+    { id: '#EMP001', name: 'Alice Johnson', role: 'Manager', status: 'Active' },
+    { id: '#EMP002', name: 'Bob Wilson', role: 'Operator', status: 'Active' }
+];
+
+function editStaff(staffId) {
+    const staff = staffData.find(s => s.id === staffId);
+    if (!staff) return;
+
+    const newName = prompt(`Edit name for ${staff.name}:`, staff.name);
+    if (!newName) return;
+
+    const newRole = prompt(`Edit role for ${newName}:`, staff.role);
+    if (!newRole) return;
+
+    staff.name = newName;
+    staff.role = newRole;
+    refreshStaffTable();
+    showNotification('Staff member updated successfully!', 'success');
+}
+
+function scheduleStaff(staffId) {
+    const staff = staffData.find(s => s.id === staffId);
+    if (!staff) return;
+
+    const schedule = prompt(`Enter schedule for ${staff.name} (e.g., Mon-Fri 9AM-5PM):`);
+    if (!schedule) return;
+
+    showNotification(`Schedule updated for ${staff.name}: ${schedule}`, 'success');
+}
+
+function addStaffMember() {
+    const staffId = `#EMP${String(staffData.length + 3).padStart(3, '0')}`;
+    const name = prompt('Enter staff member name:');
+    if (!name) return;
+
+    const role = prompt('Enter role:');
+    if (!role) return;
+
+    const newStaff = {
+        id: staffId,
+        name: name,
+        role: role,
+        status: 'Active'
+    };
+
+    staffData.push(newStaff);
+    refreshStaffTable();
+    showNotification('Staff member added successfully!', 'success');
+}
+
+function refreshStaffTable() {
+    const tableBody = document.querySelector('#staff-tab table tbody');
+    if (!tableBody) return;
+
+    tableBody.innerHTML = staffData.map(staff => `
+        <tr>
+            <td>${staff.id}</td>
+            <td>${staff.name}</td>
+            <td>${staff.role}</td>
+            <td><span class="badge bg-success">${staff.status}</span></td>
+            <td>
+                <button class="btn btn-sm btn-outline-primary" onclick="editStaff('${staff.id}')">Edit</button>
+                <button class="btn btn-sm btn-outline-secondary" onclick="scheduleStaff('${staff.id}')">Schedule</button>
+            </td>
+        </tr>
+    `).join('');
+}
+
+// Settings Management Functions
+function saveManagementChanges() {
+    // Get all settings values
+    const operatingHours = document.querySelector('input[placeholder="9:00 AM - 6:00 PM"]').value;
+    const contactEmail = document.querySelector('input[type="email"]').value;
+    const phoneNumber = document.querySelector('input[type="tel"]').value;
+    const manager = document.querySelector('input[placeholder="Alice Johnson"]').value;
+    const autoProcessing = document.getElementById('autoProcessing').checked;
+    const emailNotifications = document.getElementById('emailNotifications').checked;
+
+    // Validate email
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(contactEmail)) {
+        showNotification('Please enter a valid email address!', 'error');
+        return;
+    }
+
+    // Save settings (in real app, this would save to backend)
+    const settings = {
+        operatingHours,
+        contactEmail,
+        phoneNumber,
+        manager,
+        autoProcessing,
+        emailNotifications
+    };
+
+    console.log('Settings saved:', settings);
+    showNotification('Management changes saved successfully!', 'success');
+    
+    // Close modal after a short delay
+    setTimeout(() => {
+        bootstrap.Modal.getInstance(document.getElementById('warehouseManageModal')).hide();
+    }, 1500);
+}
+
+// Notification System
+function showNotification(message, type) {
+    // Create notification element
+    const notification = document.createElement('div');
+    notification.className = `alert alert-${type === 'error' ? 'danger' : type} alert-dismissible fade show position-fixed`;
+    notification.style.cssText = 'top: 20px; right: 20px; z-index: 9999; min-width: 300px;';
+    notification.innerHTML = `
+        ${message}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    `;
+
+    // Add to body
+    document.body.appendChild(notification);
+
+    // Auto remove after 3 seconds
+    setTimeout(() => {
+        if (notification.parentNode) {
+            notification.remove();
+        }
+    }, 3000);
+}
+
+// Initialize tables when modal is opened
+document.addEventListener('shown.bs.modal', function (e) {
+    if (e.target.id === 'warehouseManageModal') {
+        refreshInventoryTable();
+        refreshOrderTable();
+        refreshStaffTable();
+    }
+});
+
+function closeSuccessModal() {
+    // Success modal will close automatically due to data-bs-dismiss
+}
+</script>
+
+</body>
+</html>

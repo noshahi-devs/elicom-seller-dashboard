@@ -1,0 +1,775 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Add Payment Method | Noshahi Store</title>
+
+<!-- Dependencies -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<style>
+:root {
+    --bg-body: #f8fafc;
+    --sidebar-bg: #ffffff;
+    --sidebar-width: 280px;
+    --text-dark: #1e293b;
+    --text-muted: #64748b;
+    --brand-primary: #4F46E5;
+    --nav-hover: #f1f5f9;
+    --topbar-height: 60px;
+}
+
+body { background-color: var(--bg-body); font-family: 'Inter', sans-serif; color: var(--text-dark); overflow-x: hidden; margin:0; }
+
+/* Sidebar */
+.sidebar { width: var(--sidebar-width); height: 100vh; position: fixed; left: 0; top: 0; background: var(--sidebar-bg); border-right: 1px solid #e2e8f0; z-index: 1000; overflow-y: auto; transition: all 0.3s ease; }
+.sidebar.collapsed { width: 60px; }
+.sidebar.collapsed .nav-link span { display: none; }
+.sidebar.collapsed .nav-label { display: none; }
+.sidebar::-webkit-scrollbar { width: 6px; }
+.sidebar::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.1); border-radius: 3px; }
+.sidebar-brand { padding: 1.5rem; display: flex; align-items: center; border-bottom: 1px solid #f1f5f9; }
+.brand-logo { width: 32px; height: 32px; background: var(--brand-primary); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: white; margin-right: 12px; }
+.nav-label { padding: 1.5rem 1.5rem 0.5rem; font-size: 11px; text-transform: uppercase; letter-spacing: 1px; font-weight: 700; color: var(--text-muted); }
+.nav-link { padding: 0.8rem 1.5rem; display: flex; align-items: center; color: var(--text-dark); font-weight: 500; font-size: 14px; transition: all 0.2s; border-radius: 0; text-decoration: none; }
+.nav-link i { width: 20px; margin-right: 12px; font-size: 16px; color: var(--text-muted); }
+.nav-link:hover { background-color: var(--nav-hover); color: var(--brand-primary); }
+.nav-link.active { color: var(--brand-primary); background: #eef2ff; border-right: 3px solid var(--brand-primary); }
+.submenu { background: #fcfcfd; padding-left: 1rem; display: none; }
+.nav-item.open .submenu { display: block; }
+.chevron-icon { margin-left: auto; font-size: 10px; transition: transform 0.2s; }
+.nav-item.open .chevron-icon { transform: rotate(90deg); }
+.search-container { flex: 1; max-width: 500px; margin: 0 auto; }
+.search-input {
+    background: #f3f6f9; border: none; border-radius: 10px;
+    padding: 10px 20px; width: 100%;
+}
+/* Topbar */
+.topbar { height: var(--topbar-height); background: #fff; position: fixed; top: 0; right: 0; left: var(--sidebar-width); z-index: 999; display: flex; align-items: center; justify-content: space-between; padding: 0 30px; border-bottom: 1px solid #eef2f7; }
+.topbar.collapsed { left: 70px; }
+#sidebar-toggle { cursor: pointer; padding: 8px; border-radius: 6px; display: flex; align-items: center; justify-content: center; transition: all 0.2s ease; }
+#sidebar-toggle:hover { background-color: var(--nav-hover); color: var(--brand-primary); }
+.overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.3); z-index: 1040; }
+.overlay.active { display: block; }
+
+/* Main wrapper */
+.main-wrapper { margin-left: var(--sidebar-width); min-height: 100vh; padding: 2rem; padding-top: calc(var(--topbar-height) + 1rem); transition: margin-left 0.3s ease; }
+
+/* Payment Method Cards */
+.payment-card {
+    border: 2px solid #e5e7eb;
+    border-radius: 15px;
+    padding: 20px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    background: #fff;
+}
+
+.payment-card:hover {
+    border-color: var(--brand-primary);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+}
+
+.payment-card.selected {
+    border-color: var(--brand-primary);
+    background: #f8faff;
+}
+
+.payment-card .card-icon {
+    width: 60px;
+    height: 60px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    margin-bottom: 15px;
+}
+
+.payment-card.bank .card-icon {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+}
+
+.payment-card.card .card-icon {
+    background: linear-gradient(135deg, #f093fb, #f5576c);
+    color: white;
+}
+
+.payment-card.paypal .card-icon {
+    background: linear-gradient(135deg, #4facfe, #00f2fe);
+    color: white;
+}
+
+.payment-card.crypto .card-icon {
+    background: linear-gradient(135deg, #fa709a, #fee140);
+    color: white;
+}
+
+/* Form Styles */
+.form-control, .form-select {
+    border: 2px solid #e5e7eb;
+    border-radius: 10px;
+    padding: 12px 15px;
+    font-size: 14px;
+    transition: all 0.3s ease;
+}
+
+.form-control:focus, .form-select:focus {
+    border-color: var(--brand-primary);
+    box-shadow: 0 0 0 0.2rem rgba(79, 70, 229, 0.1);
+}
+
+.form-label {
+    font-weight: 600;
+    color: var(--text-dark);
+    margin-bottom: 8px;
+}
+
+/* Sidebar 3D Effects */
+.sidebar {
+    background: linear-gradient(180deg, #ffffff, #f8fafc);
+    padding: 25px 16px;
+    box-shadow: 8px 0 30px rgba(0, 0, 0, 0.08);
+    transform-style: preserve-3d;
+    perspective: 1200px;
+}
+
+.sidebar-brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px;
+    margin-bottom: 30px;
+    border-radius: 14px;
+    background: white;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+    transform: translateZ(8px);
+}
+
+.brand-logo {
+    width: 42px;
+    height: 42px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #4f46e5, #6366f1);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.nav-link {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 18px;
+    border-radius: 12px;
+    color: #4b5563;
+    margin-bottom: 16px;
+    background: linear-gradient(180deg, #f9fafb, #f1f5f9);
+    box-shadow: 0 4px 0 #e5e7eb, 0 6px 12px rgba(0,0,0,0.06);
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    border: 1px solid rgba(255,255,255,0.8);
+    transform: translateZ(2px);
+}
+
+.nav-link:hover {
+    transform: translateY(-2px) translateZ(8px);
+    color: #4f46e5;
+    box-shadow: 0 8px 0 #e5e7eb, 0 12px 20px rgba(0,0,0,0.12);
+}
+
+.nav-link.active {
+    background: linear-gradient(135deg, #4f46e5, #6366f1);
+    color: #ffffff !important;
+    border: none;
+    transform: translateY(-6px) translateZ(12px);
+    z-index: 10;
+    box-shadow:
+        0 14px 28px rgba(79,70,229,0.55),
+        0 6px 0 #4338ca,
+        0 0 20px rgba(79,70,229,0.45),
+        0 0 40px rgba(79,70,229,0.3),
+        0 0 60px rgba(79,70,229,0.2);
+    animation: spotlightPulse 2s infinite ease-in-out;
+}
+
+@keyframes spotlightPulse {
+    0% { box-shadow: 0 14px 28px rgba(79,70,229,0.55),0 6px 0 #4338ca,0 0 20px rgba(79,70,229,0.45),0 0 40px rgba(79,70,229,0.3),0 0 60px rgba(79,70,229,0.2);}
+    50% { box-shadow: 0 16px 32px rgba(79,70,229,0.65),0 6px 0 #4338ca,0 0 24px rgba(79,70,229,0.55),0 0 48px rgba(79,70,229,0.35),0 0 70px rgba(79,70,229,0.25);}
+    100% { box-shadow: 0 14px 28px rgba(79,70,229,0.55),0 6px 0 #4338ca,0 0 20px rgba(79,70,229,0.45),0 0 40px rgba(79,70,229,0.3),0 0 60px rgba(79,70,229,0.2);}
+}
+
+.nav-item {
+    margin-bottom: 16px;
+}
+
+.nav-item .nav-link {
+    margin-bottom: 0;
+}
+
+.submenu {
+    margin-left: 20px;
+    padding-left: 10px;
+    border-left: 2px solid #f1f5f9;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.submenu .nav-link.small {
+    margin-top: 10px;
+    font-size: 13px;
+    padding: 10px 14px;
+    background: #ffffff;
+    box-shadow: 0 2px 0 #f1f5f9, 0 5px 10px rgba(0,0,0,0.05);
+}
+
+.chevron-icon {
+    font-size: 10px;
+    transition: transform 0.3s ease;
+}
+
+.nav-item.open .chevron-icon {
+    transform: rotate(90deg);
+}
+
+/* Mobile sidebar */
+@media (max-width: 991.98px) {
+    .sidebar {
+        position: fixed;
+        left: -280px;
+        top: 0;
+        height: 100%;
+        z-index: 1050;
+        transition: left 0.3s ease;
+    }
+    .sidebar.open {
+        left: 0;
+    }
+    .topbar {
+        left: 0 !important;
+    }
+    .main-wrapper {
+        margin-left: 0;
+        margin-right: -100px;
+        transition: none;
+    }
+    .overlay {
+        display: none;
+    }
+    .overlay.active {
+        display: block;
+    }
+}
+
+</style>
+
+</head>
+<body>
+
+<div class="overlay" id="overlay"></div>
+
+<!-- Sidebar -->
+<aside class="sidebar" id="sidebar">
+    <div class="sidebar-brand">
+        <div class="brand-logo"><i class="fa fa-shop"></i></div>
+        <h5 class="fw-bold mb-0">Smart Cart</h5>
+    </div>
+
+    <a href="adeel-final.html" class="nav-link"><i class="fa-solid fa-house"></i> Dashboard</a>
+    <a href="add-product2.html" class="nav-link"><i class="fa-solid fa-circle-plus"></i> Add Products</a>
+
+    <div class="nav-item">
+        <a href="javascript:void(0)" class="nav-link dropdown-trigger"><i class="fa-solid fa-list-check"></i> Listing Center <i class="fa fa-chevron-right chevron-icon"></i></a>
+        <div class="submenu">
+            <a href="product-listing.html" class="nav-link small">Store Listing</a>
+            <a href="#" class="nav-link small">Favorite Listing</a>
+        </div>
+    </div>
+
+    <div class="nav-item">
+        <a href="javascript:void(0)" class="nav-link dropdown-trigger"><i class="fa-solid fa-cart-flatbed"></i> Order Center <i class="fa fa-chevron-right chevron-icon"></i></a>
+        <div class="submenu">
+            <a href="unshipped-order.html" class="nav-link small">Unshipped Order</a>
+            <a href="tracking-verification.html" class="nav-link small">Tracking Verification</a>
+            <a href="shipped-complete.html" class="nav-link small">Shipped Complete</a>
+            <a href="cancelled-order.html" class="nav-link small">Cancelled Order</a>
+            <a href="rejected-trackings.html" class="nav-link small">Rejected Trackings</a>
+            <a href="order-returned.html" class="nav-link small">Order Returned</a>
+        </div>
+    </div>
+
+    <a href="3pl-partner.html" class="nav-link"><i class="fa-solid fa-handshake"></i> 3PL Partner Service</a>
+    <a href="warehouse.html" class="nav-link"><i class="fa-solid fa-warehouse"></i> Smart Cart Warehouses</a>
+
+    <div class="nav-item">
+        <a href="javascript:void(0)" class="nav-link dropdown-trigger"><i class="fa-solid fa-money-bill-transfer"></i> Withdrawal Section <i class="fa fa-chevron-right chevron-icon"></i></a>
+        <div class="submenu">
+            <a href="add-payment-method.html" class="nav-link small active">Add Payment Method</a>
+            <a href="seller-wallet-center.html" class="nav-link small">Seller Wallet Center</a>
+            <a href="pending-payouts.html" class="nav-link small">Pending Payouts</a>
+            <a href="completed-payouts.html" class="nav-link small">Completed Payouts</a>
+            <a href="refunded-payouts.html" class="nav-link small">Refunded Payouts</a>
+        </div>
+    </div>
+
+    <a href="account-settings.html" class="nav-link"><i class="fa-solid fa-gears"></i> Account Settings</a>
+    <!-- <a href="#" class="nav-link"><i class="fa-solid fa-headset"></i> Customer Support</a>
+    <a href="#" class="nav-link"><i class="fa-solid fa-download"></i> Download App</a> -->
+</aside>
+
+<!-- Topbar -->
+<div class="topbar" id="topbar">
+    <div class="d-flex align-items-center">
+        <i id="sidebar-toggle" class="fa fa-bars me-3 text-muted fs-5 cursor-pointer"></i>
+    </div>
+    <div class="search-container d-none d-md-block">
+        <div class="position-relative">
+            <i class="fa fa-search position-absolute top-50 start-0 translate-middle-y ms-3 text-muted"></i>
+            <input type="text" class="search-input ps-5" placeholder="Search payment methods...">
+        </div>
+    </div>
+    <div class="d-flex align-items-center">
+        <div class="position-relative me-4">
+            <i class="fa fa-bell text-muted fs-5"></i>
+            <span class="position-absolute top-0 start-100 translate-middle p-1 bg-danger border border-light rounded-circle"></span>
+        </div>
+        <div class="d-flex align-items-center">
+            <div class="text-end me-2 d-none d-sm-block">
+                <p class="mb-0 fw-bold small">Arslan Noshahi</p>
+                <p class="mb-0 x-small text-muted" style="font-size: 10px;">Admin</p>
+            </div>
+            <img src="https://ui-avatars.com/api/?name=Arslan+Noshahi&background=4F46E5&color=fff" class="rounded-circle" width="40" height="40" alt="DP">
+        </div>
+    </div>
+</div> 
+
+<!-- Main Content -->
+<div class="main-wrapper" id="main-wrapper">
+    <!-- Page Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4 p-4 rounded-4" 
+        style="background:rgba(255,255,255,0.9); backdrop-filter: blur(10px); box-shadow:0 20px 40px rgba(0,0,0,0.12);">
+
+        <div>
+            <h2 class="fw-bold mb-1" style="color:#0f172a;">
+                Add Payment Method
+                <span style="margin-left:8px; padding:4px 10px; font-size:12px; border-radius:12px; 
+                            background:linear-gradient(135deg,#4f46e5,#6366f1); 
+                            color:white; box-shadow:0 4px 10px rgba(79,70,229,0.45);">
+                    Secure
+                </span>
+            </h2>
+            <p style="color:#64748b;">Add a new payment method for withdrawals and transactions.</p>
+        </div>
+
+        <button class="btn btn-outline-secondary px-4 py-2 rounded-3" onclick="viewPaymentMethods()">
+            <i class="fa fa-list me-2"></i>View All Methods
+        </button>
+    </div>
+
+    <!-- Payment Method Selection -->
+    <div class="row g-4 mb-4">
+        <div class="col-md-6 col-lg-3">
+            <div class="payment-card bank" onclick="selectPaymentMethod('bank')">
+                <div class="card-icon">
+                    <i class="fa fa-university"></i>
+                </div>
+                <h5 class="fw-bold">Bank Account</h5>
+                <p class="text-muted small mb-0">Direct bank transfer</p>
+            </div>
+        </div>
+        <div class="col-md-6 col-lg-3">
+            <div class="payment-card card" onclick="selectPaymentMethod('card')">
+                <div class="card-icon">
+                    <i class="fa fa-credit-card"></i>
+                </div>
+                <h5 class="fw-bold">Credit/Debit Card</h5>
+                <p class="text-muted small mb-0">Visa, Mastercard, etc.</p>
+            </div>
+        </div>
+        <div class="col-md-6 col-lg-3">
+            <div class="payment-card paypal" onclick="selectPaymentMethod('paypal')">
+                <div class="card-icon">
+                    <i class="fa fa-paypal"></i>
+                </div>
+                <h5 class="fw-bold">PayPal</h5>
+                <p class="text-muted small mb-0">Fast & secure payments</p>
+            </div>
+        </div>
+        <div class="col-md-6 col-lg-3">
+            <div class="payment-card crypto" onclick="selectPaymentMethod('crypto')">
+                <div class="card-icon">
+                    <i class="fa fa-bitcoin"></i>
+                </div>
+                <h5 class="fw-bold">Cryptocurrency</h5>
+                <p class="text-muted small mb-0">Bitcoin, Ethereum, etc.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Payment Form -->
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-sm rounded-4">
+                <div class="card-body p-4">
+                    <h5 class="fw-bold mb-4">Payment Details</h5>
+                    
+                    <!-- Bank Account Form -->
+                    <div id="bankForm" class="payment-form" style="display: none;">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label">Account Holder Name</label>
+                                <input type="text" class="form-control" placeholder="John Doe" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Bank Name</label>
+                                <input type="text" class="form-control" placeholder="Chase Bank" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Account Number</label>
+                                <input type="text" class="form-control" placeholder="1234567890" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Routing Number</label>
+                                <input type="text" class="form-control" placeholder="021000021" required>
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label">Bank Address</label>
+                                <input type="text" class="form-control" placeholder="123 Main St, New York, NY 10001" required>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Card Form -->
+                    <div id="cardForm" class="payment-form" style="display: none;">
+                        <div class="row g-3">
+                            <div class="col-12">
+                                <label class="form-label">Cardholder Name</label>
+                                <input type="text" class="form-control" placeholder="John Doe" required>
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label">Card Number</label>
+                                <input type="text" class="form-control" placeholder="1234 5678 9012 3456" maxlength="19" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Expiry Date</label>
+                                <input type="text" class="form-control" placeholder="MM/YY" maxlength="5" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">CVV</label>
+                                <input type="text" class="form-control" placeholder="123" maxlength="4" required>
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label">Billing Address</label>
+                                <input type="text" class="form-control" placeholder="123 Main St, New York, NY 10001" required>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- PayPal Form -->
+                    <div id="paypalForm" class="payment-form" style="display: none;">
+                        <div class="row g-3">
+                            <div class="col-12">
+                                <label class="form-label">PayPal Email</label>
+                                <input type="email" class="form-control" placeholder="john.doe@example.com" required>
+                            </div>
+                            <div class="col-12">
+                                <div class="alert alert-info">
+                                    <i class="fa fa-info-circle me-2"></i>
+                                    You will be redirected to PayPal to authorize this payment method.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Crypto Form -->
+                    <div id="cryptoForm" class="payment-form" style="display: none;">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label">Cryptocurrency Type</label>
+                                <select class="form-select" required>
+                                    <option value="">Select cryptocurrency</option>
+                                    <option value="btc">Bitcoin (BTC)</option>
+                                    <option value="eth">Ethereum (ETH)</option>
+                                    <option value="usdt">Tether (USDT)</option>
+                                    <option value="usdc">USD Coin (USDC)</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Wallet Address</label>
+                                <input type="text" class="form-control" placeholder="0x1234567890abcdef..." required>
+                            </div>
+                            <div class="col-12">
+                                <div class="alert alert-warning">
+                                    <i class="fa fa-exclamation-triangle me-2"></i>
+                                    Please double-check the wallet address. Cryptocurrency transactions cannot be reversed.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Default Message -->
+                    <div id="defaultMessage" class="text-center py-5">
+                        <i class="fa fa-credit-card text-muted" style="font-size: 48px;"></i>
+                        <p class="text-muted mt-3">Select a payment method to continue</p>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="d-flex gap-3 mt-4" id="actionButtons" style="display: none;">
+                        <button type="button" class="btn btn-secondary px-4" onclick="resetForm()">
+                            <i class="fa fa-times me-2"></i>Cancel
+                        </button>
+                        <button type="button" class="btn btn-primary px-4" onclick="savePaymentMethod()">
+                            <i class="fa fa-save me-2"></i>Save Payment Method
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Security Info -->
+        <div class="col-lg-4">
+            <div class="card border-0 shadow-sm rounded-4">
+                <div class="card-body p-4">
+                    <h5 class="fw-bold mb-4">
+                        <i class="fa fa-shield-alt text-success me-2"></i>Security Information
+                    </h5>
+                    
+                    <div class="mb-3">
+                        <div class="d-flex align-items-center mb-2">
+                            <i class="fa fa-lock text-primary me-2"></i>
+                            <span class="fw-semibold">256-bit SSL Encryption</span>
+                        </div>
+                        <p class="text-muted small mb-0">Your data is protected with industry-standard encryption.</p>
+                    </div>
+
+                    <div class="mb-3">
+                        <div class="d-flex align-items-center mb-2">
+                            <i class="fa fa-check-circle text-success me-2"></i>
+                            <span class="fw-semibold">PCI DSS Compliant</span>
+                        </div>
+                        <p class="text-muted small mb-0">We comply with Payment Card Industry Data Security Standards.</p>
+                    </div>
+
+                    <div class="mb-3">
+                        <div class="d-flex align-items-center mb-2">
+                            <i class="fa fa-user-shield text-info me-2"></i>
+                            <span class="fw-semibold">Fraud Protection</span>
+                        </div>
+                        <p class="text-muted small mb-0">Advanced fraud detection system monitors all transactions.</p>
+                    </div>
+
+                    <div class="alert alert-success border-0 bg-light mt-4">
+                        <i class="fa fa-info-circle me-2"></i>
+                        <strong>Tip:</strong> We'll never ask for your full password or sensitive information via email.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+// Sidebar toggle
+const sidebar = document.getElementById('sidebar');
+const topbar = document.getElementById('topbar');
+const mainWrapper = document.getElementById('main-wrapper');
+const toggleBtn = document.getElementById('sidebar-toggle');
+const overlay = document.getElementById('overlay');
+
+function setInitialSidebar() {
+    if(window.innerWidth >= 992) {
+        sidebar.classList.remove('collapsed');
+        topbar.classList.remove('collapsed');
+        mainWrapper.style.marginLeft = '280px';
+    } else {
+        sidebar.classList.remove('collapsed');
+        topbar.classList.remove('collapsed');
+        mainWrapper.style.marginLeft = '0';
+    }
+}
+
+function toggleSidebar() {
+    if(window.innerWidth >= 992) {
+        sidebar.classList.toggle('collapsed');
+        topbar.classList.toggle('collapsed');
+        mainWrapper.style.marginLeft = sidebar.classList.contains('collapsed') ? '60px' : '280px';
+    } else {
+        sidebar.classList.toggle('open');
+        overlay.classList.toggle('active');
+    }
+}
+
+// Initialize
+window.addEventListener('load', setInitialSidebar);
+window.addEventListener('resize', setInitialSidebar);
+
+// Button & overlay events
+toggleBtn.addEventListener('click', toggleSidebar);
+overlay.addEventListener('click', () => {
+    sidebar.classList.remove('open');
+    overlay.classList.remove('active');
+});
+
+// Submenu toggle
+document.querySelectorAll('.dropdown-trigger').forEach(trigger => {
+    trigger.addEventListener('click', () => {
+        const parent = trigger.closest('.nav-item');
+        document.querySelectorAll('.nav-item.open').forEach(item => {
+            if (item !== parent) item.classList.remove('open');
+        });
+        parent.classList.toggle('open');
+    });
+});
+
+// Payment Method Selection
+let selectedPaymentMethod = null;
+
+function selectPaymentMethod(type) {
+    // Remove previous selection
+    document.querySelectorAll('.payment-card').forEach(card => {
+        card.classList.remove('selected');
+    });
+    
+    // Add selection to clicked card
+    event.currentTarget.classList.add('selected');
+    selectedPaymentMethod = type;
+    
+    // Hide all forms and default message
+    document.querySelectorAll('.payment-form').forEach(form => {
+        form.style.display = 'none';
+    });
+    document.getElementById('defaultMessage').style.display = 'none';
+    
+    // Show selected form
+    document.getElementById(type + 'Form').style.display = 'block';
+    document.getElementById('actionButtons').style.display = 'flex';
+}
+
+function resetForm() {
+    // Remove selection
+    document.querySelectorAll('.payment-card').forEach(card => {
+        card.classList.remove('selected');
+    });
+    
+    // Hide all forms and action buttons
+    document.querySelectorAll('.payment-form').forEach(form => {
+        form.style.display = 'none';
+    });
+    document.getElementById('actionButtons').style.display = 'none';
+    
+    // Show default message
+    document.getElementById('defaultMessage').style.display = 'block';
+    selectedPaymentMethod = null;
+}
+
+function savePaymentMethod() {
+    if (!selectedPaymentMethod) {
+        alert('Please select a payment method');
+        return;
+    }
+    
+    // Get form data based on selected type
+    let formData = {};
+    let isValid = true;
+    
+    if (selectedPaymentMethod === 'bank') {
+        const inputs = document.querySelectorAll('#bankForm input');
+        inputs.forEach(input => {
+            if (!input.value.trim()) {
+                isValid = false;
+                input.classList.add('is-invalid');
+            } else {
+                formData[input.placeholder] = input.value;
+                input.classList.remove('is-invalid');
+            }
+        });
+    } else if (selectedPaymentMethod === 'card') {
+        const inputs = document.querySelectorAll('#cardForm input');
+        inputs.forEach(input => {
+            if (!input.value.trim()) {
+                isValid = false;
+                input.classList.add('is-invalid');
+            } else {
+                formData[input.placeholder] = input.value;
+                input.classList.remove('is-invalid');
+            }
+        });
+    } else if (selectedPaymentMethod === 'paypal') {
+        const emailInput = document.querySelector('#paypalForm input[type="email"]');
+        if (!emailInput.value.trim() || !emailInput.value.includes('@')) {
+            isValid = false;
+            emailInput.classList.add('is-invalid');
+        } else {
+            formData['PayPal Email'] = emailInput.value;
+            emailInput.classList.remove('is-invalid');
+        }
+    } else if (selectedPaymentMethod === 'crypto') {
+        const select = document.querySelector('#cryptoForm select');
+        const addressInput = document.querySelector('#cryptoForm input[type="text"]');
+        
+        if (!select.value) {
+            isValid = false;
+            select.classList.add('is-invalid');
+        }
+        if (!addressInput.value.trim()) {
+            isValid = false;
+            addressInput.classList.add('is-invalid');
+        }
+        
+        if (isValid) {
+            formData['Cryptocurrency'] = select.options[select.selectedIndex].text;
+            formData['Wallet Address'] = addressInput.value;
+            select.classList.remove('is-invalid');
+            addressInput.classList.remove('is-invalid');
+        }
+    }
+    
+    if (!isValid) {
+        alert('Please fill in all required fields correctly');
+        return;
+    }
+    
+    // Save payment method (in real app, this would save to backend)
+    console.log('Saving payment method:', selectedPaymentMethod, formData);
+    
+    // Show success message
+    alert('Payment method added successfully! You can now use this method for withdrawals.');
+    
+    // Reset form
+    resetForm();
+}
+
+function viewPaymentMethods() {
+    alert('This would navigate to a page showing all your saved payment methods with options to edit or remove them.');
+}
+
+// Format card number input
+document.addEventListener('input', function(e) {
+    if (e.target.placeholder && e.target.placeholder.includes('1234 5678')) {
+        let value = e.target.value.replace(/\s/g, '');
+        let formattedValue = value.match(/.{1,4}/g)?.join(' ') || value;
+        e.target.value = formattedValue;
+    }
+    
+    // Format expiry date
+    if (e.target.placeholder && e.target.placeholder === 'MM/YY') {
+        let value = e.target.value.replace(/\D/g, '');
+        if (value.length >= 2) {
+            value = value.slice(0, 2) + '/' + value.slice(2, 4);
+        }
+        e.target.value = value;
+    }
+});
+</script>
+
+</body>
+</html>
