@@ -2322,55 +2322,17 @@
             // Setup search
             setupSearch();
 
-            // Set current date
-            const now = new Date();
-            document.getElementById('current-date').textContent =
-                now.toLocaleDateString('en-US', {
-                    weekday: 'long',
-                    year: 'numeric',
-                    month: 'long',
-                    day: 'numeric'
-                });
-
-            // Sidebar toggle
-            const sidebar = document.getElementById('sidebar');
-            const topbar = document.getElementById('topbar');
-            const mainWrapper = document.getElementById('main-wrapper');
-            const toggleBtn = document.getElementById('sidebar-toggle');
-            const overlay = document.getElementById('overlay');
-
-            function setInitialSidebar() {
-                if (window.innerWidth >= 992) {
-                    sidebar.classList.remove('collapsed');
-                    topbar.classList.remove('collapsed');
-                    mainWrapper.style.marginLeft = '280px';
-                } else {
-                    mainWrapper.style.marginLeft = '0';
-                }
-            }
-
-            function toggleSidebar() {
-                if (window.innerWidth >= 992) {
-                    sidebar.classList.toggle('collapsed');
-                    topbar.classList.toggle('collapsed');
-                    mainWrapper.style.marginLeft = sidebar.classList.contains('collapsed') ? '60px' : '280px';
-                } else {
-                    sidebar.classList.toggle('open');
-                    overlay.classList.toggle('active');
-                }
-            }
-
-            setInitialSidebar();
-            window.addEventListener('resize', setInitialSidebar);
-            toggleBtn.addEventListener('click', toggleSidebar);
+            // Window resize handler for Three.js
+            window.addEventListener('resize', onWindowResize);
 
             // Partner card interactions
-            document.querySelectorAll('.partner-card').forEach(card => {
-                card.addEventListener('click', function () {
-                    const id = parseInt(this.dataset.id);
-                    const type = this.dataset.type;
+            document.addEventListener('click', function (e) {
+                const card = e.target.closest('.partner-card');
+                if (card) {
+                    const id = parseInt(card.dataset.id);
+                    const type = card.dataset.type;
                     selectPartner(id, type);
-                });
+                }
             });
 
             // Globe controls
@@ -2393,78 +2355,37 @@
                 this.innerHTML = isRotating ? '<i class="fas fa-pause"></i>' : '<i class="fas fa-play"></i>';
             });
 
-            // Animation controls
-            document.getElementById('rotation-speed').addEventListener('input', function (e) {
-                rotationSpeed = e.target.value * 0.0003;
-            });
-
-            document.getElementById('play-animation').addEventListener('click', () => {
-                isRotating = true;
-                document.getElementById('toggle-rotate').innerHTML = '<i class="fas fa-pause"></i>';
-                document.getElementById('toggle-rotate').classList.add('active');
-            });
-
-            document.getElementById('pause-animation').addEventListener('click', () => {
-                isRotating = false;
-                document.getElementById('toggle-rotate').innerHTML = '<i class="fas fa-play"></i>';
-                document.getElementById('toggle-rotate').classList.remove('active');
-            });
-
             // Highlight controls
             document.getElementById('highlight-usa').addEventListener('click', () => {
-                // Fly to USA region
                 const usaPosition = new THREE.Vector3(-300, 100, 300);
                 animateCameraTo(usaPosition, new THREE.Vector3(-100, 0, 100));
             });
 
             document.getElementById('highlight-uk').addEventListener('click', () => {
-                // Fly to UK region
                 const ukPosition = new THREE.Vector3(0, 100, 250);
                 animateCameraTo(ukPosition, new THREE.Vector3(0, 0, 190));
             });
 
             // Search panel toggle
             const searchPanel = document.querySelector('.search-panel');
-            document.getElementById('toggle-search').addEventListener('click', () => {
-                searchPanel.style.display = searchPanel.style.display === 'none' ? 'block' : 'none';
-            });
+            if (document.getElementById('toggle-search')) {
+                document.getElementById('toggle-search').addEventListener('click', () => {
+                    searchPanel.style.display = searchPanel.style.display === 'none' ? 'block' : 'none';
+                });
+            }
 
-            document.getElementById('close-search').addEventListener('click', () => {
-                searchPanel.style.display = 'none';
-            });
-
-            // Global search
-            document.getElementById('global-search').addEventListener('input', function (e) {
-                const query = e.target.value.toLowerCase();
-                if (query.length >= 2) {
-                    searchPanel.style.display = 'block';
-                    document.getElementById('search-input').value = query;
-                    document.getElementById('search-input').dispatchEvent(new Event('input'));
-                }
-            });
-
-            // View all buttons
-            document.getElementById('view-all-usa').addEventListener('click', () => {
-                const usaPosition = new THREE.Vector3(-300, 100, 300);
-                animateCameraTo(usaPosition, new THREE.Vector3(-100, 0, 100));
-            });
-
-            document.getElementById('view-all-uk').addEventListener('click', () => {
-                const ukPosition = new THREE.Vector3(0, 100, 250);
-                animateCameraTo(ukPosition, new THREE.Vector3(0, 0, 190));
-            });
+            if (document.getElementById('close-search')) {
+                document.getElementById('close-search').addEventListener('click', () => {
+                    searchPanel.style.display = 'none';
+                });
+            }
 
             // Info panel close
-            document.getElementById('close-panel').addEventListener('click', () => {
-                document.getElementById('info-panel').classList.remove('show');
-            });
-
-            // Submenu toggle
-            document.querySelectorAll('.dropdown-trigger').forEach(trigger => {
-                trigger.addEventListener('click', () => {
-                    trigger.parentElement.classList.toggle('open');
+            if (document.getElementById('close-panel')) {
+                document.getElementById('close-panel').addEventListener('click', () => {
+                    document.getElementById('info-panel').classList.remove('show');
                 });
-            });
+            }
 
             // Auto-select first partner
             setTimeout(() => {

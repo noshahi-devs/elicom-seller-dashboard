@@ -64,11 +64,6 @@ function setupSidebarToggle() {
 
             if (window.innerWidth <= 768) {
                 sidebar.classList.toggle('show');
-            } else {
-                const isCollapsed = sidebar.classList.contains('collapsed');
-                sidebar.style.width = isCollapsed ? '80px' : '280px';
-                topbar.style.left = isCollapsed ? '80px' : '280px';
-                mainWrapper.style.marginLeft = isCollapsed ? '80px' : '280px';
             }
         });
     }
