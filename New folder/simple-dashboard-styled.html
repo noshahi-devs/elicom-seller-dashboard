@@ -838,10 +838,15 @@ body {
 </head>
 <body>
 <div class="particles" id="particles"></div>
+<!-- Sidebar Toggle for Mobile -->
+<button class="sidebar-toggle" id="sidebar-toggle">
+    <i class="fas fa-bars"></i>
+</button>
 
 <div class="overlay" id="overlay"></div>
 
 
+<!-- Sidebar -->
 <!-- Sidebar -->
 <aside class="sidebar" id="sidebar">
     <div class="sidebar-brand">
@@ -908,18 +913,20 @@ body {
 
                 <a href="3pl-partner.html" class="nav-link"><i class="fa-solid fa-handshake"></i> 3PL Partner Service</a>
                 <a href="warehouse.html" class="nav-link"><i class="fa-solid fa-warehouse"></i> Smart Cart Warehouses</a>
+                <a href="wallet-center.html" class="nav-link"><i class="fa-solid fa-wallet"></i> Wallet Center</a>
 
                 <div class="nav-item">
-                    <a href="javascript:void(0)" class="nav-link dropdown-trigger"><i class="fa-solid fa-money-bill-transfer"></i> Withdrawal Section <i class="fa fa-chevron-right chevron-icon"></i></a>
+                    <a href="javascript:void(0)" class="nav-link dropdown-trigger"><i class="fa-solid fa-money-bill-transfer"></i> Payout Section <i class="fa fa-chevron-right chevron-icon"></i></a>
                     <div class="submenu">
+                        <a href="unified-payouts.html" class="nav-link small">Payout History</a>
                         <a href="add-payment-method.html" class="nav-link small">Add Payment Method</a>
-                        <a href="seller-wallet-center.html" class="nav-link small">Seller Wallet Center</a>
                         <a href="pending-payouts.html" class="nav-link small">Pending Payouts</a>
                         <a href="completed-payouts.html" class="nav-link small">Completed Payouts</a>
                         <a href="refunded-payouts.html" class="nav-link small">Refunded Payouts</a>
                     </div>
                 </div>
 
+                <a href="profile.html" class="nav-link"><i class="fa-solid fa-user"></i> My Profile</a>
                 <a href="account-settings.html" class="nav-link"><i class="fa-solid fa-gears"></i> Account Settings</a>
             </div>
         </div>
@@ -947,6 +954,7 @@ body {
 
 <!-- Topbar - New Design -->
 <!-- Topbar -->
+<!-- Topbar -->
 <div class="topbar" id="topbar">
     <div style="display: flex; align-items: center; gap: 25px;">
         <div style="position: relative;">
@@ -963,6 +971,75 @@ body {
                 backdrop-filter: blur(10px);
             ">
         </div>
+        
+        <div style="display: flex; gap: 15px;">
+            <button style="
+                padding: 10px 20px;
+                background: linear-gradient(135deg, var(--brand-primary), var(--brand-secondary));
+                color: white;
+                border: none;
+                border-radius: 10px;
+                font-weight: 700;
+                cursor: pointer;
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                transition: all 0.3s ease;
+                box-shadow: 0 5px 15px rgba(79, 70, 229, 0.3);
+            ">
+                <i class="fas fa-plus"></i>
+                New Order
+            </button>
+            <button style="
+                padding: 10px 20px;
+                background: linear-gradient(135deg, rgba(241, 245, 249, 0.9), rgba(226, 232, 240, 0.9));
+                color: var(--text-dark);
+                border: none;
+                border-radius: 10px;
+                font-weight: 700;
+                cursor: pointer;
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                transition: all 0.3s ease;
+            ">
+                <i class="fas fa-filter"></i>
+                Filter
+            </button>
+        </div>
+    </div>
+    
+    <div style="display: flex; align-items: center; gap: 25px;">
+        <div style="position: relative;">
+            <i class="fas fa-bell" style="font-size: 1.2rem; color: var(--text-muted); cursor: pointer;"></i>
+            <span class="notification-badge" style="top: -5px; right: -5px;">3</span>
+        </div>
+        
+        <div style="display: flex; align-items: center; gap: 15px;">
+            <div style="text-align: right;">
+                <div style="font-size: 0.95rem; font-weight: 700; color: var(--text-dark);">Arslan Noshahi</div>
+                <div style="font-size: 0.8rem; color: var(--text-muted);">Seller ID: SC-789456</div>
+            </div>
+            <div style="
+                width: 45px;
+                height: 45px;
+                border-radius: 12px;
+                background: linear-gradient(135deg, var(--brand-accent), #a5b4fc);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                color: white;
+                font-weight: bold;
+                font-size: 1.1rem;
+                box-shadow: 0 8px 20px rgba(79, 70, 229, 0.3);
+                cursor: pointer;
+                transition: all 0.3s ease;
+            ">
+                AN
+            </div>
+        </div>
+    </div>
+</div>
         
         <div style="display: flex; gap: 15px;">
             <button style="

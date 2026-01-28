@@ -388,6 +388,7 @@
             margin: 0;
             background: linear-gradient(135deg, var(--text-dark), var(--brand-secondary));
             -webkit-background-clip: text;
+            background-clip: text;
             -webkit-text-fill-color: transparent;
             text-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
         }
@@ -645,6 +646,8 @@
             color: var(--text-dark);
             background: linear-gradient(135deg, var(--brand-primary), var(--brand-secondary));
             -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
             -webkit-text-fill-color: transparent;
             text-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
         }
@@ -1309,12 +1312,8 @@
                                 class="fa fa-chevron-right chevron-icon"></i></a>
                         <div class="submenu">
                             <a href="unshipped-order.html?status=unshipped" class="nav-link small">Unshipped Order</a>
-                            <a href="unshipped-order.html?status=shipped" class="nav-link small">Tracking
-                                Verification</a>
                             <a href="unshipped-order.html?status=completed" class="nav-link small">Shipped Complete</a>
                             <a href="unshipped-order.html?status=cancelled" class="nav-link small">Cancelled Order</a>
-                            <a href="unshipped-order.html?status=rejected" class="nav-link small">Rejected Trackings</a>
-                            <a href="unshipped-order.html?status=returned" class="nav-link small">Order Returned</a>
                         </div>
                     </div>
 
@@ -1322,19 +1321,22 @@
                         Service</a>
                     <a href="warehouse.html" class="nav-link"><i class="fa-solid fa-warehouse"></i> Smart Cart
                         Warehouses</a>
+                    <a href="wallet-center.html" class="nav-link"><i class="fa-solid fa-wallet"></i> Wallet Center</a>
 
                     <div class="nav-item">
                         <a href="javascript:void(0)" class="nav-link dropdown-trigger"><i
-                                class="fa-solid fa-money-bill-transfer"></i> Withdrawal Section <i
+                                class="fa-solid fa-money-bill-transfer"></i> Payout Section <i
                                 class="fa fa-chevron-right chevron-icon"></i></a>
                         <div class="submenu">
+                            <a href="unified-payouts.html" class="nav-link small">Payout History</a>
                             <a href="add-payment-method.html" class="nav-link small">Add Payment Method</a>
-                            <a href="seller-wallet-center.html" class="nav-link small">Seller Wallet Center</a>
                             <a href="pending-payouts.html" class="nav-link small">Pending Payouts</a>
                             <a href="completed-payouts.html" class="nav-link small">Completed Payouts</a>
                             <a href="refunded-payouts.html" class="nav-link small">Refunded Payouts</a>
                         </div>
                     </div>
+
+                    <a href="profile.html" class="nav-link"><i class="fa-solid fa-user"></i> My Profile</a>
 
                     <a href="account-settings.html" class="nav-link"><i class="fa-solid fa-gears"></i> Account
                         Settings</a>
@@ -1365,8 +1367,8 @@
 
     <!-- Topbar -->
     <div class="topbar" id="topbar">
-        <button id="sidebar-toggle"
-            style="background: none; border: none; font-size: 1.5rem; color: var(--text-dark); cursor: pointer; margin-right: 15px;">
+        <button id="sidebar-toggle" class="btn-toggle-3d" aria-label="Toggle Sidebar">
+            <div class="btn-glow"></div>
             <i class="fas fa-bars"></i>
         </button>
         <div style="display: flex; align-items: center; gap: 25px;">
@@ -1592,6 +1594,27 @@
     </div>
 
     <script>
+        const sidebar = document.getElementById('sidebar');
+        const topbar = document.getElementById('topbar');
+        const mainWrapper = document.getElementById('main-wrapper');
+        const toggleBtn = document.getElementById('sidebar-toggle');
+        const overlay = document.getElementById('overlay');
+
+        toggleBtn.addEventListener('click', () => {
+            sidebar.classList.toggle('collapsed');
+            topbar.classList.toggle('collapsed');
+            mainWrapper.classList.toggle('collapsed');
+            toggleBtn.classList.toggle('active');
+
+            if (sidebar.classList.contains('collapsed')) {
+                mainWrapper.style.marginLeft = '80px';
+                topbar.style.left = '80px';
+            } else {
+                mainWrapper.style.marginLeft = '280px';
+                topbar.style.left = '280px';
+            }
+        });
+
         // Enhanced Dummy Order Data
         const orders = [
             {
@@ -1854,7 +1877,6 @@
                 particle.style.top = `${y}vh`;
                 particle.style.opacity = Math.random() * 0.1 + 0.05;
                 particle.style.animation = `float ${duration}s ${delay}s infinite linear`;
-
                 particlesContainer.appendChild(particle);
             }
         }
@@ -1870,27 +1892,24 @@
                 hour: '2-digit',
                 minute: '2-digit'
             };
-            document.getElementById('current-date').textContent =
-                now.toLocaleDateString('en-US', options);
+            document.getElementById('current-date').textContent = now.toLocaleDateString('en-US', options);
         }
 
         // Render orders based on status filter
         function renderOrders(statusFilter) {
             const container = document.getElementById('orders-container');
-            const filteredOrders = statusFilter === 'all'
-                ? orders
-                : orders.filter(order => order.status === statusFilter);
+            const filteredOrders = statusFilter === 'all' ? orders : orders.filter(order => order.status === statusFilter);
 
             if (filteredOrders.length === 0) {
                 container.innerHTML = `
-            <div class="empty-state">
-                <div class="empty-icon">
-                    <i class="fas fa-inbox"></i>
+                <div class="empty-state">
+                    <div class="empty-icon">
+                        <i class="fas fa-inbox"></i>
+                    </div>
+                    <h3>No Orders Found</h3>
+                    <p>There are no orders matching your current filter selection.</p>
                 </div>
-                <h3>No Orders Found</h3>
-                <p>There are no orders matching your current filter selection.</p>
-            </div>
-        `;
+                `;
                 return;
             }
 
@@ -1905,7 +1924,9 @@
                     setTimeout(() => {
                         const card = container.querySelector(`.order-card[data-id="${order.id}"]`);
                         if (card) {
-                            card.addEventListener('click', () => {
+                            card.addEventListener('click', (e) => {
+                                // Avoid triggering if clicking on buttons
+                                if (e.target.closest('.action-btn')) return;
                                 selectOrder(order.id);
                             });
 
@@ -1916,15 +1937,19 @@
                             if (viewBtn) {
                                 viewBtn.addEventListener('click', (e) => {
                                     e.stopPropagation();
-                                    showOrderSummary(order);
-                                    highlightSelectedCard(order.id);
+                                    const orderId = e.currentTarget.dataset.id;
+                                    const orderObj = orders.find(o => o.id === orderId);
+                                    if (orderObj) showOrderSummary(orderObj);
+                                    highlightSelectedCard(orderId);
                                 });
                             }
 
                             if (trackBtn) {
                                 trackBtn.addEventListener('click', (e) => {
                                     e.stopPropagation();
-                                    showTrackingInfo(order);
+                                    const orderId = e.currentTarget.dataset.id;
+                                    const orderObj = orders.find(o => o.id === orderId);
+                                    if (orderObj) showTrackingInfo(orderObj);
                                 });
                             }
                         }
@@ -1944,7 +1969,7 @@
                 <div class="order-id">${order.id}</div>
                 <div class="order-date">${formatDate(order.date)}</div>
             </div>
-            
+
             <div class="order-customer">
                 <div class="customer-avatar">
                     ${initials}
@@ -1957,7 +1982,7 @@
                     </p>
                 </div>
             </div>
-            
+
             <div class="order-details">
                 <div class="detail-item">
                     <div class="detail-label">
@@ -1988,23 +2013,23 @@
                     <div class="detail-value">${order.payment}</div>
                 </div>
             </div>
-            
+
             <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 20px;">
                 <div class="status-badge ${status.color}">
                     <i class="${status.icon}"></i>
                     <span>${status.label}</span>
                 </div>
-                
+
                 ${order.status === 'shipped' || order.status === 'completed' ? `
-                    <div style="display: flex; align-items: center; gap: 8px;">
-                        <i class="fas fa-shipping-fast" style="color: var(--brand-primary);"></i>
-                        <span style="font-size: 0.9rem; color: var(--text-muted);">
-                            ${order.tracking}
-                        </span>
-                    </div>
+                <div style="display: flex; align-items: center; gap: 8px;">
+                    <i class="fas fa-shipping-fast" style="color: var(--brand-primary);"></i>
+                    <span style="font-size: 0.9rem; color: var(--text-muted);">
+                        ${order.tracking}
+                    </span>
+                </div>
                 ` : ''}
             </div>
-            
+
             <div class="order-actions">
                 <button class="action-btn btn-view" data-id="${order.id}" data-action="view">
                     <i class="fas fa-eye"></i>
@@ -2016,7 +2041,7 @@
                 </button>
             </div>
         </div>
-    `;
+        `;
         }
 
         // Select order function
@@ -2040,7 +2065,8 @@
             details.innerHTML = `
         <div style="margin-bottom: 25px;">
             <h4 style="color: var(--text-dark); margin-bottom: 15px; font-size: 1.1rem;">Order Information</h4>
-            <div style="background: linear-gradient(135deg, rgba(248, 250, 252, 0.9), rgba(241, 245, 249, 0.95)); padding: 20px; border-radius: 16px; border: 1px solid rgba(226, 232, 240, 0.8);">
+            <div
+                style="background: linear-gradient(135deg, rgba(248, 250, 252, 0.9), rgba(241, 245, 249, 0.95)); padding: 20px; border-radius: 16px; border: 1px solid rgba(226, 232, 240, 0.8);">
                 <div style="display: flex; justify-content: space-between; margin-bottom: 12px;">
                     <span style="color: var(--text-muted); font-size: 0.95rem;">Order ID:</span>
                     <span style="font-weight: 800; color: var(--brand-primary);">${order.id}</span>
@@ -2062,12 +2088,14 @@
                 </div>
             </div>
         </div>
-        
+
         <div style="margin-bottom: 25px;">
             <h4 style="color: var(--text-dark); margin-bottom: 15px; font-size: 1.1rem;">Customer Details</h4>
-            <div style="background: linear-gradient(135deg, rgba(248, 250, 252, 0.9), rgba(241, 245, 249, 0.95)); padding: 20px; border-radius: 16px; border: 1px solid rgba(226, 232, 240, 0.8);">
+            <div
+                style="background: linear-gradient(135deg, rgba(248, 250, 252, 0.9), rgba(241, 245, 249, 0.95)); padding: 20px; border-radius: 16px; border: 1px solid rgba(226, 232, 240, 0.8);">
                 <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 15px;">
-                    <div style="width: 50px; height: 50px; border-radius: 12px; background: linear-gradient(135deg, var(--brand-accent), #a5b4fc); display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 1.2rem;">
+                    <div
+                        style="width: 50px; height: 50px; border-radius: 12px; background: linear-gradient(135deg, var(--brand-accent), #a5b4fc); display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 1.2rem;">
                         ${order.customer.split(' ').map(n => n[0]).join('').toUpperCase()}
                     </div>
                     <div>
@@ -2086,16 +2114,19 @@
                     </div>
                 </div>
                 <div style="margin-top: 15px;">
-                    <div style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 5px;">Shipping Address:</div>
+                    <div style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 5px;">Shipping Address:
+                    </div>
                     <div style="font-weight: 500; font-size: 0.95rem; line-height: 1.5;">${order.address}</div>
                 </div>
             </div>
         </div>
-        
+
         <div style="margin-bottom: 25px;">
             <h4 style="color: var(--text-dark); margin-bottom: 15px; font-size: 1.1rem;">Order Items</h4>
-            <div style="background: linear-gradient(135deg, rgba(248, 250, 252, 0.9), rgba(241, 245, 249, 0.95)); padding: 20px; border-radius: 16px; border: 1px solid rgba(226, 232, 240, 0.8);">
-                <div style="display: flex; justify-content: space-between; margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px solid rgba(226, 232, 240, 0.8);">
+            <div
+                style="background: linear-gradient(135deg, rgba(248, 250, 252, 0.9), rgba(241, 245, 249, 0.95)); padding: 20px; border-radius: 16px; border: 1px solid rgba(226, 232, 240, 0.8);">
+                <div
+                    style="display: flex; justify-content: space-between; margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px solid rgba(226, 232, 240, 0.8);">
                     <div>
                         <div style="font-weight: 800; margin-bottom: 8px;">${order.product}</div>
                         <div style="display: flex; gap: 20px;">
@@ -2111,50 +2142,63 @@
                     </div>
                     <div style="font-weight: 800; color: var(--brand-primary); font-size: 1.2rem;">${order.amount}</div>
                 </div>
-                <div style="display: flex; justify-content: space-between; font-weight: 800; padding-top: 15px; font-size: 1.1rem;">
+                <div
+                    style="display: flex; justify-content: space-between; font-weight: 800; padding-top: 15px; font-size: 1.1rem;">
                     <span>Total Amount:</span>
                     <span>${order.amount}</span>
                 </div>
             </div>
         </div>
-        
+
         ${order.notes ? `
-            <div style="margin-bottom: 25px;">
-                <h4 style="color: var(--text-dark); margin-bottom: 15px; font-size: 1.1rem;">Order Notes</h4>
-                <div style="background: linear-gradient(135deg, rgba(248, 250, 252, 0.9), rgba(241, 245, 249, 0.95)); padding: 20px; border-radius: 16px; border: 1px solid rgba(226, 232, 240, 0.8);">
-                    <div style="color: var(--text-muted); font-size: 0.95rem; line-height: 1.6;">
-                        <i class="fas fa-sticky-note" style="margin-right: 10px; color: var(--brand-primary);"></i>
-                        ${order.notes}
-                    </div>
+        <div style="margin-bottom: 25px;">
+            <h4 style="color: var(--text-dark); margin-bottom: 15px; font-size: 1.1rem;">Order Notes</h4>
+            <div
+                style="background: linear-gradient(135deg, rgba(248, 250, 252, 0.9), rgba(241, 245, 249, 0.95)); padding: 20px; border-radius: 16px; border: 1px solid rgba(226, 232, 240, 0.8);">
+                <div style="color: var(--text-muted); font-size: 0.95rem; line-height: 1.6;">
+                    <i class="fas fa-sticky-note" style="margin-right: 10px; color: var(--brand-primary);"></i>
+                    ${order.notes}
                 </div>
             </div>
+        </div>
         ` : ''}
-        
+
         ${order.status === 'shipped' || order.status === 'completed' ? `
-            <div class="tracking-info">
-                <h4 style="color: var(--text-dark); margin-bottom: 15px; font-size: 1.1rem;">Tracking Information</h4>
-                <div style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 10px;">Tracking Number:</div>
-                <div class="tracking-number">${order.tracking}</div>
-                <button class="action-btn btn-track" style="width: 100%; margin-top: 20px;" onclick="showTrackingInfo(${JSON.stringify(order).replace(/"/g, '&quot;')})">
-                    <i class="fas fa-map-marked-alt"></i>
-                    <span>View Full Tracking Details</span>
-                </button>
-            </div>
+        <div class="tracking-info">
+            <h4 style="color: var(--text-dark); margin-bottom: 15px; font-size: 1.1rem;">Tracking Information</h4>
+            <div style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 10px;">Tracking Number:</div>
+            <div class="tracking-number">${order.tracking}</div>
+            <button class="action-btn btn-track" style="width: 100%; margin-top: 20px;"
+                id="view-full-tracking">
+                <i class="fas fa-map-marked-alt"></i>
+                <span>View Full Tracking Details</span>
+            </button>
+        </div>
         ` : ''}
-        
+
         <div style="margin-top: 30px; display: flex; gap: 12px;">
-            <button class="action-btn" style="flex: 1; background: linear-gradient(135deg, var(--brand-primary), var(--brand-secondary)); color: white;" onclick="printInvoice('${order.id}')">
+            <button class="action-btn"
+                style="flex: 1; background: linear-gradient(135deg, var(--brand-primary), var(--brand-secondary)); color: white;"
+                onclick="printInvoice('${order.id}')">
                 <i class="fas fa-print"></i>
                 <span>Print Invoice</span>
             </button>
-            <button class="action-btn" style="flex: 1; background: linear-gradient(135deg, rgba(241, 245, 249, 0.9), rgba(226, 232, 240, 0.9)); color: var(--text-dark);" onclick="contactCustomer('${order.email}')">
+            <button class="action-btn"
+                style="flex: 1; background: linear-gradient(135deg, rgba(241, 245, 249, 0.9), rgba(226, 232, 240, 0.9)); color: var(--text-dark);"
+                onclick="contactCustomer('${order.email}')">
                 <i class="fas fa-envelope"></i>
                 <span>Contact Customer</span>
             </button>
         </div>
-    `;
+        `;
 
             panel.classList.add('show');
+
+            // Add event listener for the track button in summary
+            const summaryTrackBtn = document.getElementById('view-full-tracking');
+            if (summaryTrackBtn) {
+                summaryTrackBtn.addEventListener('click', () => showTrackingInfo(order));
+            }
         }
 
         // Show tracking information
@@ -2173,7 +2217,7 @@
         z-index: 3000;
         backdrop-filter: blur(10px);
         animation: fadeIn 0.3s ease;
-    `;
+        `;
 
             trackingModal.innerHTML = `
         <div style="
@@ -2203,12 +2247,12 @@
                     transition: all 0.3s ease;
                 ">&times;</button>
             </div>
-            
+
             <div style="margin-bottom: 25px;">
                 <div style="color: var(--text-muted); margin-bottom: 10px;">Order ID</div>
                 <div style="font-weight: 800; color: var(--brand-primary); font-size: 1.2rem;">${order.id}</div>
             </div>
-            
+
             <div style="margin-bottom: 25px;">
                 <div style="color: var(--text-muted); margin-bottom: 10px;">Tracking Number</div>
                 <div style="
@@ -2224,7 +2268,7 @@
                     border: 1px solid rgba(79, 70, 229, 0.2);
                 ">${order.tracking}</div>
             </div>
-            
+
             <div style="margin-bottom: 30px;">
                 <div style="color: var(--text-muted); margin-bottom: 15px;">Shipping Status</div>
                 <div style="
@@ -2241,32 +2285,41 @@
                     ${statusConfig[order.status].label}
                 </div>
             </div>
-            
+
             <div style="
                 background: linear-gradient(135deg, rgba(248, 250, 252, 0.9), rgba(241, 245, 249, 0.95));
                 border-radius: 16px;
                 padding: 25px;
                 border: 1px solid rgba(226, 232, 240, 0.8);
             ">
-                <div style="color: var(--text-dark); font-weight: 700; margin-bottom: 15px;">Estimated Delivery Timeline</div>
+                <div style="color: var(--text-dark); font-weight: 700; margin-bottom: 15px;">Estimated Delivery Timeline
+                </div>
                 <div style="display: flex; align-items: center; justify-content: space-between;">
                     <div style="text-align: center;">
                         <div style="color: var(--text-muted); font-size: 0.9rem;">Order Placed</div>
-                        <div style="color: var(--brand-primary); font-weight: 800; margin-top: 5px;">${formatDate(order.date)}</div>
+                        <div style="color: var(--brand-primary); font-weight: 800; margin-top: 5px;">
+                            ${formatDate(order.date)}</div>
                     </div>
-                    <div style="width: 30px; height: 2px; background: linear-gradient(90deg, var(--brand-primary), var(--brand-accent));"></div>
+                    <div
+                        style="width: 30px; height: 2px; background: linear-gradient(90deg, var(--brand-primary), var(--brand-accent));">
+                    </div>
                     <div style="text-align: center;">
                         <div style="color: var(--text-muted); font-size: 0.9rem;">Shipped</div>
-                        <div style="color: var(--brand-primary); font-weight: 800; margin-top: 5px;">${order.status === 'shipped' || order.status === 'completed' ? formatDate(new Date(new Date(order.date).getTime() + 86400000).toISOString().split('T')[0]) : 'Pending'}</div>
+                        <div style="color: var(--brand-primary); font-weight: 800; margin-top: 5px;">${order.status ===
+                    'shipped' || order.status === 'completed' ? formatDate(new Date(new
+                        Date(order.date).getTime() + 86400000).toISOString().split('T')[0]) : 'Pending'}</div>
                     </div>
-                    <div style="width: 30px; height: 2px; background: linear-gradient(90deg, var(--brand-accent), #a5b4fc);"></div>
+                    <div
+                        style="width: 30px; height: 2px; background: linear-gradient(90deg, var(--brand-accent), #a5b4fc);">
+                    </div>
                     <div style="text-align: center;">
                         <div style="color: var(--text-muted); font-size: 0.9rem;">Estimated Delivery</div>
-                        <div style="color: var(--brand-primary); font-weight: 800; margin-top: 5px;">${formatDate(new Date(new Date(order.date).getTime() + 259200000).toISOString().split('T')[0])}</div>
+                        <div style="color: var(--brand-primary); font-weight: 800; margin-top: 5px;">${formatDate(new
+                            Date(new Date(order.date).getTime() + 259200000).toISOString().split('T')[0])}</div>
                     </div>
                 </div>
             </div>
-            
+
             <div style="margin-top: 25px; text-align: center;">
                 <a href="#" style="
                     display: inline-flex;
@@ -2279,14 +2332,14 @@
                     border-radius: 12px;
                     font-weight: 800;
                     transition: all 0.3s ease;
-                " onmouseover="this.style.transform='translateY(-3px)'; this.style.boxShadow='0 15px 35px rgba(79,70,229,0.4)';" 
-                   onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none';">
+                " onmouseover="this.style.transform='translateY(-3px)'; this.style.boxShadow='0 15px 35px rgba(79,70,229,0.4)';"
+                    onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none';">
                     <i class="fas fa-external-link-alt"></i>
                     View on Carrier Website
                 </a>
             </div>
         </div>
-    `;
+        `;
 
             document.body.appendChild(trackingModal);
 
@@ -2308,35 +2361,37 @@
             const style = document.createElement('style');
             style.textContent = `
         @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
+        from { opacity: 0; }
+        to { opacity: 1; }
         }
         @keyframes fadeOut {
-            from { opacity: 1; }
-            to { opacity: 0; }
+        from { opacity: 1; }
+        to { opacity: 0; }
         }
         @keyframes scaleIn {
-            from { 
-                opacity: 0;
-                transform: scale(0.8) rotateX(-10deg);
-            }
-            to { 
-                opacity: 1;
-                transform: scale(1) rotateX(0);
-            }
+        from {
+        opacity: 0;
+        transform: scale(0.8) rotateX(-10deg);
         }
-    `;
+        to {
+        opacity: 1;
+        transform: scale(1) rotateX(0);
+        }
+        }
+        `;
             document.head.appendChild(style);
         }
 
         // Print invoice function
         function printInvoice(orderId) {
-            alert(`Printing invoice for order ${orderId}...\n(Print functionality would be implemented in a real application)`);
+            alert(`Printing invoice for order ${orderId}...\n(Print functionality would be implemented in a real
+        application)`);
         }
 
         // Contact customer function
         function contactCustomer(email) {
-            alert(`Opening email client to contact: ${email}\n(Customer contact functionality would be implemented in a real application)`);
+            alert(`Opening email client to contact: ${email}\n(Customer contact functionality would be implemented in a real
+        application)`);
         }
 
         // Highlight selected card
@@ -2407,11 +2462,9 @@
         // Setup search functionality
         function setupSearch() {
             const searchInput = document.getElementById('global-search');
-
             if (searchInput) {
                 searchInput.addEventListener('input', function (e) {
                     const query = e.target.value.toLowerCase();
-
                     document.querySelectorAll('.order-card').forEach(card => {
                         const orderId = card.querySelector('.order-id').textContent.toLowerCase();
                         const customer = card.querySelector('.customer-info h4').textContent.toLowerCase();
@@ -2488,7 +2541,7 @@
             setupSummaryClose();
             updateStats();
             createParticles();
-            updateDateTime();
+            updateCurrentDate();
 
             // Check for status parameter in URL
             const urlParams = new URLSearchParams(window.location.search);

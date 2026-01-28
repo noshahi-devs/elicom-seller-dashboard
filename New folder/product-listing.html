@@ -316,80 +316,46 @@
         }
 
         /* Updated Card Styles */
-        .scene {
-            width: 100%;
-            height: 350px;
-            transform-style: preserve-3d;
-            cursor: pointer;
-            opacity: 0;
-            transform: translateY(20px);
-            animation: cardAppear 0.6s ease-out forwards;
-        }
-
-        @keyframes cardAppear {
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .card {
-            width: 100%;
-            height: 100%;
-            position: relative;
-            transform-style: preserve-3d;
-            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-
-        /* Card hover effect */
-        .scene:hover .card {
-            transform: translateZ(30px) rotateX(5deg) rotateY(5deg);
-        }
-
-        /* Face styling with hover effect - UPDATED FOR FLEX LAYOUT */
-        .face {
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(145deg, #ffffff, #f8f9fa);
+        /* Product Card Styling - REVERTED TO STANDARD 2D */
+        .product-card {
+            background: #ffffff;
             border-radius: 16px;
-            box-shadow:
-                0 10px 20px rgba(0, 0, 0, 0.1),
-                0 0 0 1px rgba(255, 255, 255, 0.8),
-                inset 0 1px 0 rgba(255, 255, 255, 0.8);
-            padding: 0;
-            transform-style: preserve-3d;
-            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+            height: 100%;
             display: flex;
             flex-direction: column;
-            overflow: hidden;
+            border: 1px solid #f1f5f9;
         }
 
-        /* Enhanced hover effect for face */
-        .scene:hover .face {
-            box-shadow:
-                0 25px 50px rgba(0, 0, 0, 0.15),
-                0 0 0 1px rgba(255, 255, 255, 0.9),
-                inset 0 1px 0 rgba(255, 255, 255, 0.9);
-            transform: translateZ(20px);
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.1);
         }
 
-        /* IMAGE - UPDATED */
         .image-container {
-            flex: 0 0 auto;
-        }
-
-        .image {
-            height: 160px;
-            border-radius: 12px 12px 0 0;
+            width: 100%;
+            height: 180px;
             overflow: hidden;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            transform: translateZ(25px);
-            transition: all 0.5s ease;
-            position: relative;
         }
 
-        .scene:hover .image {
-            transform: translateZ(35px) scale(1.03);
+        .image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .product-card:hover .image img {
+            transform: scale(1.05);
+        }
+
+        .info-container {
+            padding: 20px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
         }
 
         .image img {
@@ -566,22 +532,16 @@
 
         /* Brand */
 
-        .scene:hover .tag {
+        .product-card:hover .tag {
             transform: translateY(-2px);
         }
 
-        /* PRICE + ICONS */
         .bottom-row {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            margin-top: 10px;
-            transform: translateZ(20px);
+            margin-top: 15px;
             transition: all 0.5s ease;
-        }
-
-        .scene:hover .bottom-row {
-            transform: translateZ(30px);
         }
 
         /* FIXED: Price styling - prevent text selection and click effects */
@@ -593,8 +553,7 @@
             padding: 6px 12px;
             border-radius: 20px;
             box-shadow: 0 8px 20px rgba(29, 185, 84, 0.3);
-            transform: translateZ(20px);
-            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transition: all 0.3s ease-out;
             user-select: none;
             -webkit-user-select: none;
             -moz-user-select: none;
@@ -604,17 +563,7 @@
             border: none;
         }
 
-        /* Remove any focus/hover effects that might cause line-through */
-        .price:focus,
-        .price:active,
-        .price:hover {
-            outline: none;
-            text-decoration: none !important;
-            -webkit-tap-highlight-color: transparent;
-        }
-
-        .scene:hover .price {
-            transform: translateZ(35px);
+        .product-card:hover .price {
             box-shadow: 0 12px 25px rgba(29, 185, 84, 0.4);
         }
 
@@ -1679,24 +1628,23 @@
             return `${firstPart} ... ${lastPart}`;
         }
 
-        // Function to create a card element - UPDATED STRUCTURE WITH ENHANCED TOOLTIP
+        // Function to create a card element - SIMPLIFIED 2D STRUCTURE
         function createCard(card) {
-            const scene = document.createElement('div');
-            scene.className = 'scene';
+            const wrapper = document.createElement('div');
+            wrapper.className = 'product-card-wrapper';
+            wrapper.style.opacity = '0';
+            wrapper.style.transform = 'translateY(20px)';
+            wrapper.style.transition = 'all 0.5s ease';
 
             // Format tooltip text using the smart truncation
             const tooltipText = smartTruncate(card.title);
 
-            scene.innerHTML = `
-        <div class="card">
-            <div class="face">
-                <div class="image-container">
-                    <div class="image">
+            wrapper.innerHTML = `
+                <div class="product-card">
+                    <div class="image-container">
                         <img src="${card.image}" alt="${card.title}">
                     </div>
-                </div>
-                <div class="info-container">
-                    <div class="info">
+                    <div class="info-container">
                         <div class="title-container">
                             <div class="title">${card.title}</div>
                             <div class="tooltip-text">${tooltipText}</div>
@@ -1715,12 +1663,15 @@
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="side"></div>
-        </div>
-    `;
+            `;
 
-            return scene;
+            // Trigger animation
+            setTimeout(() => {
+                wrapper.style.opacity = '1';
+                wrapper.style.transform = 'translateY(0)';
+            }, 50);
+
+            return wrapper;
         }
 
         // Function to load initial cards
@@ -1805,7 +1756,7 @@
                     e.preventDefault();
                     e.stopPropagation();
 
-                    const card = this.closest('.scene');
+                    const card = this.closest('.product-card');
                     const title = card.querySelector('.title').textContent;
                     const price = card.querySelector('.price').textContent;
 
@@ -1879,7 +1830,7 @@
                     e.preventDefault();
                     e.stopPropagation();
 
-                    const card = this.closest('.scene');
+                    const card = this.closest('.product-card');
                     const title = card.querySelector('.title').textContent;
 
                     // Toggle active class

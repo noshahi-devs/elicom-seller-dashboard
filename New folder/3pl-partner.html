@@ -911,6 +911,89 @@
                 0 0 30px rgba(79, 70, 229, 0.1);
         }
 
+        /* Mobile Responsive Styles */
+        @media (max-width: 768px) {
+            .partner-card {
+                padding: 15px;
+                margin-bottom: 15px;
+            }
+            
+            .partner-logo {
+                width: 40px;
+                height: 40px;
+                font-size: 0.9rem;
+            }
+            
+            .partner-name {
+                font-size: 0.95rem;
+                font-weight: 700;
+            }
+            
+            .partner-address {
+                font-size: 0.8rem;
+                line-height: 1.3;
+            }
+            
+            .partner-stats {
+                gap: 10px;
+                margin-top: 10px;
+            }
+            
+            .stat-value {
+                font-size: 1rem;
+            }
+            
+            .stat-label {
+                font-size: 0.65rem;
+            }
+            
+            .card-body {
+                padding: 15px;
+            }
+            
+            .card-header {
+                padding: 15px;
+            }
+            
+            .card-header h5 {
+                font-size: 1rem;
+            }
+            
+            .btn-sm {
+                font-size: 0.75rem;
+                padding: 5px 10px;
+            }
+        }
+
+        /* Full Screen Support */
+        @media (min-width: 1400px) {
+            .partner-card {
+                padding: 25px;
+            }
+            
+            .partner-logo {
+                width: 60px;
+                height: 60px;
+                font-size: 1.3rem;
+            }
+            
+            .partner-name {
+                font-size: 1.2rem;
+            }
+            
+            .partner-address {
+                font-size: 0.95rem;
+            }
+            
+            .stat-value {
+                font-size: 1.5rem;
+            }
+            
+            .stat-label {
+                font-size: 0.8rem;
+            }
+        }
+
         /* Compact info panel content */
         #partner-details h5 {
             font-size: 1.1rem;
@@ -1028,24 +1111,26 @@
                         </div>
                     </div>
 
-                    <a href="3pl-partner.html" class="nav-link"><i class="fa-solid fa-handshake"></i> 3PL Partner
+                    <a href="3pl-partner.html" class="nav-link active"><i class="fa-solid fa-handshake"></i> 3PL Partner
                         Service</a>
                     <a href="warehouse.html" class="nav-link"><i class="fa-solid fa-warehouse"></i> Smart Cart
                         Warehouses</a>
+                    <a href="wallet-center.html" class="nav-link"><i class="fa-solid fa-wallet"></i> Wallet Center</a>
 
                     <div class="nav-item">
                         <a href="javascript:void(0)" class="nav-link dropdown-trigger"><i
-                                class="fa-solid fa-money-bill-transfer"></i> Withdrawal Section <i
+                                class="fa-solid fa-money-bill-transfer"></i> Payout Section <i
                                 class="fa fa-chevron-right chevron-icon"></i></a>
                         <div class="submenu">
+                            <a href="unified-payouts.html" class="nav-link small">Payout History</a>
                             <a href="add-payment-method.html" class="nav-link small">Add Payment Method</a>
-                            <a href="seller-wallet-center.html" class="nav-link small">Seller Wallet Center</a>
                             <a href="pending-payouts.html" class="nav-link small">Pending Payouts</a>
                             <a href="completed-payouts.html" class="nav-link small">Completed Payouts</a>
                             <a href="refunded-payouts.html" class="nav-link small">Refunded Payouts</a>
                         </div>
                     </div>
 
+                    <a href="profile.html" class="nav-link"><i class="fa-solid fa-user"></i> My Profile</a>
                     <a href="account-settings.html" class="nav-link"><i class="fa-solid fa-gears"></i> Account
                         Settings</a>
                 </div>
@@ -1299,38 +1384,38 @@
         </div>
 
         <!-- Partners Data Grid -->
-        <div class="row">
+        <div class="row g-4">
             <!-- USA Partners -->
-            <div class="col-lg-6 mb-4">
-                <div class="card border-0 shadow-sm">
+            <div class="col-lg-6 col-12 mb-4">
+                <div class="card border-0 shadow-sm h-100">
                     <div
-                        class="card-header bg-white border-bottom-0 pb-3 d-flex justify-content-between align-items-center">
-                        <h5 class="fw-bold mb-0">
+                        class="card-header bg-white border-bottom-0 pb-3 d-flex justify-content-between align-items-center flex-wrap">
+                        <h5 class="fw-bold mb-2 mb-md-0">
                             <i class="fas fa-flag-usa text-primary me-2"></i>
                             USA Logistics Partners
                             <span class="badge bg-primary ms-2">6 Partners</span>
                         </h5>
                         <button class="btn btn-sm btn-outline-primary" id="view-all-usa">View All</button>
                     </div>
-                    <div class="card-body" id="usa-partners">
+                    <div class="card-body" id="usa-partners" style="max-height: 600px; overflow-y: auto;">
                         <!-- USA partners will be populated here by JavaScript -->
                     </div>
                 </div>
             </div>
 
             <!-- UK Partners -->
-            <div class="col-lg-6 mb-4">
-                <div class="card border-0 shadow-sm">
+            <div class="col-lg-6 col-12 mb-4">
+                <div class="card border-0 shadow-sm h-100">
                     <div
-                        class="card-header bg-white border-bottom-0 pb-3 d-flex justify-content-between align-items-center">
-                        <h5 class="fw-bold mb-0">
+                        class="card-header bg-white border-bottom-0 pb-3 d-flex justify-content-between align-items-center flex-wrap">
+                        <h5 class="fw-bold mb-2 mb-md-0">
                             <i class="fas fa-flag-uk text-success me-2"></i>
                             UK Logistics Partners
                             <span class="badge bg-success ms-2">8 Partners</span>
                         </h5>
                         <button class="btn btn-sm btn-outline-success" id="view-all-uk">View All</button>
                     </div>
-                    <div class="card-body" id="uk-partners">
+                    <div class="card-body" id="uk-partners" style="max-height: 600px; overflow-y: auto;">
                         <!-- UK partners will be populated here by JavaScript -->
                     </div>
                 </div>
@@ -1998,8 +2083,18 @@
         }
 
         function populatePartnerCards() {
+            console.log('Populating partner cards...');
             const usaContainer = document.getElementById('usa-partners');
             const ukContainer = document.getElementById('uk-partners');
+            
+            console.log('USA Container:', usaContainer);
+            console.log('UK Container:', ukContainer);
+            console.log('USA Partners Data:', partnersData.usa);
+            console.log('UK Partners Data:', partnersData.uk);
+
+            // Clear existing content
+            usaContainer.innerHTML = '';
+            ukContainer.innerHTML = '';
 
             // USA partners - First 2 get highlighted animations
             partnersData.usa.forEach((partner, index) => {

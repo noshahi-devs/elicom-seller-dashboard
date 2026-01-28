@@ -82,18 +82,20 @@ const sidebarHtml = `
 
                 <a href="3pl-partner.html" class="nav-link"><i class="fa-solid fa-handshake"></i> 3PL Partner Service</a>
                 <a href="warehouse.html" class="nav-link"><i class="fa-solid fa-warehouse"></i> Smart Cart Warehouses</a>
+                <a href="wallet-center.html" class="nav-link"><i class="fa-solid fa-wallet"></i> Wallet Center</a>
 
                 <div class="nav-item">
-                    <a href="javascript:void(0)" class="nav-link dropdown-trigger"><i class="fa-solid fa-money-bill-transfer"></i> Withdrawal Section <i class="fa fa-chevron-right chevron-icon"></i></a>
+                    <a href="javascript:void(0)" class="nav-link dropdown-trigger"><i class="fa-solid fa-money-bill-transfer"></i> Payout Section <i class="fa fa-chevron-right chevron-icon"></i></a>
                     <div class="submenu">
+                        <a href="unified-payouts.html" class="nav-link small">Payout History</a>
                         <a href="add-payment-method.html" class="nav-link small">Add Payment Method</a>
-                        <a href="seller-wallet-center.html" class="nav-link small">Seller Wallet Center</a>
                         <a href="pending-payouts.html" class="nav-link small">Pending Payouts</a>
                         <a href="completed-payouts.html" class="nav-link small">Completed Payouts</a>
                         <a href="refunded-payouts.html" class="nav-link small">Refunded Payouts</a>
                     </div>
                 </div>
 
+                <a href="profile.html" class="nav-link"><i class="fa-solid fa-user"></i> My Profile</a>
                 <a href="account-settings.html" class="nav-link"><i class="fa-solid fa-gears"></i> Account Settings</a>
             </div>
         </div>
