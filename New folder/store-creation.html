@@ -283,15 +283,15 @@
             box-shadow: 0 0 0 3px var(--brand-primary);
         }
     </style>
-<link rel="stylesheet" href="layout-styles.css">
+    <link rel="stylesheet" href="layout-styles.css">
 </head>
 
 <body>
-<div class="particles" id="particles"></div>
-<!-- Sidebar Toggle for Mobile -->
-<button class="sidebar-toggle" id="sidebar-toggle">
-    <i class="fas fa-bars"></i>
-</button>
+    <div class="particles" id="particles"></div>
+    <!-- Sidebar Toggle for Mobile -->
+    <button class="sidebar-toggle" id="sidebar-toggle">
+        <i class="fas fa-bars"></i>
+    </button>
     <div class="container" id="wizard-container">
         <!-- Progress Indicator -->
         <div class="progress-steps">
@@ -446,7 +446,7 @@
 
         function changeStep(n) {
             if (currentStep + n > totalSteps) {
-                window.location.href = 'adeel-final.html';
+                window.location.href = 'index.html';
                 return;
             }
 
@@ -479,7 +479,7 @@
             el.classList.add('selected');
         }
     </script>
-<script src="layout-script.js"></script>
+    <script src="layout-script.js"></script>
 </body>
 
 </html>
