@@ -34,6 +34,719 @@
             overflow-x: hidden;
             margin: 0;
         }
+        /* Dashboard Main Section Styles - Matching Sidebar Theme */
+.dashboard-main {
+    margin-left: var(--sidebar-width);
+    margin-top: var(--topbar-height);
+    padding: 30px;
+    min-height: calc(100vh - var(--topbar-height));
+    background: var(--bg-body);
+    perspective: 1000px;
+    transition: margin-left 0.3s ease;
+}
+
+.dashboard-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    transform-style: preserve-3d;
+}
+
+/* Header Styles */
+.dashboard-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 25px 30px;
+    background: var(--card-3d-bg);
+    border-radius: 20px;
+    margin-bottom: 30px;
+    box-shadow: 0 15px 35px rgba(79, 70, 229, 0.12);
+    transform: translateZ(20px);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    position: relative;
+    overflow: hidden;
+}
+
+.dashboard-header::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background: linear-gradient(90deg, var(--brand-primary), var(--brand-secondary));
+}
+
+.header-left h1 {
+    font-size: 2.2rem;
+    margin-bottom: 8px;
+    background: linear-gradient(90deg, var(--brand-primary), var(--brand-accent));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    font-weight: 800;
+}
+
+.header-left h1 i {
+    margin-right: 12px;
+}
+
+.subtitle {
+    color: var(--text-muted);
+    font-size: 1rem;
+    font-weight: 500;
+}
+
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 30px;
+}
+
+.user-profile {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 12px 20px;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 15px;
+    box-shadow: 0 8px 20px rgba(79, 70, 229, 0.1);
+    border: 1px solid rgba(79, 70, 229, 0.1);
+}
+
+.avatar {
+    width: 50px;
+    height: 50px;
+    background: linear-gradient(135deg, var(--brand-primary), var(--brand-accent));
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    color: white;
+    box-shadow: 0 8px 20px rgba(79, 70, 229, 0.3);
+    animation: float 4s ease-in-out infinite;
+}
+
+.user-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.user-name {
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: var(--text-dark);
+}
+
+.user-role {
+    font-size: 0.9rem;
+    color: var(--brand-primary);
+    font-weight: 600;
+}
+
+.date-display {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 20px;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 12px;
+    border: 1px solid rgba(79, 70, 229, 0.1);
+    box-shadow: 0 8px 20px rgba(79, 70, 229, 0.1);
+}
+
+.date-display i {
+    color: var(--brand-primary);
+    font-size: 1.2rem;
+}
+
+/* Stats Cards Section */
+.stats-section {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 25px;
+    margin-bottom: 40px;
+}
+
+.stat-card {
+    background: linear-gradient(145deg, rgba(196, 192, 192, 0.95), rgba(255, 255, 255, 0.85));
+    border-radius: 20px;
+    padding: 20px;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    transform-style: preserve-3d;
+    box-shadow: 0 15px 35px rgba(79, 70, 229, 0.12);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    cursor: pointer;
+    backdrop-filter: blur(10px);
+}
+
+.stat-card:hover {
+    transform: translateY(-10px) translateZ(30px) rotateX(5deg);
+    box-shadow: 0 25px 50px rgba(43, 39, 134, 0.2);
+}
+
+.stat-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 5px;
+    background: linear-gradient(90deg, var(--brand-primary), var(--brand-accent));
+}
+
+.card-icon {
+    width: 70px;
+    height: 70px;
+    border-radius: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    margin-bottom: 25px;
+    position: relative;
+    z-index: 2;
+    color: white;
+    animation: float 4s ease-in-out infinite;
+}
+
+.card-icon.revenue {
+    background: linear-gradient(135deg, #4F46E5, #6366F1);
+    box-shadow: 0 10px 25px rgba(79, 70, 229, 0.3);
+}
+
+.card-icon.orders {
+    background: linear-gradient(135deg, #8B5CF6, #A78BFA);
+    box-shadow: 0 10px 25px rgba(139, 92, 246, 0.3);
+}
+
+.card-icon.customers {
+    background: linear-gradient(135deg, #3B82F6, #60A5FA);
+    box-shadow: 0 10px 25px rgba(59, 130, 246, 0.3);
+}
+
+.card-icon.conversion {
+    background: linear-gradient(135deg, #06B6D4, #22D3EE);
+    box-shadow: 0 10px 25px rgba(6, 182, 212, 0.3);
+}
+
+.card-content h3 {
+    font-size: 1.2rem;
+    margin-bottom: 12px;
+    color: var(--text-muted);
+    font-weight: 600;
+}
+
+.stat-value {
+    font-size: 2.5rem;
+    font-weight: 800;
+    margin-bottom: 8px;
+    background: linear-gradient(90deg, var(--brand-primary), var(--brand-accent));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+.stat-change {
+    font-size: 1rem;
+    font-weight: 700;
+    padding: 4px 12px;
+    border-radius: 20px;
+    display: inline-block;
+}
+
+.stat-change.positive {
+    background: rgba(34, 197, 94, 0.1);
+    color: #16a34a;
+}
+
+.stat-change.negative {
+    background: rgba(239, 68, 68, 0.1);
+    color: #dc2626;
+}
+
+.card-wave {
+    position: absolute;
+    bottom: -40px;
+    right: -40px;
+    width: 140px;
+    height: 140px;
+    background: linear-gradient(135deg, rgba(79, 70, 229, 0.1), rgba(99, 102, 241, 0.05));
+    border-radius: 50%;
+    z-index: 1;
+}
+
+.card-wave::before {
+    content: '';
+    position: absolute;
+    top: -15px;
+    left: -15px;
+    width: 170px;
+    height: 170px;
+    background: rgba(129, 140, 248, 0.05);
+    border-radius: 50%;
+}
+
+/* Charts and Data Section */
+.data-section {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 25px;
+    margin-bottom: 30px;
+}
+
+@media (max-width: 1200px) {
+    .data-section {
+        grid-template-columns: 1fr;
+    }
+}
+
+.chart-container, .top-products {
+    background: linear-gradient(145deg, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.85));
+    border-radius: 20px;
+    padding: 30px;
+    transform-style: preserve-3d;
+    transition: all 0.4s ease;
+    box-shadow: 0 15px 35px rgba(79, 70, 229, 0.12);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    backdrop-filter: blur(10px);
+    position: relative;
+    overflow: hidden;
+}
+
+.chart-container::before, .top-products::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 5px;
+    background: linear-gradient(90deg, var(--brand-primary), var(--brand-accent));
+}
+
+.chart-header, .products-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.chart-header h3, .products-header h3 {
+    font-size: 1.4rem;
+    color: var(--text-dark);
+    font-weight: 700;
+}
+
+.chart-header h3 i, .products-header h3 i {
+    margin-right: 10px;
+    color: var(--brand-primary);
+}
+
+.time-select {
+    padding: 10px 20px;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.9);
+    border: 1px solid rgba(79, 70, 229, 0.2);
+    color: var(--text-dark);
+    font-weight: 600;
+    cursor: pointer;
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+}
+
+.time-select:focus {
+    outline: none;
+    border-color: var(--brand-primary);
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+}
+
+.chart-body {
+    height: 280px;
+    position: relative;
+}
+
+.chart-bars {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    height: 220px;
+    padding: 0 10px;
+    margin-bottom: 20px;
+}
+
+.chart-bar {
+    width: 45px;
+    background: linear-gradient(to top, var(--brand-primary), var(--brand-accent));
+    border-radius: 10px 10px 0 0;
+    position: relative;
+    transition: all 0.5s ease;
+    animation: barGrow 1s ease-out forwards;
+    transform-origin: bottom;
+    box-shadow: 0 5px 15px rgba(79, 70, 229, 0.2);
+}
+
+.chart-bar:hover {
+    filter: brightness(1.2);
+    transform: translateY(-5px);
+}
+
+.chart-bar::before {
+    content: attr(data-value);
+    position: absolute;
+    top: -30px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--brand-primary);
+    background: white;
+    padding: 4px 8px;
+    border-radius: 6px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.chart-bar:hover::before {
+    opacity: 1;
+}
+
+.chart-labels {
+    display: flex;
+    justify-content: space-between;
+    padding: 0 10px;
+    margin-top: 15px;
+}
+
+.chart-labels span {
+    width: 45px;
+    text-align: center;
+    color: var(--text-muted);
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.products-header button.view-all {
+    padding: 10px 25px;
+    background: rgba(79, 70, 229, 0.1);
+    border: 1px solid rgba(79, 70, 229, 0.2);
+    color: var(--brand-primary);
+    border-radius: 10px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 0.95rem;
+}
+
+.products-header button.view-all:hover {
+    background: rgba(79, 70, 229, 0.2);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(79, 70, 229, 0.2);
+}
+
+.products-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.product-item {
+    display: flex;
+    align-items: center;
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.7);
+    border-radius: 15px;
+    transition: all 0.3s ease;
+    border: 1px solid rgba(79, 70, 229, 0.1);
+}
+
+.product-item:hover {
+    background: white;
+    transform: translateX(10px);
+    box-shadow: 0 10px 25px rgba(79, 70, 229, 0.1);
+}
+
+.product-rank {
+    width: 40px;
+    height: 40px;
+    background: linear-gradient(135deg, var(--brand-primary), var(--brand-accent));
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    margin-right: 20px;
+    font-size: 1.2rem;
+    color: white;
+    box-shadow: 0 5px 15px rgba(79, 70, 229, 0.3);
+}
+
+.product-info h4 {
+    font-size: 1.1rem;
+    margin-bottom: 5px;
+    color: var(--text-dark);
+    font-weight: 700;
+}
+
+.product-sales {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    font-weight: 500;
+}
+
+.product-revenue {
+    margin-left: auto;
+    font-weight: 800;
+    font-size: 1.3rem;
+    color: var(--brand-primary);
+}
+
+/* Activity Section */
+.activity-section {
+    margin-bottom: 30px;
+}
+
+.activity-container {
+    background: linear-gradient(145deg, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.85));
+    border-radius: 20px;
+    padding: 30px;
+    transform-style: preserve-3d;
+    transition: all 0.4s ease;
+    box-shadow: 0 15px 35px rgba(79, 70, 229, 0.12);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    backdrop-filter: blur(10px);
+    position: relative;
+    overflow: hidden;
+}
+
+.activity-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 5px;
+    background: linear-gradient(90deg, var(--brand-primary), var(--brand-accent));
+}
+
+.activity-header h3 {
+    font-size: 1.4rem;
+    margin-bottom: 30px;
+    color: var(--text-dark);
+    font-weight: 700;
+}
+
+.activity-header h3 i {
+    margin-right: 10px;
+    color: var(--brand-primary);
+}
+
+.activity-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.activity-item {
+    display: flex;
+    align-items: center;
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.7);
+    border-radius: 15px;
+    transition: all 0.3s ease;
+    border: 1px solid rgba(79, 70, 229, 0.1);
+}
+
+.activity-item:hover {
+    background: white;
+    transform: translateX(10px);
+    box-shadow: 0 10px 25px rgba(79, 70, 229, 0.1);
+}
+
+.activity-icon {
+    width: 55px;
+    height: 55px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    margin-right: 20px;
+    color: white;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+}
+
+.activity-icon.new-order {
+    background: linear-gradient(135deg, var(--brand-primary), var(--brand-accent));
+}
+
+.activity-icon.customer-review {
+    background: linear-gradient(135deg, #F59E0B, #FBBF24);
+}
+
+.activity-icon.product-added {
+    background: linear-gradient(135deg, #10B981, #34D399);
+}
+
+.activity-icon.message {
+    background: linear-gradient(135deg, #EC4899, #F472B6);
+}
+
+.activity-details h4 {
+    font-size: 1.1rem;
+    margin-bottom: 5px;
+    color: var(--text-dark);
+    font-weight: 700;
+}
+
+.activity-time {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    font-weight: 500;
+}
+
+.activity-amount, .activity-rating, .activity-product, .activity-status {
+    margin-left: auto;
+    font-weight: 700;
+}
+
+.activity-amount {
+    color: var(--brand-primary);
+    font-size: 1.3rem;
+    font-weight: 800;
+}
+
+.activity-rating {
+    color: #F59E0B;
+    font-size: 1.2rem;
+    letter-spacing: 2px;
+}
+
+.activity-product {
+    color: #10B981;
+    font-weight: 700;
+    padding: 5px 15px;
+    background: rgba(16, 185, 129, 0.1);
+    border-radius: 20px;
+}
+
+.activity-status.pending {
+    color: #F59E0B;
+    background: rgba(245, 158, 11, 0.1);
+    padding: 8px 20px;
+    border-radius: 20px;
+    font-weight: 700;
+}
+
+/* Animations */
+@keyframes barGrow {
+    0% {
+        height: 0%;
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+@keyframes float {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+/* Add floating animation to some elements */
+.card-icon, .avatar {
+    animation: float 4s ease-in-out infinite;
+}
+
+/* Delay animations for each card icon */
+.card-icon.revenue {
+    animation-delay: 0s;
+}
+
+.card-icon.orders {
+    animation-delay: 0.5s;
+}
+
+.card-icon.customers {
+    animation-delay: 1s;
+}
+
+.card-icon.conversion {
+    animation-delay: 1.5s;
+}
+
+/* 3D Tilt Effects */
+.stat-card, .chart-container, .top-products, .activity-container {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.stat-card:hover, .chart-container:hover, .top-products:hover, .activity-container:hover {
+    transform: translateY(-5px) rotateX(2deg) rotateY(2deg);
+}
+
+/* Responsive adjustments */
+@media (max-width: 1200px) {
+    .stats-section {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .dashboard-header {
+        flex-direction: column;
+        gap: 20px;
+        text-align: center;
+    }
+    
+    .header-right {
+        flex-direction: column;
+        gap: 15px;
+    }
+    
+    .stats-section {
+        grid-template-columns: 1fr;
+    }
+    
+    .chart-bars {
+        padding: 0 5px;
+    }
+    
+    .chart-bar {
+        width: 35px;
+    }
+    
+    .chart-labels {
+        padding: 0 5px;
+    }
+    
+    .chart-labels span {
+        width: 35px;
+        font-size: 0.8rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .dashboard-main {
+        padding: 15px;
+    }
+    
+    .stat-card, .chart-container, .top-products, .activity-container {
+        padding: 20px;
+    }
+    
+    .data-section {
+        gap: 15px;
+    }
+}
     </style>
 
 
@@ -190,416 +903,210 @@
         </div>
     </div>
 
-    <!-- Main Content -->
-    <div class="main-wrapper" id="main-wrapper">
-        <div class="container-fluid">
-            <div class="row g-4">
-                <!-- Main Content Column -->
-                <div class="col-lg-9">
-                    <!-- New Header Section -->
-                    <div class="d-flex justify-content-between align-items-center mb-5">
-                        <div>
-                            <div class="d-flex align-items-center gap-3 mb-1">
-                                <h1 class="fw-bold m-0" style="font-size: 2.22rem; color: #1e293b;">Noshahi Store</h1>
-                                <span class="badge"
-                                    style="background: #e67e22; font-size: 0.75rem; padding: 6px 14px; border-radius: 100px; box-shadow: 0 4px 10px rgba(230, 126, 34, 0.22);">Published</span>
-                            </div>
-                            <p style="color:#64748b; font-size: 1.05rem; font-weight: 500;">Here's what's happening in
-                                your store today.</p>
-                        </div>
-
-                        <!-- USA Flag Date/Time Card -->
-                        <div class="usa-context-card" style="
-                            min-width: 320px;
-                            background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
-                            color: white;
-                            border: 1px solid rgba(255,255,255,0.2);
-                            box-shadow: 0 20px 40px rgba(234, 88, 12, 0.25), inset 0 1px 0 rgba(255,255,255,0.3);
-                            border-radius: 24px;
-                            padding: 20px 24px;
-                            display: flex;
-                            align-items: center;
-                            gap: 16px;
-                            transition: transform 0.3s ease;
-                        " onmouseover="this.style.transform='translateY(-5px)'"
-                            onmouseout="this.style.transform='translateY(0)'">
-                            <div class="flag-blob" style="
-                                font-size: 2.8rem; 
-                                filter: drop-shadow(0 4px 6px rgba(0,0,0,0.2));
-                                animation: float 6s ease-in-out infinite;
-                            ">🇺🇸</div>
-                            <div>
-                                <div class="time-info" id="gmt-info"
-                                    style="font-size: 0.85rem; opacity: 0.9; font-weight: 600; letter-spacing: 0.5px;">
-                                    26-Dec-2025 | 04:15 AM</div>
-                                <div class="location-info"
-                                    style="font-size: 1.35rem; font-weight: 800; text-shadow: 0 2px 4px rgba(0,0,0,0.1);">
-                                    New York, USA (GMT-5)</div>
-                            </div>
-                        </div>
+  <main class="dashboard-main">
+    <div class="dashboard-container">
+        <!-- Header Section -->
+        <header class="dashboard-header">
+            <div class="header-left">
+                <h1><i class="fas fa-chart-line"></i> Seller Dashboard</h1>
+                <p class="subtitle">Track your performance and grow your business</p>
+            </div>
+            <div class="header-right">
+                <div class="user-profile">
+                    <div class="avatar">
+                        AN
                     </div>
-
-                    <!-- Reference Top Stat Cards -->
-                    <div class="row g-4 mb-5">
-                        <div class="col-xl-3 col-md-6">
-                            <div class="ref-stat-card cyan" style="box-shadow: 0 20px 50px rgba(6, 182, 212, 0.15); border: 1px solid rgba(255,255,255,0.1);">
-                                <div class="icon-circle"><i class="fas fa-shopping-cart"></i></div>
-                                <div class="card-label">New Orders</div>
-                                <div class="card-value">35,673</div>
-                                <div class="growth-tag">2.00% (30 days)</div>
-                                <div
-                                    style="position: absolute; bottom: -5px; left: 0; width: 100%; height: 60px; opacity: 0.7;">
-                                    <canvas id="miniChartNewOrders"></canvas>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-xl-3 col-md-6">
-                            <div class="ref-stat-card green" style="box-shadow: 0 20px 50px rgba(16, 185, 129, 0.15); border: 1px solid rgba(255,255,255,0.1);">
-                                <div class="icon-circle"><i class="fas fa-dollar-sign"></i></div>
-                                <div class="card-label">Total Income</div>
-                                <div class="card-value">$14,966</div>
-                                <div class="growth-tag">Increased by 7.35%</div>
-                                <div
-                                    style="position: absolute; bottom: 0; left: 10px; right: 10px; height: 65px; opacity: 0.7;">
-                                    <canvas id="miniChartIncome"></canvas>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-xl-3 col-md-6">
-                            <div class="ref-stat-card blue" style="box-shadow: 0 20px 50px rgba(59, 130, 246, 0.15); border: 1px solid rgba(255,255,255,0.1);">
-                                <div class="icon-circle"><i class="fas fa-wallet"></i></div>
-                                <div class="card-label">Total Expense</div>
-                                <div class="card-value">26,526</div>
-                                <div class="growth-tag">Increased by 7.35%</div>
-                                <div
-                                    style="position: absolute; bottom: -5px; left: 0; width: 100%; height: 60px; opacity: 0.7;">
-                                    <canvas id="miniChartExpense"></canvas>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-xl-3 col-md-6">
-                            <div class="ref-stat-card orange" style="box-shadow: 0 20px 50px rgba(249, 115, 22, 0.15); border: 1px solid rgba(255,255,255,0.1);">
-                                <div class="icon-circle"><i class="fas fa-users"></i></div>
-                                <div class="card-label">New Users</div>
-                                <div class="card-value">32,566</div>
-                                <div class="growth-tag" style="background: rgba(0,0,0,0.1);">54.12% less earnings</div>
-                                <div
-                                    style="position: absolute; bottom: 0; left: 10px; right: 10px; height: 65px; opacity: 0.7;">
-                                    <canvas id="miniChartUsers"></canvas>
-                                </div>
-                            </div>
-                        </div>
+                    <div class="user-info">
+                        <span class="user-name">Arslan Noshahi</span>
+                        <span class="user-role"><i class="fas fa-crown"></i> Premium Seller</span>
                     </div>
+                </div>
+                <div class="date-display">
+                    <i class="far fa-calendar"></i>
+                    <span id="current-date">Loading...</span>
+                </div>
+            </div>
+        </header>
 
-                    <div class="sidebar-right-card mb-5">
-                        <div class="d-flex justify-content-between align-items-center mb-4">
-                            <h4 class="card-title m-0">Detailed Statistics</h4>
-                            <div class="d-flex gap-2 align-items-center">
-                                <div class="btn-group btn-group-sm rounded-3 overflow-hidden"
-                                    style="border: 1px solid #e2e8f0;">
-                                    <button class="btn btn-light"
-                                        style="font-size: 0.75rem; font-weight: 700;">Day</button>
-                                    <button class="btn btn-primary active"
-                                        style="font-size: 0.75rem; font-weight: 700;">Week</button>
-                                    <button class="btn btn-light"
-                                        style="font-size: 0.75rem; font-weight: 700;">Month</button>
-                                    <button class="btn btn-light"
-                                        style="font-size: 0.75rem; font-weight: 700;">Annual</button>
-                                    <button class="btn btn-light"
-                                        style="font-size: 0.75rem; font-weight: 700;">Lifetime</button>
-                                </div>
-                                <select class="form-select form-select-sm"
-                                    style="width: 140px; border-radius: 10px; font-weight: 600;">
-                                    <option>30 April 2019</option>
-                                </select>
-                            </div>
-                        </div>
+        <!-- Stats Cards Section -->
+        <section class="stats-section">
+            <div class="stat-card card-3d">
+                <div class="card-icon revenue">
+                    <i class="fas fa-money-bill-wave"></i>
+                </div>
+                <div class="card-content">
+                    <h3>Total Revenue</h3>
+                    <p class="stat-value">$24,580</p>
+                    <p class="stat-change positive">+12.5% this month</p>
+                </div>
+                <div class="card-wave"></div>
+            </div>
 
-                        <div class="row row-cols-xl-4 row-cols-md-2 row-cols-1 g-3">
-                            <div class="col">
-                                <div class="mini-detail-card blue">
-                                    <div class="detail-label">Current Balance</div>
-                                    <div class="detail-value">$5,240.50</div>
-                                </div>
-                            </div>
-                            <div class="col">
-                                <div class="mini-detail-card orange">
-                                    <div class="detail-label">Payout Till Now</div>
-                                    <div class="detail-value">$28,150</div>
-                                </div>
-                            </div>
-                            <div class="col">
-                                <div class="mini-detail-card green">
-                                    <div class="detail-label">Recent Payout</div>
-                                    <div class="detail-value">$1,840</div>
-                                </div>
-                            </div>
-                            <div class="col">
-                                <div class="mini-detail-card rose">
-                                    <div class="detail-label">A/C Reserve</div>
-                                    <div class="detail-value">$450.00</div>
-                                </div>
-                            </div>
-                            <div class="col">
-                                <div class="mini-detail-card indigo">
-                                    <div class="detail-label">Shipped Orders</div>
-                                    <div class="detail-value">342</div>
-                                </div>
-                            </div>
-                            <div class="col">
-                                <div class="mini-detail-card cyan">
-                                    <div class="detail-label">Units Ordered</div>
-                                    <div class="detail-value">1,105</div>
-                                </div>
-                            </div>
-                            <div class="col">
-                                <div class="mini-detail-card green">
-                                    <div class="detail-label">Avg Units/Order</div>
-                                    <div class="detail-value">3.2</div>
-                                </div>
-                            </div>
-                            <div class="col">
-                                <div class="mini-detail-card orange">
-                                    <div class="detail-label">Orders > 5 Units</div>
-                                    <div class="detail-value">24</div>
-                                </div>
-                            </div>
-                        </div>
+            <div class="stat-card card-3d">
+                <div class="card-icon orders">
+                    <i class="fas fa-shopping-cart"></i>
+                </div>
+                <div class="card-content">
+                    <h3>Total Orders</h3>
+                    <p class="stat-value">1,247</p>
+                    <p class="stat-change positive">+8.3% this month</p>
+                </div>
+                <div class="card-wave"></div>
+            </div>
+
+            <div class="stat-card card-3d">
+                <div class="card-icon customers">
+                    <i class="fas fa-users"></i>
+                </div>
+                <div class="card-content">
+                    <h3>Active Customers</h3>
+                    <p class="stat-value">3,892</p>
+                    <p class="stat-change positive">+5.7% this month</p>
+                </div>
+                <div class="card-wave"></div>
+            </div>
+
+            <div class="stat-card card-3d">
+                <div class="card-icon conversion">
+                    <i class="fas fa-percentage"></i>
+                </div>
+                <div class="card-content">
+                    <h3>Conversion Rate</h3>
+                    <p class="stat-value">4.8%</p>
+                    <p class="stat-change negative">-1.2% this week</p>
+                </div>
+                <div class="card-wave"></div>
+            </div>
+        </section>
+
+        <!-- Charts and Data Section -->
+        <section class="data-section">
+            <div class="chart-container card-3d">
+                <div class="chart-header">
+                    <h3><i class="fas fa-chart-bar"></i> Sales Performance</h3>
+                    <select class="time-select">
+                        <option>Last 7 days</option>
+                        <option>Last 30 days</option>
+                        <option>Last quarter</option>
+                        <option>This year</option>
+                    </select>
+                </div>
+                <div class="chart-body">
+                    <div class="chart-bars">
+                        <div class="chart-bar" style="height: 80%;" data-value="$4,200"></div>
+                        <div class="chart-bar" style="height: 65%;" data-value="$3,400"></div>
+                        <div class="chart-bar" style="height: 90%;" data-value="$4,800"></div>
+                        <div class="chart-bar" style="height: 50%;" data-value="$2,600"></div>
+                        <div class="chart-bar" style="height: 75%;" data-value="$3,900"></div>
+                        <div class="chart-bar" style="height: 95%;" data-value="$5,100"></div>
+                        <div class="chart-bar" style="height: 60%;" data-value="$3,200"></div>
                     </div>
-
-                    <!-- Growth Analysis Section -->
-                    <div class="d-flex justify-content-between align-items-center mb-4 mt-5">
-                        <h4 class="fw-bold m-0" style="font-size: 1.25rem;"><i class="fas fa-chart-line me-2"></i>Growth
-                            Analysis</h4>
-                        <select class="form-select form-select-sm" style="width: 150px; border-radius: 8px;">
-                            <option>Last Week</option>
-                        </select>
-                    </div>
-
-                    <div class="row g-4 mb-5">
-                        <div class="col-lg-6">
-                            <div class="sidebar-right-card m-0" style="height: 300px;">
-                                <canvas id="growthLineChart"></canvas>
-                            </div>
-                        </div>
-                        <div class="col-lg-6">
-                            <div class="sidebar-right-card m-0" style="height: 300px;">
-                                <canvas id="growthBarChart"></canvas>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Recent Bulk Orders Table -->
-                    <div class="sidebar-right-card mb-5">
-                        <div class="d-flex justify-content-between align-items-center mb-4">
-                            <h4 class="card-title m-0">Recent Bulk Orders</h4>
-                            <button class="btn btn-sm btn-outline-primary rounded-pill px-4"
-                                style="font-size: 0.75rem; font-weight: 700;">View All</button>
-                        </div>
-                        <div class="table-responsive">
-                            <table class="table table-hover align-middle mb-0">
-                                <thead style="background: #f8fafc;">
-                                    <tr
-                                        style="font-size: 0.75rem; text-transform: uppercase; color: #94a3b8; font-weight: 800; letter-spacing: 0.5px;">
-                                        <th class="border-0 px-3">Order ID</th>
-                                        <th class="border-0">Customer</th>
-                                        <th class="border-0">Qty</th>
-                                        <th class="border-0">Total</th>
-                                        <th class="border-0">Status</th>
-                                        <th class="border-0 text-center">Action</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr style="font-size: 0.85rem; border-bottom: 1px solid #f1f5f9;">
-                                        <td class="fw-bold px-3">#ORD-10021</td>
-                                        <td style="color: #475569; font-weight: 600;">Ali Traders</td>
-                                        <td style="color: #64748b;">28 Units</td>
-                                        <td class="fw-bold" style="color: #1e293b;">$1,120</td>
-                                        <td><span class="badge bg-warning-subtle text-warning rounded-pill px-3"
-                                                style="font-weight: 700; font-size: 0.7rem;">Pending</span></td>
-                                        <td class="text-center">
-                                            <button class="btn btn-sm btn-outline-secondary px-3 rounded-3"
-                                                style="font-size: 0.75rem; font-weight: 700; border-color: #e2e8f0;">Review</button>
-                                        </td>
-                                    </tr>
-                                    <tr style="font-size: 0.85rem; border-bottom: 1px solid #f1f5f9;">
-                                        <td class="fw-bold px-3">#ORD-10018</td>
-                                        <td style="color: #475569; font-weight: 600;">Usman Store</td>
-                                        <td style="color: #64748b;">15 Units</td>
-                                        <td class="fw-bold" style="color: #1e293b;">$640</td>
-                                        <td><span class="badge bg-success-subtle text-success rounded-pill px-3"
-                                                style="font-weight: 700; font-size: 0.7rem;">Shipped</span></td>
-                                        <td class="text-center">
-                                            <button class="btn btn-sm btn-outline-secondary px-3 rounded-3"
-                                                style="font-size: 0.75rem; font-weight: 700; border-color: #e2e8f0;">Track</button>
-                                        </td>
-                                    </tr>
-                                    <tr style="font-size: 0.85rem; border-bottom: 1px solid #f1f5f9;">
-                                        <td class="fw-bold px-3">#ORD-10011</td>
-                                        <td style="color: #475569; font-weight: 600;">Khan Mart</td>
-                                        <td style="color: #64748b;">19 Units</td>
-                                        <td class="fw-bold" style="color: #1e293b;">$780</td>
-                                        <td><span class="badge bg-primary-subtle text-primary rounded-pill px-3"
-                                                style="font-weight: 700; font-size: 0.7rem;">Processing</span></td>
-                                        <td class="text-center">
-                                            <button class="btn btn-sm btn-outline-secondary px-3 rounded-3"
-                                                style="font-size: 0.75rem; font-weight: 700; border-color: #e2e8f0;">Manage</button>
-                                        </td>
-                                    </tr>
-                                    <tr style="font-size: 0.85rem; border-bottom: 1px solid #f1f5f9;">
-                                        <td class="fw-bold px-3">#ORD-10011</td>
-                                        <td style="color: #475569; font-weight: 600;">Khan Mart</td>
-                                        <td style="color: #64748b;">19 Units</td>
-                                        <td class="fw-bold" style="color: #1e293b;">$780</td>
-                                        <td><span class="badge bg-primary-subtle text-primary rounded-pill px-3"
-                                                style="font-weight: 700; font-size: 0.7rem;">Processing</span></td>
-                                        <td class="text-center">
-                                            <button class="btn btn-sm btn-outline-secondary px-3 rounded-3"
-                                                style="font-size: 0.75rem; font-weight: 700; border-color: #e2e8f0;">Manage</button>
-                                        </td>
-                                    </tr>
-                                    <tr style="font-size: 0.85rem;">
-                                        <td class="fw-bold px-3">#ORD-10011</td>
-                                        <td style="color: #475569; font-weight: 600;">Khan Mart</td>
-                                        <td style="color: #64748b;">19 Units</td>
-                                        <td class="fw-bold" style="color: #1e293b;">$780</td>
-                                        <td><span class="badge bg-primary-subtle text-primary rounded-pill px-3"
-                                                style="font-weight: 700; font-size: 0.7rem;">Processing</span></td>
-                                        <td class="text-center">
-                                            <button class="btn btn-sm btn-outline-secondary px-3 rounded-3"
-                                                style="font-size: 0.75rem; font-weight: 700; border-color: #e2e8f0;">Manage</button>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div> <!-- End Main Content Column -->
-
-                <!-- Right Sidebar Column -->
-                <div class="col-lg-3">
-                    <!-- Top Selling Products -->
-                    <div class="sidebar-right-card">
-                        <div class="d-flex justify-content-between align-items-center mb-4">
-                            <h4 class="fw-bold m-0" style="font-size: 1.1rem;">Top Selling Products</h4>
-                        </div>
-
-                        <div class="product-item">
-                            <div class="product-img">
-                                <i class="fas fa-laptop"></i>
-                            </div>
-                            <div class="flex-grow-1">
-                                <div class="fw-bold" style="font-size: 0.95rem; color: #1e293b;">Macbook Pro</div>
-                                <div style="font-size: 0.7rem; color: #94a3b8; font-weight: 600;">USB, wireless</div>
-                                <div style="font-size: 0.72rem; color: #fbaf17;">
-                                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i
-                                        class="fas fa-star"></i><i class="fas fa-star"></i>
-                                    <span style="color: #94a3b8; font-weight: 600; margin-left: 2px;">(52)</span>
-                                </div>
-                            </div>
-                            <div class="text-end">
-                                <div class="fw-bold" style="font-size: 1rem; color: #1e293b;">$899.00</div>
-                                <div
-                                    style="font-size: 0.65rem; color: #94a3b8; font-weight: 700; text-transform: uppercase;">
-                                    Sales</div>
-                            </div>
-                        </div>
-
-                        <div class="product-item">
-                            <div class="product-img">
-                                <i class="fas fa-clock"></i>
-                            </div>
-                            <div class="flex-grow-1">
-                                <div class="fw-bold" style="font-size: 0.95rem; color: #1e293b;">Apple Watch</div>
-                                <div style="font-size: 0.7rem; color: #94a3b8; font-weight: 600;">USB, wireless</div>
-                                <div style="font-size: 0.72rem; color: #fbaf17;">
-                                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i
-                                        class="fas fa-star"></i><i class="fas fa-star"></i>
-                                    <span style="color: #94a3b8; font-weight: 600; margin-left: 2px;">(85)</span>
-                                </div>
-                            </div>
-                            <div class="text-end">
-                                <div class="fw-bold" style="font-size: 1rem; color: #1e293b;">$399.00</div>
-                                <div
-                                    style="font-size: 0.65rem; color: #94a3b8; font-weight: 700; text-transform: uppercase;">
-                                    Sales</div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Action Center -->
-                    <div class="sidebar-right-card"
-                        style="background: white; border-radius: 20px; padding: 24px; box-shadow: 0 10px 30px rgba(0,0,0,0.03); border: 1px solid #f8fafc;">
-                        <h4 class="fw-bold mb-4" style="font-size: 1.1rem; color: #1e293b;"><i
-                                class="fas fa-th-large me-2"></i>Action Center</h4>
-                        <div class="d-flex justify-content-between">
-                            <div class="action-dot-btn"
-                                style="width: 65px; height: 65px; border-radius: 18px; background: #fff; display: flex; flex-direction: column; align-items: center; justify-content: center; border: 1px solid #e2e8f0; box-shadow: 0 4px 6px rgba(0,0,0,0.02); transition: all 0.2s ease;">
-                                <i class="fas fa-plus"
-                                    style="font-size: 1.2rem; color: #3b82f6; margin-bottom: 4px;"></i>
-                                <span
-                                    style="font-size: 0.65rem; font-weight: 700; text-transform: uppercase; color: #64748b;">Add</span>
-                            </div>
-                            <div class="action-dot-btn"
-                                style="width: 65px; height: 65px; border-radius: 18px; background: #fff; display: flex; flex-direction: column; align-items: center; justify-content: center; border: 1px solid #e2e8f0; box-shadow: 0 4px 6px rgba(0,0,0,0.02); transition: all 0.2s ease;">
-                                <i class="fas fa-file-csv"
-                                    style="font-size: 1.2rem; color: #3b82f6; margin-bottom: 4px;"></i>
-                                <span
-                                    style="font-size: 0.65rem; font-weight: 700; text-transform: uppercase; color: #64748b;">CSV</span>
-                            </div>
-                            <div class="action-dot-btn"
-                                style="width: 65px; height: 65px; border-radius: 18px; background: #fff; display: flex; flex-direction: column; align-items: center; justify-content: center; border: 1px solid #e2e8f0; box-shadow: 0 4px 6px rgba(0,0,0,0.02); transition: all 0.2s ease;">
-                                <i class="fas fa-book"
-                                    style="font-size: 1.2rem; color: #3b82f6; margin-bottom: 4px;"></i>
-                                <span
-                                    style="font-size: 0.65rem; font-weight: 700; text-transform: uppercase; color: #64748b;">Logs</span>
-                            </div>
-                            <div class="action-dot-btn"
-                                style="width: 65px; height: 65px; border-radius: 18px; background: #fff; display: flex; flex-direction: column; align-items: center; justify-content: center; border: 1px solid #e2e8f0; box-shadow: 0 4px 6px rgba(0,0,0,0.02); transition: all 0.2s ease;">
-                                <i class="fas fa-power-off"
-                                    style="font-size: 1.2rem; color: #f43f5e; margin-bottom: 4px;"></i>
-                                <span
-                                    style="font-size: 0.65rem; font-weight: 700; text-transform: uppercase; color: #64748b;">Off</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Alerts & Notifications -->
-                    <div class="sidebar-right-card">
-                        <div class="d-flex align-items-center gap-2 mb-4" style="color: #f43f5e;">
-                            <i class="fas fa-exclamation-triangle"></i>
-                            <h4 class="fw-bold m-0" style="font-size: 1.1rem;">Alerts & Notifications</h4>
-                        </div>
-
-                        <div class="ref-alert rose">
-                            <div class="d-flex gap-3">
-                                <div
-                                    style="width: 35px; height: 35px; border-radius: 8px; background: white; display:flex; align-items:center; justify-content:center; box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
-                                    <i class="fas fa-envelope-open" style="color: #3b82f6;"></i>
-                                </div>
-                                <div>
-                                    <div class="fw-bold" style="font-size: 0.9rem;">New order received</div>
-                                    <div style="font-size: 0.8rem; opacity: 0.8;">#ORD-10025 from Sarah</div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="ref-alert cyan">
-                            <div class="d-flex gap-3">
-                                <div
-                                    style="width: 35px; height: 35px; border-radius: 8px; background: white; display:flex; align-items:center; justify-content:center; box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
-                                    <i class="fas fa-info-circle text-warning"></i>
-                                </div>
-                                <div>
-                                    <div class="fw-bold" style="font-size: 0.9rem;">Stock Level Warning</div>
-                                    <div style="font-size: 0.8rem; opacity: 0.8;">iPhone Case is below 5 units</div>
-                                </div>
-                            </div>
-                        </div>
+                    <div class="chart-labels">
+                        <span>Mon</span>
+                        <span>Tue</span>
+                        <span>Wed</span>
+                        <span>Thu</span>
+                        <span>Fri</span>
+                        <span>Sat</span>
+                        <span>Sun</span>
                     </div>
                 </div>
             </div>
-        </div>
+
+            <div class="top-products card-3d">
+                <div class="products-header">
+                    <h3><i class="fas fa-box"></i> Top Products</h3>
+                    <button class="view-all">View All</button>
+                </div>
+                <div class="products-list">
+                    <div class="product-item">
+                        <div class="product-rank">1</div>
+                        <div class="product-info">
+                            <h4>Wireless Headphones</h4>
+                            <p class="product-sales">128 units sold</p>
+                        </div>
+                        <div class="product-revenue">$4,240</div>
+                    </div>
+                    <div class="product-item">
+                        <div class="product-rank">2</div>
+                        <div class="product-info">
+                            <h4>Smart Watch Pro</h4>
+                            <p class="product-sales">97 units sold</p>
+                        </div>
+                        <div class="product-revenue">$3,880</div>
+                    </div>
+                    <div class="product-item">
+                        <div class="product-rank">3</div>
+                        <div class="product-info">
+                            <h4>Laptop Backpack</h4>
+                            <p class="product-sales">156 units sold</p>
+                        </div>
+                        <div class="product-revenue">$3,120</div>
+                    </div>
+                    <div class="product-item">
+                        <div class="product-rank">4</div>
+                        <div class="product-info">
+                            <h4>Phone Case Premium</h4>
+                            <p class="product-sales">210 units sold</p>
+                        </div>
+                        <div class="product-revenue">$2,940</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Recent Activity Section -->
+        <section class="activity-section">
+            <div class="activity-container card-3d">
+                <div class="activity-header">
+                    <h3><i class="fas fa-history"></i> Recent Activity</h3>
+                </div>
+                <div class="activity-list">
+                    <div class="activity-item">
+                        <div class="activity-icon new-order">
+                            <i class="fas fa-shopping-bag"></i>
+                        </div>
+                        <div class="activity-details">
+                            <h4>New order received</h4>
+                            <p class="activity-time">2 minutes ago • Order #SC-7891</p>
+                        </div>
+                        <div class="activity-amount">+$249</div>
+                    </div>
+                    <div class="activity-item">
+                        <div class="activity-icon customer-review">
+                            <i class="fas fa-star"></i>
+                        </div>
+                        <div class="activity-details">
+                            <h4>New 5-star review</h4>
+                            <p class="activity-time">1 hour ago • Wireless Headphones</p>
+                        </div>
+                        <div class="activity-rating">★★★★★</div>
+                    </div>
+                    <div class="activity-item">
+                        <div class="activity-icon product-added">
+                            <i class="fas fa-plus-circle"></i>
+                        </div>
+                        <div class="activity-details">
+                            <h4>New product listed</h4>
+                            <p class="activity-time">3 hours ago • Smart Cart Store</p>
+                        </div>
+                        <div class="activity-product">Wireless Earbuds</div>
+                    </div>
+                    <div class="activity-item">
+                        <div class="activity-icon message">
+                            <i class="fas fa-comment"></i>
+                        </div>
+                        <div class="activity-details">
+                            <h4>Customer inquiry</h4>
+                            <p class="activity-time">5 hours ago • Shipping question</p>
+                        </div>
+                        <div class="activity-status pending">Reply Required</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+</main>
 
         <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
         <script>
@@ -725,7 +1232,6 @@
                 });
             }
         </script>
-
         <script src="layout-script.js"></script>
 </body>
 

@@ -847,23 +847,30 @@ h6 {
 }
 
 /* Layout Stability and Responsiveness */
+/* Layout Stability and Responsiveness */
 @media (min-width: 1200px) {
     .container-fluid>.row>.col-lg-9 {
-        width: 75% !important;
+        width: 75%;
+        max-width: 75%;
+        flex: 0 0 75%;
     }
 
     .container-fluid>.row>.col-lg-3 {
-        width: 25% !important;
+        width: 25%;
+        max-width: 25%;
+        flex: 0 0 25%;
     }
 }
 
 @media (max-width: 1199px) and (min-width: 992px) {
     .container-fluid>.row>.col-lg-9 {
-        width: 72% !important;
+        width: 72%;
+        flex: 0 0 72%;
     }
 
     .container-fluid>.row>.col-lg-3 {
-        width: 28% !important;
+        width: 28%;
+        flex: 0 0 28%;
     }
 }
 
